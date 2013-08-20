@@ -1,0 +1,54 @@
+	var chart;
+			$(document).ready(function() {
+				chart = new Highcharts.Chart({
+					chart: {
+						renderTo: 'dgraph_{$idg}',
+						animation: false,
+						backgroundColor: 'transparent',
+						plotBorderWidth: null,
+						plotShadow: false,
+						style: {
+							right: '95px',
+							top: '-50px',
+						},
+					},
+					title: {
+						text: '',
+						style: {
+							color: '#999'
+						},
+					},
+					tooltip: {
+						formatter: function() {
+							return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage*10)/10 +' %';
+						}
+					},
+					plotOptions: {
+						pie: {
+							allowPointSelect: true,
+							cursor: 'pointer',
+							size: 210,
+							animation: false,
+							dataLabels: {
+								enabled: true,
+								color: '#000',
+								connectorWidth: 0,
+								connectorColor: '#999',
+								distance: 5,
+								formatter: function() {
+									return this.point.name +': '+ Math.round(this.percentage*10)/10 +' %';
+								},
+								style: {
+									padding: 3,
+									fontSize: '10px'
+								},
+							}
+						}
+					},
+				    series: [{
+						type: 'pie',
+						name: 'ceny',
+						data: {$gr_data}
+					}]
+				});
+			});

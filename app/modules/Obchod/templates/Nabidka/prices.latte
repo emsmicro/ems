@@ -1,0 +1,47 @@
+{if $isPDF}
+	<table class="detail">
+{else}
+	<table class="grid">
+{/if}
+	<tr>
+		<th>Název produktu</th>
+		<th>Dávka [ks]</th>
+		<th>≈ ks/rok</th>
+		<th>Cena/ks</th>
+		<th>Jednorázové náklady</th>
+		{if !$isPDF}
+			<th title="Status">S</th>
+		{/if}
+	</tr>
+	{var $naz = "xxx"}
+	{foreach $prices as $cena}
+		{if $cena->idtc == 10}
+			<tr>
+				<td>
+					{if $cena->nazev <> $naz}
+						{if !$isPDF}
+							<a n:if="$user->isAllowed('Produkt','detail')" n:href="Produkt:detail, $cena->id_produkty" title="{$cena->id_produkty}">{$cena->nazev}</a>
+						{else}
+							{$cena->nazev}
+						{/if}
+						{var $naz = $cena->nazev}
+					{/if}
+				</td>
+				<td class="tcislo">{$cena->vyrobni_davka|number:0:',':' '}</td>
+				<td class="tcislo">{$cena->mnozstvi|number:0:',':' '}</td>
+				<td class="tcislo">{$cena->hodnota_cm|number:2:',':' '} {$cena->mena}</td>
+		{else}
+			{if $cena->idtc == 8}
+				<td class="tcislo">{$cena->hodnota|number:2:',':' '} {$cena->mena}</td>
+				{if !$isPDF}
+					{if $cena->aktivni == 1}
+						<td title="Aktivní cena">A</td>
+					{else}
+						<td title="Neaktivní cena">N</td>
+					{/if}
+				{/if}
+			{/if}
+			</tr>
+		{/if}
+	{/foreach}
+	</table>

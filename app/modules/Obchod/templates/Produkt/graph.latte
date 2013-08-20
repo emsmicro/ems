@@ -1,0 +1,57 @@
+
+		<!-- Funkce pro nastavení výšky divu pro graf -->
+
+		
+//		$.fn.equalizeHeights = function(){
+//			return this.height( Math.max.apply(this, $(this).map(function(i,e){ return $(e).height() }).get() ) )
+//		}
+//		$('#tceny, #container_graph').equalizeHeights();
+			
+
+			<!-- Bar Graph -->
+			
+			var chart;
+			$(document).ready(function() {
+				chart = new Highcharts.Chart({
+					chart: {
+						renderTo: 'container_graph',
+						defaultSeriesType: 'column'
+					},
+					title: {
+						text: ''
+					},
+					legend: {
+						shadow: true,
+						layout: 'vertical',
+						align: 'right',
+						verticalAlign: 'middle'
+					},
+					xAxis: {
+						categories: ['Kategorie ceny']
+					},
+					yAxis: {
+						min: 0,
+						opposite: true,
+						tickInterval: 25,
+						title: {
+							text: '%'
+						}
+					},
+					tooltip: {
+						formatter: function() {
+							return ''+
+								 this.series.name +': '+ this.y +' Kč ('+ Math.round(this.percentage*10)/10 +'%)';
+						}
+					},
+					plotOptions: {
+						column: {
+							stacking: 'percent'
+						},
+						series: {
+						   pointWidth: 120
+						}
+					},
+					series: {$data_bar} 
+				});
+
+			});

@@ -1,0 +1,46 @@
+[2012-11-09 11-37-05] PHP Fatal error: Uncaught exception DibiDriverException with message '[Microsoft][SQL Server Native Client 10.0]Named Pipes Provider: Could not open a connection to SQL Server [53]. ' in C:\xamlite\htdocs\_Libs\Dibi\drivers\sqlsrv.php:82  @  http://localhost/ems/www/  @@  exception 2012-11-09 11-37-05 eb68913608b4c9681a3e2b2d40098fe3.html
+[2013-01-16 16-24-41] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-24-41] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-24-41] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-25-39] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-25-39] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-25-39] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-25] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-25] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-25] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-26] PHP Fatal error: syntax error, unexpected ';' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(346) : eval()'d code:1  @  http://localhost/ems/www/material/  @@  exception 2013-01-16 16-29-26 f13f2bfc0c965c828a036f050c1ccb38.html
+[2013-01-16 16-29-30] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-30] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-30] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-30] PHP Fatal error: syntax error, unexpected ';' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(346) : eval()'d code:1  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-34] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-34] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-34] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-35] PHP Fatal error: syntax error, unexpected ';' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(346) : eval()'d code:1  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-41] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-41] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-41] PHP Notice: Undefined variable: koef in C:\xamlite\htdocs\ems\app\modules\Base\Model.php:347  @  http://localhost/ems/www/material/
+[2013-01-16 16-29-42] PHP Fatal error: syntax error, unexpected ';' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(346) : eval()'d code:1  @  http://localhost/ems/www/material/
+[2013-01-16 16-32-28] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-32-28] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-33-18] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-33-18] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-39-03] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-39-03] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-40-32] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-40-32] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-41-05] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-41-05] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-41-24] PHP Notice: Undefined property: DibiRow::$0 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-41-24] PHP Notice: Undefined property: DibiRow::$2 in C:\xamlite\htdocs\_Libs\Dibi\libs\DibiRow.php:126  @  http://localhost/ems/www/material/
+[2013-01-16 16-45-23] PHP Notice: Use of undefined constant MaterialN - assumed 'MaterialN' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(347) : eval()'d code:1  @  http://localhost/ems/www/material/
+[2013-01-16 16-55-26] PHP Notice: Use of undefined constant MaterialN - assumed 'MaterialN' in C:\xamlite\htdocs\ems\app\modules\Base\Model.php(347) : eval()'d code:1  @  http://localhost/ems/www/material/
+[2013-01-16 17-03-28] PHP Fatal error: Uncaught exception Nette\Application\BadRequestException with message 'Page not found. Missing template '…\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\matprice.latte'.' in C:\xamlite\htdocs\_Libs\Nette\Application\UI\Presenter.php:452  @  http://localhost/ems/www/material/matprice  @@  exception 2013-01-16 17-03-28 00e7619c4c1b4a7503e7f3ef9e7370e5.html
+[2013-01-18 11-19-31] PHP Notice: Undefined variable: idprodukt in C:\xamlite\htdocs\ems\app\modules\Nakup\Material.php:218  @  http://localhost/ems/www/material/
+[2013-01-18 11-19-31] PHP Fatal error: Uncaught exception DibiDriverException with message '[Microsoft][SQL Server Native Client 10.0][SQL Server]Incorrect syntax near '='.' in C:\xamlite\htdocs\_Libs\Dibi\drivers\sqlsrv.php:141  @  http://localhost/ems/www/material/  @@  exception 2013-01-18 11-19-31 d6c87c1a358149d722b68bbbb4e820ad.html
+[2013-01-18 11-19-36] PHP Notice: Undefined variable: idprodukt in C:\xamlite\htdocs\ems\app\modules\Nakup\Material.php:218  @  http://localhost/ems/www/material/?_fid=mg1c
+[2013-01-18 11-19-36] PHP Fatal error: Uncaught exception DibiDriverException with message '[Microsoft][SQL Server Native Client 10.0][SQL Server]Incorrect syntax near '='.' in C:\xamlite\htdocs\_Libs\Dibi\drivers\sqlsrv.php:141  @  http://localhost/ems/www/material/?_fid=mg1c
+[2013-01-18 11-20-12] PHP Notice: Undefined variable: idprodukt in C:\xamlite\htdocs\ems\app\modules\Nakup\Material.php:218  @  http://localhost/ems/www/material/?_fid=7kjz
+[2013-01-18 11-20-12] PHP Fatal error: Uncaught exception DibiDriverException with message '[Microsoft][SQL Server Native Client 10.0][SQL Server]Incorrect syntax near '='.' in C:\xamlite\htdocs\_Libs\Dibi\drivers\sqlsrv.php:141  @  http://localhost/ems/www/material/?_fid=7kjz
+[2013-01-18 11-20-19] PHP Notice: Undefined variable: idprodukt in C:\xamlite\htdocs\ems\app\modules\Nakup\Material.php:218  @  http://localhost/ems/www/material/
+[2013-01-18 11-20-19] PHP Fatal error: Uncaught exception DibiDriverException with message '[Microsoft][SQL Server Native Client 10.0][SQL Server]Incorrect syntax near '='.' in C:\xamlite\htdocs\_Libs\Dibi\drivers\sqlsrv.php:141  @  http://localhost/ems/www/material/

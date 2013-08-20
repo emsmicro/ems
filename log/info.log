@@ -1,0 +1,2 @@
+[2012-03-11 16-29-02] PHP Fatal error: Undefined property: DibiRow::$idp in C:\xamlite\htdocs\ems\temp\cache\_Nette.FileTemplate\_Material.export.latte-7d81ecbec103c3830a50de115e037484.php:16  @  http://localhost/ems/www/material/export  @@  exception 2012-03-11 16-29-02 865ed71da89376598af07a910cc00028.html
+[2012-03-11 16-29-19] PHP Fatal error: Undefined property: DibiRow::$idp in C:\xamlite\htdocs\ems\temp\cache\_Nette.FileTemplate\_Material.export.latte-7d81ecbec103c3830a50de115e037484.php:16  @  http://localhost/ems/www/material/export
