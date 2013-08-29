@@ -12,8 +12,8 @@
 			<th>Množ./dávka</th><td class="cislo" style="font-size:x-small;">{$item['mnozstvi']|number:0:',':' '} / {$item['davka']|number:0:',':' '} ks</td>
 		</tr>
 		<tr><th>Tržba</th>		<td class="cislo">{$item['trzba']|number:2:',':' '} Kč</td></tr>
-		<tr><th>Čistá PH</th>	<td class="cislo">{$item['avalcist']|number:2:',':' '} Kč</td></tr>
-		<tr><th>Real. PH</th>	<td class="cislo">{$item['avalkalk']|number:2:',':' '} Kč</td></tr>
+		<tr title="Čistá PH = Tržba - Nákady (mat., mzdy, stroje - bez režií)"><th>Čistá PH</th>	<td class="cislo">{$item['avalcist']|number:2:',':' '} Kč</td></tr>
+		<tr title="Real. PH = Tržba - Výr. nákady + Mater. přirážka"><th>Real. PH</th>	<td class="cislo">{$item['avalkalk']|number:2:',':' '} Kč</td></tr>
 		<tr><th>Zisk</th>		<td class="cislo">{$item['kalkzisk']|number:2:',':' '} Kč</td></tr>
 		<tr><th>PH/Tržba</th>	<td class="cislo light" title="{$bestit}">{$item['avalproc']|number:2:',':' '} %</td></tr>
 		<tr><td colspan="2" class="mini" style="text-align:right;cursor:default;background-color:#FFF;padding:3px 5px 0 0;">

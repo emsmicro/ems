@@ -19,7 +19,7 @@
   text-decoration: none;
 /*  text-transform: uppercase;
   box-shadow: 0 0 7px black;   */
-    -moz-box-shadow: 1px 2px 3px #444444
+    -moz-box-shadow: 1px 2px 3px #444444;
 	-webkit-box-shadow: 1px 2px 3px #444444;
     box-shadow: 1px 2px 3px #444444;
 }

@@ -427,6 +427,8 @@ class Produkt extends Model
 		$rucd = 0;
 		$strp = 0;
 		$strd = 0;
+		$monp = 0;
+		$mond = 0;
 		$ostp = 0;
 		$jedn = 0;
 		foreach ($naklady as $naklad) {
@@ -443,6 +445,12 @@ class Produkt extends Model
 					break;
 				case ($k == 'OperRucDN'):
 					$rucd = round((float) $naklad->hodnota, $des_mist);
+					break;
+				case ($k == 'OperMontPN'):
+					$monp = round((float) $naklad->hodnota, $des_mist);
+					break;
+				case ($k == 'OperMontDN'):
+					$mond = round((float) $naklad->hodnota, $des_mist);
 					break;
 				case ($k == 'OperStrPN'):
 					$strp = round((float) $naklad->hodnota, $des_mist);
@@ -485,6 +493,7 @@ class Produkt extends Model
 				$aval[$ic]['davka']		= $davk;
 				$aval[$ic]['maternak']	= $mnoz * $matn;
 				$aval[$ic]['rucninak']	= $mnoz * ($rucp + $rucd/$davk);
+				$aval[$ic]['montanak']	= $mnoz * ($monp + $mond/$davk);
 				$aval[$ic]['strojnak']	= $mnoz * ($strp + $strd/$davk);
 				$aval[$ic]['ostatnak']	= $mnoz * $ostp;
 				$aval[$ic]['jednonak']	= $jedn;
@@ -500,6 +509,7 @@ class Produkt extends Model
 											- $aval[$ic]['maternak'] 
 											- $aval[$ic]['strojnak'] 
 											- $aval[$ic]['rucninak']
+											- $aval[$ic]['montanak']
 											- $aval[$ic]['ostatnak']
 											- $aval[$ic]['jednonak'];
 				$matnproc = $matn/$cnab * 100;
@@ -525,6 +535,7 @@ class Produkt extends Model
 				$ic = $cena->id;
 				$cmat = 0;
 				$cruc = 0;
+				$cmon = 0;
 				$cstr = 0;
 				$cost = 0;
 				$cvyr = 0;
@@ -544,6 +555,9 @@ class Produkt extends Model
 					break;
 				case ($k == 'RucPraceC'):
 					$cruc = round((float) $cena->hodnota, $des_mist);
+					break;
+				case ($k == 'MontPraceC'):
+					$cmon = round((float) $cena->hodnota, $des_mist);
 					break;
 				case ($k == 'StrPraceC'):
 					$cstr = round((float) $cena->hodnota, $des_mist);
@@ -581,6 +595,7 @@ class Produkt extends Model
 			$aval[$ic]['davka']		= $davk;
 			$aval[$ic]['maternak']	= $mnoz * $matn;
 			$aval[$ic]['rucninak']	= $mnoz * ($rucp + $rucd/$davk);
+			$aval[$ic]['montanak']	= $mnoz * ($monp + $mond/$davk);
 			$aval[$ic]['strojnak']	= $mnoz * ($strp + $strd/$davk);
 			$aval[$ic]['ostatnak']	= $mnoz * $ostp;
 			$aval[$ic]['jednonak']	= $jedn;
@@ -596,6 +611,7 @@ class Produkt extends Model
 										- $aval[$ic]['maternak'] 
 										- $aval[$ic]['strojnak'] 
 										- $aval[$ic]['rucninak']
+										- $aval[$ic]['montanak']
 										- $aval[$ic]['ostatnak']
 										- $aval[$ic]['jednonak'];
 			$matnproc = $matn/$cnab * 100;
