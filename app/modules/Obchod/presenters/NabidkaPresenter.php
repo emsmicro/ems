@@ -28,6 +28,7 @@ class NabidkaPresenter extends ObchodPresenter
 		parent::startup();
         $instance = new Nabidka;
 		$this->items = $instance->show();
+		$this->presnt_name = "Nabidka";
 
 	}
 
@@ -44,6 +45,8 @@ class NabidkaPresenter extends ObchodPresenter
         $instance = new Nabidka;
 		$this->template->items = $instance->show();
         $this->template->titul = self::TITUL_DEFAULT;
+		$this->is_filter = TRUE;			// bude možno filtrovat data v renderu default
+		$this->render_name = "default";
 
 	}
 	/*
@@ -56,6 +59,8 @@ class NabidkaPresenter extends ObchodPresenter
 		$this->template->items = $instance->showOffer($id);
 		$section = $this->context->session->getSection('mySetting');
         $this->template->titul = "Nabídky - ".$section->firma;
+		$this->is_filter = TRUE;			// bude možno filtrovat data v renderu default
+		$this->render_name = "default";
 	}
 	/********************* view detail *********************/
 	/*
@@ -109,7 +114,7 @@ class NabidkaPresenter extends ObchodPresenter
 		$template->iscen = $iscen;
 		$template->vol = $volume;
 		$template->prices = $prices;
-		$template->isPDF = true;
+		$template->isPDF = TRUE;
 	   	$template->titul = $item->popis;
 		$template->company = $this->company;
 		$user = $this->getUser();

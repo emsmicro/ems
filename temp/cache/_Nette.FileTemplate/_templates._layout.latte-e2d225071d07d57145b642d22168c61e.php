@@ -1,19 +1,19 @@
-<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.34956700 1376655051";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1376655049;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.79083400 1379255348";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1379255343;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'o5stta9xoj')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'q53be8vidc')
 ;//
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb46b95cf09d_title')) { function _lb46b95cf09d_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb1499377ba1_title')) { function _lb1499377ba1_title($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block drobecky
 //
-if (!function_exists($_l->blocks['drobecky'][] = '_lb3dd20edb11_drobecky')) { function _lb3dd20edb11_drobecky($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky'][] = '_lb09e59b7a12_drobecky')) { function _lb09e59b7a12_drobecky($_l, $_args) { extract($_args)
 ?> <?php
 }}
 
@@ -57,17 +57,41 @@ if ($_l->extends) {
 	<script type="text/javascript" src="<?php echo htmlSpecialChars($basePath) ?>/js/autoNumeric.js"></script>
 		<script type="text/javascript">
 		// po stisku Escape se vrátím na předchozí stránku
-		document.onkeydown = function(e){ 
-				  if (e == null) { // ie 
-					keycode = event.keyCode; 
-				  } else { // mozilla 
-					keycode = e.which; 
-				  } 
-				  if(keycode == 27){ // escape, close box, esc 
-					  // Go back one page
-					  history.back()
-				  } 
-				};
+//		document.onkeydown = function(e){ 
+//				  if (e == null) { // ie 
+//					keycode = event.keyCode; 
+//				  } else { // mozilla 
+//					keycode = e.which; 
+//				  } 
+//				  if(keycode == 27){ // escape, close box, esc 
+//					  // Go back one page
+//					  history.back()
+//				  } 
+//				};
+				
+		document.onkeydown = function (e) { 
+		  e = e || window.event;
+		  var keyCode = e.keyCode || e.which,
+			  arrow = { left: 37, up: 38, right: 39, down: 40 };
+
+		  if (e.ctrlKey) {
+			switch (keyCode) {
+			  case arrow.left:
+			  //... handle Ctrl-LeftArrow
+				  history.back()
+				  break;
+			  case arrow.right:
+			  //... handle Ctrl-RightArrow
+				  history.forward()
+				  break;
+			}
+		  } else {
+			if(keyCode == 27){ // escape, close box, esc 
+				 //... Go back one page
+				history.back()
+			} 
+		  }
+		};				
 	</script>
 	
 	<?php if (isset($is_addon)): Nette\Latte\Macros\UIMacros::callBlock($_l, 'addon', $template->getParams()) ;endif ?>
@@ -95,7 +119,7 @@ if ($_l->extends) {
 					v oblasti EMS ...</div>
 
 
-<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['o5stta9xoj'])->render() ?>
+<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['q53be8vidc'])->render() ?>
 
 <?php $_ctrl = $control->getWidget("navigation"); if ($_ctrl instanceof Nette\Application\UI\IPartiallyRenderable) $_ctrl->validateControl(); $_ctrl->render() ?>
 

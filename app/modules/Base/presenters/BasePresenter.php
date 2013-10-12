@@ -14,8 +14,12 @@ abstract class BasePresenter extends Presenter
 	public	$company;
 	/** @var Nette\DI\Container */ 
 	public  $context;
+	public  $is_filter = false;
+	public  $presnt_name = '';
+	public  $render_name = '';
 
-	
+
+
 	public function startup()
 	{
 		parent::startup();
@@ -272,5 +276,35 @@ abstract class BasePresenter extends Presenter
 
 	 }
  
+	 
+	/**
+	 * stat edit form component factory.
+	 * @return mixed
+	 */
+	protected function createComponentFilterForm()
+	{
+		$form = new Form;
+		$form->addText('filtr', '', 45)
+					->setRequired('Zadejte část(i) filtru...')
+					->setAttribute('placeholder', 'filtr ...');		
+		$form->addSubmit('filter', 'Filtr')->setAttribute('class', 'default');
+		$form->onSuccess[] = callback($this, 'filterFormSubmitted');
+
+		$form->addProtection(self::MESS_PROTECT);
+		return $form;
+	}
+
+
+
+	public function filterFormSubmitted(Form $form)
+	{
+		$presenter	= $this->presnt_name;
+		$render		= $this->render_name;
+		if ($form['filter']->isSubmittedBy()) {
+			$flt = new Model();
+			
+		}
+		//$this->redirect('find', $id, $seek, '');
+	}	 
 
 }

@@ -1,8 +1,8 @@
-<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.23655500 1377610590";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Produkt\detaval.latte";i:2;i:1377610585;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.94172900 1379251552";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Produkt\detaval.latte";i:2;i:1377687686;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Produkt\detaval.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'ybon2xwa3l')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'dj86x72ann')
 ;
 // snippets support
 if (!empty($control->snippetMode)) {
@@ -65,6 +65,6 @@ if (!empty($control->snippetMode)) {
 
 <script type='text/javascript' src='<?php echo htmlSpecialChars($basePath, ENT_QUOTES) ?>/js/highcharts.js'></script>
 <script type='text/javascript'>
-<?php Nette\Latte\Macros\CoreMacros::includeTemplate('graval.latte', array('idg' => $item['id_cena'], 'gr_data' => $item['datagraf']) + $template->getParams(), $_l->templates['ybon2xwa3l'])->render() ?>
+<?php Nette\Latte\Macros\CoreMacros::includeTemplate('graval.latte', array('idg' => $item['id_cena'], 'gr_data' => $item['datagraf']) + $template->getParams(), $_l->templates['dj86x72ann'])->render() ?>
 </script>
 

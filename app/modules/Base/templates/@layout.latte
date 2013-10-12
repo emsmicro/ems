@@ -39,17 +39,41 @@
 	*}
 	<script type="text/javascript">
 		// po stisku Escape se vrátím na předchozí stránku
-		document.onkeydown = function(e){ 
-				  if (e == null) { // ie 
-					keycode = event.keyCode; 
-				  } else { // mozilla 
-					keycode = e.which; 
-				  } 
-				  if(keycode == 27){ // escape, close box, esc 
-					  // Go back one page
-					  history.back()
-				  } 
-				};
+//		document.onkeydown = function(e){ 
+//				  if (e == null) { // ie 
+//					keycode = event.keyCode; 
+//				  } else { // mozilla 
+//					keycode = e.which; 
+//				  } 
+//				  if(keycode == 27){ // escape, close box, esc 
+//					  // Go back one page
+//					  history.back()
+//				  } 
+//				};
+				
+		document.onkeydown = function (e) { 
+		  e = e || window.event;
+		  var keyCode = e.keyCode || e.which,
+			  arrow = { left: 37, up: 38, right: 39, down: 40 };
+
+		  if (e.ctrlKey) {
+			switch (keyCode) {
+			  case arrow.left:
+			  //... handle Ctrl-LeftArrow
+				  history.back()
+				  break;
+			  case arrow.right:
+			  //... handle Ctrl-RightArrow
+				  history.forward()
+				  break;
+			}
+		  } else {
+			if(keyCode == 27){ // escape, close box, esc 
+				 //... Go back one page
+				history.back()
+			} 
+		  }
+		};				
 	</script>
 	
 	{ifset $is_addon}{include #addon}{/ifset}
