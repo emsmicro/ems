@@ -8,7 +8,7 @@
 {* $cond .. pokud jsou práva na add/edit/delete zobrazí se záhlaví *}
 {var $cond = $user->isAllowed('Produkt','add') || $user->isAllowed('Produkt','edit') || $user->isAllowed('Produkt','delete')}
 
-<table class="grid">
+<table class="grid" style="width:100%;">
 <tr>
 	<th>Nabídka</th>
 	<th n:if="$user->isAllowed('Produkt','setProduct')"><img src="{$basePath}/images/select.png" title="Zvolit jako aktuální"/></th>

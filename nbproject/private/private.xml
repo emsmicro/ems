@@ -4,11 +4,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xamlite/htdocs/ems/app/modules/Base/presenters/BasePresenter.php</file>
-            <file>file:/C:/xamlite/htdocs/ems/app/modules/Base/Model.php</file>
-            <file>file:/C:/xamlite/htdocs/ems/app/modules/Nakup/presenters/K2Presenter.php</file>
-            <file>file:/C:/xamlite/htdocs/ems/app/modules/Base/templates/@layout.latte</file>
-            <file>file:/C:/xamlite/htdocs/ems/app/modules/Obchod/presenters/NabidkaPresenter.php</file>
+            <file>file:/C:/xamlite/htdocs/ems/app/components/UserFilter/FilterControl.php</file>
+            <file>file:/C:/xamlite/htdocs/ems/www/css/site.css</file>
+            <file>file:/C:/xamlite/htdocs/ems/app/modules/Obchod/Firma.php</file>
+            <file>file:/C:/xamlite/htdocs/ems/app/modules/Base/FilterModel.php</file>
         </group>
     </open-files>
 </project-private>

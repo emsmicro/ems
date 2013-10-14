@@ -1,5 +1,6 @@
 
 {block #mysetting}
+  {if !$islogin}
 	<div id="mysetting">
 	{if !$ishome || $ishome}
 		{if $ifirma==0}
@@ -47,4 +48,5 @@
 		{/if}
 	{/if}
 	</div>
+  {/if}
 {/block}

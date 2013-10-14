@@ -41,9 +41,13 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 * 	Vrací obsah tabulky 
 	 *  @return record set
 	 */
-	public function show()
+	public function show($filtr='')
 	{
-		return dibi::query($this->full_detail_query);
+		if($filtr<>''){
+			return dibi::query($this->full_detail_query . "	WHERE n.popis LIKE '%$filtr%'");
+		} else {
+			return dibi::query($this->full_detail_query);
+		}
 	}
 	
 	/**

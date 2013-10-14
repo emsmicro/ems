@@ -113,7 +113,7 @@ class MaterialPresenter extends NakupPresenter
 		}
 
 		$rows = $mat->show($id, $what);
-		$vp = $this['vp']; 
+		$vp = $this['pg']; 
 		$paginator = $vp->paginator;
 		$paginator->itemsPerPage = 20;
 		$paginator->itemCount = count($rows);

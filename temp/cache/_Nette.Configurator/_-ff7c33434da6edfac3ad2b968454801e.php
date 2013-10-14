@@ -1,4 +1,4 @@
-<?php //netteCache[01]000207a:2:{s:4:"time";s:21:"0.57368400 1376920665";s:9:"callbacks";a:1:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:37:"C:\xamlite\htdocs\ems\app/config.neon";i:2;i:1376920639;}}}?><?php
+<?php //netteCache[01]000207a:2:{s:4:"time";s:21:"0.36779800 1381572817";s:9:"callbacks";a:1:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:37:"C:\xamlite\htdocs\ems\app/config.neon";i:2;i:1381572759;}}}?><?php
 // source file C:\xamlite\htdocs\ems\app/config.neon
 
 $container->addService('robotLoader', function($container) {
@@ -79,10 +79,10 @@ $container->params['myvar'] = array (
 );
 
 $container->params['company'] = array (
-  'name' => 'Firma Uživatele a. s.',
-  'street' => 'Ultrafialová 6',
-  'city' => 'Brno',
-  'zip' => '500 01',
+  'name' => 'Mikroelektronika spol. s r. o.',
+  'street' => 'Dráby 849',
+  'city' => 'Vysoké Mýto',
+  'zip' => '566 01',
   'country' => 'Czech republic',
 );
 

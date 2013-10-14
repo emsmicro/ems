@@ -26,7 +26,6 @@ abstract class BasePresenter extends Presenter
 				
 		$user = $this->getUser();
 		$this->user = $user;
-
 		$context = $this->getContext();
 		$this->context = $context;
 
@@ -225,6 +224,7 @@ abstract class BasePresenter extends Presenter
 			$this->template->inabidka = $section->id_nabidka;
 			$this->template->iprodukt = $section->id_produkt;
 			$this->template->ishome = $this->name == 'Homepage';
+			$this->template->islogin = !$this->getUser()->isLoggedIn();
 	}
 
 	protected function getIdFromMySet($poradi=1){
@@ -276,35 +276,5 @@ abstract class BasePresenter extends Presenter
 
 	 }
  
-	 
-	/**
-	 * stat edit form component factory.
-	 * @return mixed
-	 */
-	protected function createComponentFilterForm()
-	{
-		$form = new Form;
-		$form->addText('filtr', '', 45)
-					->setRequired('Zadejte část(i) filtru...')
-					->setAttribute('placeholder', 'filtr ...');		
-		$form->addSubmit('filter', 'Filtr')->setAttribute('class', 'default');
-		$form->onSuccess[] = callback($this, 'filterFormSubmitted');
-
-		$form->addProtection(self::MESS_PROTECT);
-		return $form;
-	}
-
-
-
-	public function filterFormSubmitted(Form $form)
-	{
-		$presenter	= $this->presnt_name;
-		$render		= $this->render_name;
-		if ($form['filter']->isSubmittedBy()) {
-			$flt = new Model();
-			
-		}
-		//$this->redirect('find', $id, $seek, '');
-	}	 
 
 }

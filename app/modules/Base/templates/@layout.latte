@@ -38,18 +38,6 @@
 	<!--<![endif]-->	
 	*}
 	<script type="text/javascript">
-		// po stisku Escape se vrátím na předchozí stránku
-//		document.onkeydown = function(e){ 
-//				  if (e == null) { // ie 
-//					keycode = event.keyCode; 
-//				  } else { // mozilla 
-//					keycode = e.which; 
-//				  } 
-//				  if(keycode == 27){ // escape, close box, esc 
-//					  // Go back one page
-//					  history.back()
-//				  } 
-//				};
 				
 		document.onkeydown = function (e) { 
 		  e = e || window.event;
@@ -68,7 +56,7 @@
 				  break;
 			}
 		  } else {
-			if(keyCode == 27){ // escape, close box, esc 
+			if(keyCode === 27){ // escape, close box, esc 
 				 //... Go back one page
 				history.back()
 			} 
@@ -81,55 +69,47 @@
 </head>
 
 <body>
-	<div style="position:relative;">
+	<div id="topcont">
 
-    <div id="logo"></div>
-    <div id="titul">mikroelektronika :: EMS 
-		<a n:if="$user->isAllowed('Nabidka','default')" n:href="Nabidka:default" title="Seznam nabídek">nabídky</a>
-		<span n:if="!$user->isAllowed('Nabidka','default')">nabídky</span>
-	</div>
-    <div id="slogan">Systém pro správu nabídek a kalkulací cen
-			<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů">služeb a produktů</a>
-					v oblasti EMS ...</div>
+		<div id="logo"></div>
+		<div id="titul">mikroelektronika :: EMS 
+			<a n:if="$user->isAllowed('Nabidka','default')" n:href="Nabidka:default" title="Seznam nabídek">nabídky</a>
+			<span n:if="!$user->isAllowed('Nabidka','default')">nabídky</span>
+		</div>
+		<div id="slogan">Systém pro správu nabídek a kalkulací cen
+				<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů">služeb a produktů</a>
+						v oblasti EMS ...
+		</div>
 
 
-	{include 'mysetting.latte'}
+		{include 'mysetting.latte'}
 
-	{control navigation}
+		{control navigation}
 
-	<div id="breadcrumbs">
-		{block #drobecky} {/block}&nbsp;
-		<span id="back" title="zpět">
-				<a href="#">&#x25C0;</a>
-				<script type="text/javascript">
-						document.getElementById("back").innerHTML =
-								'<a href="javascript:window.history.go(-1);">&#x25C0;<\/a>';
-				</script>
-		</span>
-		{*
-		<span id="fwd" title="vpřed">
-				<a href="#">&#x25B6;</a>
-				<script type="text/javascript">
-						document.getElementById("fwd").innerHTML =
-								'<a href="javascript:window.history.go(1);">&#x25B6;<\/a>';
-				</script>
-		</span>		
-		*}
-	</div>
-	<div id="messages">
-		<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
-	</div>
+		<div id="breadcrumbs">
+			{block #drobecky} {/block}&nbsp;
+			<span id="back" title="zpět">
+					<a href="#">&#x25C0;</a>
+					<script type="text/javascript">
+							document.getElementById("back").innerHTML =
+									'<a href="javascript:window.history.go(-1);">&#x25C0;<\/a>';
+					</script>
+			</span>
+		</div>
+		<div id="messages">
+			<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
+		</div>
 	</div>
 	
 	<div id="content">
 
-	<div id="logged-in" n:if="$user->loggedIn">
-			<a n:href="Homepage:editMe, $user->getIdentity()->id" title="{$user->getIdentity()->nrole}">{$user->getIdentity()->jmeno} {$user->getIdentity()->prijmeni}</a>
-			<a n:href="Sign:out">Odhlásit se.</a>
-			<span n:if="$user->isAllowed('Sprava','default')" class="config" title="Správa systému">
-				<a n:href="Sprava:default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			</span>
-	</div>
+		<div id="logged-in" n:if="$user->loggedIn">
+				<a n:href="Homepage:editMe, $user->getIdentity()->id" title="{$user->getIdentity()->nrole}">{$user->getIdentity()->jmeno} {$user->getIdentity()->prijmeni}</a>
+				<a n:href="Sign:out">Odhlásit se.</a>
+				<span n:if="$user->isAllowed('Sprava','default')" class="config" title="Správa systému">
+					<a n:href="Sprava:default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+				</span>
+		</div>
 
 		{include #content}
 		<div style="height:30px;"></div>
@@ -139,7 +119,7 @@
 	
 		
 	<div id="footer">
-           Copyright © 2011 - 2013, Štěpán Mračko, Powered by Apache, PHP, MSSQL, Nette.&nbsp;&nbsp;&nbsp;&nbsp;
+           Copyright © 2011 - 2013, Bc. Štěpán Mračko, Powered by Apache, PHP, MSSQL, Nette.&nbsp;&nbsp;&nbsp;&nbsp;
            <a href='mailto:emsmicro@gmail.com?subject=Zpráva%20pro%20administrátora%20EMS nabídky...&body=Drahý%20správče!%0D' title='Poslat mail správci'>Poslat zprávu správci</a>
 	</div>
 </body>

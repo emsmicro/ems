@@ -56,7 +56,7 @@ final class HomepagePresenter extends BasePresenter
     public function actionLogout()
     {
         $this->getUser()->logOut();
-        $this->flashMessage('Práve jste se odlásili ze systému.');
+        $this->flashMessage('Právě jste se odlásili ze systému.');
         $this->redirect('Sign:in');
     }
 
@@ -64,7 +64,7 @@ final class HomepagePresenter extends BasePresenter
 	{
         $this->template->titul = self::TITUL_DEFAULT;
         $this->template->subtitle = self::TITUL_SUBTITL;
-		$this->template->islogin = !$this->getUser()->isLoggedIn();
+		//$this->template->islogin = !$this->getUser()->isLoggedIn();
 		$this->template->aoffer = $this->getIdFromMySet(3);
 		$this->template->aproduct = $this->getIdFromMySet(4);
 		$this->template->is_todo = $this->is_todo;
@@ -88,6 +88,12 @@ final class HomepagePresenter extends BasePresenter
 
 	}
 
+	public function actionSetCompany()
+	{
+		$this->redirect('Firma:');
+	}
+	
+	
 	protected function actionSetEraseSet(){
 		//$this->template = $this->template->setFile(self::APP_DIR . "/Obchod/templates/firma/default.latte"); 
 		$this->eraseMySet();

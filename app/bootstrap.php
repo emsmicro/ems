@@ -62,7 +62,7 @@ $application->run();
  * @param string $title
  * @return type 
  */
-function dumpBar($var, $title='')
+function dd($var, $title='')
 {
         $backtrace = debug_backtrace();
         $source = (isset($backtrace[1]['class'])) ?

@@ -44,8 +44,12 @@ class ProduktPresenter extends ObchodPresenter
 	public function renderDefault()
 	{
 
+		$ufilter = $this['uFilter'];
+		$gfil= $ufilter->getFilter();
+		$ufilter->render();
+		
         $instance = new Produkt;
-		$this->template->items = $instance->show();
+		$this->template->items = $instance->show($gfil);
         $this->template->titul = self::TITUL_DEFAULT;
 		$this->template->inabidka = $this->getIdFromMySet(3);
 

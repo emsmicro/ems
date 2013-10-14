@@ -1,12 +1,12 @@
-<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.68094600 1359096378";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Nabidka\default.latte";i:2;i:1331656548;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.37342600 1381687826";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Nabidka\default.latte";i:2;i:1381687820;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Obchod\templates\Nabidka\default.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'b97ekabomg')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '5jyw3589ro')
 ;//
 // block drobecky3
 //
-if (!function_exists($_l->blocks['drobecky3'][] = '_lb768a9ce9a2_drobecky3')) { function _lb768a9ce9a2_drobecky3($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky3'][] = '_lb6959fcf919_drobecky3')) { function _lb6959fcf919_drobecky3($_l, $_args) { extract($_args)
 ?> » <a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("default")) ?>
 ">Nabídky</a><?php call_user_func(reset($_l->blocks['drobecky4']), $_l, get_defined_vars()) ; 
 }}
@@ -14,21 +14,22 @@ if (!function_exists($_l->blocks['drobecky3'][] = '_lb768a9ce9a2_drobecky3')) { 
 //
 // block drobecky4
 //
-if (!function_exists($_l->blocks['drobecky4'][] = '_lbb51f251ba5_drobecky4')) { function _lbb51f251ba5_drobecky4($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky4'][] = '_lb79b5bb6f05_drobecky4')) { function _lb79b5bb6f05_drobecky4($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lb25cda57acb_content')) { function _lb25cda57acb_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb08187615d2_content')) { function _lb08187615d2_content($_l, $_args) { extract($_args)
 ?>
 
 <?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars())  ?>
 
+
 <?php $cond = $user->isAllowed('Nabidka','add') || $user->isAllowed('Nabidka','edit') || $user->isAllowed('Nabidka','delete') ?>
 
-<table class="grid">
+<table class="grid" style="width:100%;">
 <tr>
 	<th><img src="<?php echo htmlSpecialChars($basePath) ?>/images/select.png" title="Zvolit jako aktuální" /></th>
 	<th>Č. nab.</th>
@@ -41,7 +42,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb25cda57acb_content')) { func
 <?php endif ?>
 	<th title="Složka se zadávací dokumentací">Data</th>
 <?php if ($cond): ?>
-	<td class="takce">
+	<td class="takce" style="padding:3px;">
 		<span class="setadd" title="Přidat novou nabídku">
 <?php if ($user->isAllowed('Nabidka','add')): ?>
 			<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("add")) ?>
@@ -85,7 +86,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb25cda57acb_content')) { func
 <a href="file:///<?php echo htmlSpecialChars($slozka) ?>" title="Otevřít složku">&nbsp;&nbsp;&nbsp;</a><?php endif ?>
 </td>
 <?php if ($cond): ?>
-	<td class="takce">
+	<td class="takce" style="padding:3px;">
 		<span class="setedit" title="Změnit">
 <?php if ($user->isAllowed('Nabidka','edit') && $unlocked): ?>
 			<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("edit", array($it->id))) ?>
@@ -150,7 +151,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb25cda57acb_content')) { func
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb1f51dc8427_title')) { function _lb1f51dc8427_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb93003c0ca9_title')) { function _lb93003c0ca9_title($_l, $_args) { extract($_args)
 ?>
 <h1><?php echo Nette\Templating\DefaultHelpers::escapeHtml($titul, ENT_NOQUOTES) ?></h1>
 <?php

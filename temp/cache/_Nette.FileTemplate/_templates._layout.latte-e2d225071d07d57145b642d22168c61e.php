@@ -1,19 +1,19 @@
-<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.79083400 1379255348";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1379255343;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.60379800 1381680729";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1381680638;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'q53be8vidc')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'xz8zpv5682')
 ;//
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb1499377ba1_title')) { function _lb1499377ba1_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb845c1132ec_title')) { function _lb845c1132ec_title($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block drobecky
 //
-if (!function_exists($_l->blocks['drobecky'][] = '_lb09e59b7a12_drobecky')) { function _lb09e59b7a12_drobecky($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky'][] = '_lb4124017c39_drobecky')) { function _lb4124017c39_drobecky($_l, $_args) { extract($_args)
 ?> <?php
 }}
 
@@ -56,18 +56,6 @@ if ($_l->extends) {
 	<script type="text/javascript" src="<?php echo htmlSpecialChars($basePath) ?>/js/netteForms.js"></script>
 	<script type="text/javascript" src="<?php echo htmlSpecialChars($basePath) ?>/js/autoNumeric.js"></script>
 		<script type="text/javascript">
-		// po stisku Escape se vrátím na předchozí stránku
-//		document.onkeydown = function(e){ 
-//				  if (e == null) { // ie 
-//					keycode = event.keyCode; 
-//				  } else { // mozilla 
-//					keycode = e.which; 
-//				  } 
-//				  if(keycode == 27){ // escape, close box, esc 
-//					  // Go back one page
-//					  history.back()
-//				  } 
-//				};
 				
 		document.onkeydown = function (e) { 
 		  e = e || window.event;
@@ -86,7 +74,7 @@ if ($_l->extends) {
 				  break;
 			}
 		  } else {
-			if(keyCode == 27){ // escape, close box, esc 
+			if(keyCode === 27){ // escape, close box, esc 
 				 //... Go back one page
 				history.back()
 			} 
@@ -100,62 +88,63 @@ if ($_l->extends) {
 </head>
 
 <body>
-	<div style="position:relative;">
+	<div id="topcont">
 
-    <div id="logo"></div>
-    <div id="titul">mikroelektronika :: EMS 
+		<div id="logo"></div>
+		<div id="titul">mikroelektronika :: EMS 
 <?php if ($user->isAllowed('Nabidka','default')): ?>
-		<a title="Seznam nabídek" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Nabidka:default")) ?>
+			<a title="Seznam nabídek" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Nabidka:default")) ?>
 ">nabídky</a>
 <?php endif ;if (!$user->isAllowed('Nabidka','default')): ?>
-		<span>nabídky</span>
+			<span>nabídky</span>
 <?php endif ?>
-	</div>
-    <div id="slogan">Systém pro správu nabídek a kalkulací cen
+		</div>
+		<div id="slogan">Systém pro správu nabídek a kalkulací cen
 <?php if ($user->isAllowed('Produkt','default')): ?>
-			<a title="Seznam produktů" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Produkt:default")) ?>
+				<a title="Seznam produktů" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Produkt:default")) ?>
 ">služeb a produktů</a>
 <?php endif ?>
-					v oblasti EMS ...</div>
+						v oblasti EMS ...
+		</div>
 
 
-<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['q53be8vidc'])->render() ?>
+<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['xz8zpv5682'])->render() ?>
 
 <?php $_ctrl = $control->getWidget("navigation"); if ($_ctrl instanceof Nette\Application\UI\IPartiallyRenderable) $_ctrl->validateControl(); $_ctrl->render() ?>
 
-	<div id="breadcrumbs">
-		<?php if (!$_l->extends) { call_user_func(reset($_l->blocks['drobecky']), $_l, get_defined_vars()); } ?>&nbsp;
-		<span id="back" title="zpět">
-				<a href="#">&#x25C0;</a>
-				<script type="text/javascript">
-						document.getElementById("back").innerHTML =
-								'<a href="javascript:window.history.go(-1);">&#x25C0;<\/a>';
-				</script>
-		</span>
-			</div>
-	<div id="messages">
+		<div id="breadcrumbs">
+			<?php if (!$_l->extends) { call_user_func(reset($_l->blocks['drobecky']), $_l, get_defined_vars()); } ?>&nbsp;
+			<span id="back" title="zpět">
+					<a href="#">&#x25C0;</a>
+					<script type="text/javascript">
+							document.getElementById("back").innerHTML =
+									'<a href="javascript:window.history.go(-1);">&#x25C0;<\/a>';
+					</script>
+			</span>
+		</div>
+		<div id="messages">
 <?php $iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($flashes) as $flash): ?>
-		<div class="flash <?php echo htmlSpecialChars($flash->type) ?>"><?php echo Nette\Templating\DefaultHelpers::escapeHtml($flash->message, ENT_NOQUOTES) ?></div>
+			<div class="flash <?php echo htmlSpecialChars($flash->type) ?>"><?php echo Nette\Templating\DefaultHelpers::escapeHtml($flash->message, ENT_NOQUOTES) ?></div>
 <?php $iterations++; endforeach; array_pop($_l->its); $iterator = end($_l->its) ?>
-	</div>
+		</div>
 	</div>
 	
 	<div id="content">
 
 <?php if ($user->loggedIn): ?>
-	<div id="logged-in">
-			<a title="<?php echo htmlSpecialChars($user->getIdentity()->nrole) ?>" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Homepage:editMe", array($user->getIdentity()->id))) ?>
+		<div id="logged-in">
+				<a title="<?php echo htmlSpecialChars($user->getIdentity()->nrole) ?>" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Homepage:editMe", array($user->getIdentity()->id))) ?>
 "><?php echo Nette\Templating\DefaultHelpers::escapeHtml($user->getIdentity()->jmeno, ENT_NOQUOTES) ?>
  <?php echo Nette\Templating\DefaultHelpers::escapeHtml($user->getIdentity()->prijmeni, ENT_NOQUOTES) ?></a>
-			<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Sign:out")) ?>
+				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Sign:out")) ?>
 ">Odhlásit se.</a>
 <?php if ($user->isAllowed('Sprava','default')): ?>
-			<span class="config" title="Správa systému">
-				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Sprava:default")) ?>
+				<span class="config" title="Správa systému">
+					<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Sprava:default")) ?>
 ">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
-			</span>
+				</span>
 <?php endif ?>
-	</div>
+		</div>
 <?php endif ?>
 
 <?php Nette\Latte\Macros\UIMacros::callBlock($_l, 'content', $template->getParams()) ?>
@@ -166,7 +155,7 @@ if ($_l->extends) {
 	
 		
 	<div id="footer">
-           Copyright © 2011 - 2013, Štěpán Mračko, Powered by Apache, PHP, MSSQL, Nette.&nbsp;&nbsp;&nbsp;&nbsp;
+           Copyright © 2011 - 2013, Bc. Štěpán Mračko, Powered by Apache, PHP, MSSQL, Nette.&nbsp;&nbsp;&nbsp;&nbsp;
            <a href='mailto:emsmicro@gmail.com?subject=Zpráva%20pro%20administrátora%20EMS nabídky...&body=Drahý%20správče!%0D' title='Poslat mail správci'>Poslat zprávu správci</a>
 	</div>
 </body>

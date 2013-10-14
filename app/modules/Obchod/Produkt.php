@@ -66,10 +66,16 @@ class Produkt extends Model
 	 *	Vrací obsah tabulky 
 	 *  @return record set
 	 */
-	public function show()
+
+	public function show($filtr='')
 	{
-		return dibi::dataSource($this->full_detail_query);
+		if($filtr<>''){
+			return dibi::query($this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev LIKE '%$filtr%'");
+		} else {
+			return dibi::query($this->full_detail_query);
+		}
 	}
+	
 	
 	/**
 	 *

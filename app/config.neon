@@ -35,10 +35,10 @@ common:
 
 #název a adresa firmy uživatele
 	company:
-		name: Firma Uživatele a. s.
-		street: Ultrafialová 6
-		city: Brno
-		zip: 500 01
+		name: Mikroelektronika spol. s r. o.
+		street: Dráby 849
+		city: Vysoké Mýto
+		zip: 566 01
 		country: Czech republic
 
 	services:

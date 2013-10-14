@@ -84,6 +84,7 @@ abstract class SecuredPresenter extends BasePresenter
 
 	public function actionSetCompany($id=0)
 	{
+		$this->redirect('Firma:');
 		if($id==0){
 			$this->redirect('Firma:');
 		} else {
@@ -119,5 +120,20 @@ abstract class SecuredPresenter extends BasePresenter
 		$this->redirect('Produkt:detail',$id);
 	}
 
+	/**
+	 * Komponenta uživatelského filtru
+	 * @return type
+	 */
+	protected function createComponentUFilter()
+	{
+
+		$control = new FilterControl();
+		$control->setPresenter($this->getPresenter()->name);
+		$control->setRender($this->getPresenter()->action);
+		$control->setUser($this->user->getIdentity()->id);
+		$gfil = $control->getFilter();
+		dd($this->getPresenter(),'PRESNTR');
+		return $control;
+	}	
 	
 }

@@ -429,21 +429,7 @@ class Model extends DibiRow
 		}
 	}
 
-	/**
-	 * 
-	 * Vrácení filtru pro presenter/render
-	 * @param type $id_user
-	 * @param type $presenter
-	 * @param type $render
-	 * @return type
-	 */
-	
-	public function getUserFilter($id_user, $presenter, $render){
-		$filtr = dibi::query("SELECT filter FROM u_filters 
-								WHERE id_users=$id_user AND presenter='$presenter' AND render='$render'"
-							)->fetchSingle();
-		return $filtr;
-	}
+
 
 	
 	
