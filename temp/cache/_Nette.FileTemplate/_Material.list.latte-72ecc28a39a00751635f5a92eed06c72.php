@@ -1,12 +1,12 @@
-<?php //netteCache[01]000391a:2:{s:4:"time";s:21:"0.25205300 1381580912";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:69:"C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\list.latte";i:2;i:1381580909;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000391a:2:{s:4:"time";s:21:"0.37239900 1381760105";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:69:"C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\list.latte";i:2;i:1381760101;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\list.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'viuz1sqzmt')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'igpz2iuaqz')
 ;//
 // block drobecky3
 //
-if (!function_exists($_l->blocks['drobecky3'][] = '_lbed6b2c5d59_drobecky3')) { function _lbed6b2c5d59_drobecky3($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky3'][] = '_lb260a2db7c9_drobecky3')) { function _lb260a2db7c9_drobecky3($_l, $_args) { extract($_args)
 ?> » <a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("default")) ?>
 ">Materiál</a><?php call_user_func(reset($_l->blocks['drobecky4']), $_l, get_defined_vars()) ; 
 }}
@@ -14,14 +14,14 @@ if (!function_exists($_l->blocks['drobecky3'][] = '_lbed6b2c5d59_drobecky3')) { 
 //
 // block drobecky4
 //
-if (!function_exists($_l->blocks['drobecky4'][] = '_lb85fe934f6a_drobecky4')) { function _lb85fe934f6a_drobecky4($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky4'][] = '_lba6ffe3b4c8_drobecky4')) { function _lba6ffe3b4c8_drobecky4($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lb63777d27ed_content')) { function _lb63777d27ed_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb1f2428be3b_content')) { function _lb1f2428be3b_content($_l, $_args) { extract($_args)
 ?>
 
 <?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars())  ?>
@@ -95,7 +95,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb63777d27ed_content')) { func
 
 <?php $cond = $user->isAllowed('Material','add') || $user->isAllowed('Material','edit') || $user->isAllowed('Material','delete') ?>
 
-	<table class="grid">
+	<table class="grid" style="width:100%;">
 	<tr>
 		<th>Zkratka</th>
 		<th>Název</th>
@@ -208,7 +208,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb63777d27ed_content')) { func
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lbcc9b367246_title')) { function _lbcc9b367246_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb2d3d5f6cff_title')) { function _lb2d3d5f6cff_title($_l, $_args) { extract($_args)
 ?>
 <h2><?php echo Nette\Templating\DefaultHelpers::escapeHtml($titul, ENT_NOQUOTES) ?></h2>
 <?php

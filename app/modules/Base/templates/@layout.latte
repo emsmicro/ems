@@ -112,6 +112,11 @@
 		</div>
 
 		{include #content}
+		
+	{ifset $is_filter}
+		{if $is_filter} {control uFilter} {/if}
+	{/ifset}
+		
 		<div style="height:30px;"></div>
 		
 		<div style="clear:both;"></div>	

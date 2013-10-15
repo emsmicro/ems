@@ -75,7 +75,7 @@
 	{* $cond .. pokud jsou práva na add/edit/delete zobrazí se záhlaví. Testujeme pak: n:if="$cond"*}
 	{var $cond = $user->isAllowed('Material','add') || $user->isAllowed('Material','edit') || $user->isAllowed('Material','delete')}
 
-	<table class="grid">
+	<table class="grid" style="width:100%;">
 	<tr>
 		<th>Zkratka</th>
 		<th>Název</th>

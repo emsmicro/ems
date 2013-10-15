@@ -77,18 +77,39 @@
 {/if}
 <ul id="navi">
 	{if $is_rows}
-		<li n:if="$user->isAllowed('Material','list')"><a n:href="list,1">Neoceněné položky</a></li>
-		<li n:if="$user->isAllowed('Material','list')"><a n:href="list,2">Oceněné položky</a></li>
+		{if $co>0}
+			<li n:if="$user->isAllowed('Material','default')">	<a n:href="default">Všechno</a></li>
+		{/if}
+		{if $co==1}
+			<li n:if="$user->isAllowed('Material','list')" class="active">
+				<a n:href="list,1">Neoceněné položky</a>
+			</li>
+		{else}
+			<li n:if="$user->isAllowed('Material','list')">
+				<a n:href="list,1">Neoceněné položky</a>
+			</li>
+		{/if}
+		{if $co==2}
+			<li n:if="$user->isAllowed('Material','list')" class="active">
+				<a n:href="list,2">Oceněné položky</a>
+			</li>
+		{else}
+			<li n:if="$user->isAllowed('Material','list')">
+				<a n:href="list,2">Oceněné položky</a>
+			</li>
+		{/if}
 	{else}
 		<li n:if="$user->isAllowed('Material','add') and $unlocked" title="Přidat nový materiál"><a n:href="add">Přidat materiál</a></li>
 	{/if}
-	<li n:if="$user->isAllowed('Import','default') and $unlocked"><a n:href="Import:default">Import BOM z CSV</a></li>
-	<li n:if="$user->isAllowed('Kurz','default')"><a n:href="Kurz:default">Kurzy</a></li>
-	{if $is_rows}
-		<li n:if="$user->isAllowed('Material','delete') and $unlocked" title="Odstranit celý BOM produktu"><a n:href="delete, 0">Smazat vše</a></li>
-		<li n:if="$user->isAllowed('Material','export')" title="Export BOM do CSV"><a n:href="export">Export BOM</a></li>
-		<li n:if="$user->isAllowed('Material','matPrice') and $unlocked" title="Výpočet prodejní ceny materiálu"><a n:href="matPrice, $idp">Prodejní ceny</a></li>
-		<li n:if="$user->isAllowed('Material','matPrice') and $unlocked" title="Snulování prodejních cen"><a n:href="matPriceErase, $idp">Snulovat PC</a></li>
+	{if $co==0}
+		<li n:if="$user->isAllowed('Import','default') and $unlocked"><a n:href="Import:default">Import BOM z CSV</a></li>
+		<li n:if="$user->isAllowed('Kurz','default')"><a n:href="Kurz:default">Kurzy</a></li>
+		{if $is_rows}
+			<li n:if="$user->isAllowed('Material','delete') and $unlocked" title="Odstranit celý BOM produktu"><a n:href="delete, 0">Smazat vše</a></li>
+			<li n:if="$user->isAllowed('Material','export')" title="Export BOM do CSV"><a n:href="export">Export BOM</a></li>
+			<li n:if="$user->isAllowed('Material','matPrice') and $unlocked" title="Výpočet prodejní ceny materiálu"><a n:href="matPrice, $idp">Prodejní ceny</a></li>
+			<li n:if="$user->isAllowed('Material','matPrice') and $unlocked" title="Snulování prodejních cen"><a n:href="matPriceErase, $idp">Snulovat PC</a></li>
+		{/if}
 	{/if}
 </ul>
 
@@ -110,7 +131,7 @@
 			<span class="setadd" title="Přidat novou položku"><a n:if="$user->isAllowed('Material','add')" n:href="add">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
 		</td>
 	</tr>
-
+	{var $cm = 0}
 	{foreach $items as $it}
 	<tr>
 		{if $it->id_k2}
@@ -118,25 +139,27 @@
 				{if $user->isAllowed('Material','detail')}
 					<a n:href="detail, $it->id">{$it->zkratka|truncate:25}</a>
 				{else}
-					{$it->zkratka}
+					{$it->zkratka|truncate:25}
 				{/if}
+				
 				{if $user->isAllowed('K2','find')}
-					<span style="position:relative;float:right;"><a n:href="K2:find, 0, $it->zkratka" title="Najít zkratku v K2">&#x25B7;</a></span>
+					<a n:href="K2:find, 0, $it->zkratka" title="Najít zkratku v K2" style="position:relative;float:right;">&#x25B7;</a>
 				{/if}
+				
 			</td>
 		{else}
 			<td class="zkrat50" title="{$it->zkratka}" class="redlight">
 				{if $user->isAllowed('Material','detail')}
 					<a n:href="detail, $it->id">{$it->zkratka|truncate:25}</a>
 				{else}
-					{$it->zkratka}
+					{$it->zkratka|truncate:25}
 				{/if}
 				{if $user->isAllowed('K2','find')}
-					<span style="position:relative;float:right;"><a n:href="K2:find, 0, $it->zkratka" title="Najít zkratku v K2">&#x25B7;</a></span>
+					<a n:href="K2:find, 0, $it->zkratka" title="Najít zkratku v K2" style="position:relative;float:right;">&#x25B7;</a>
 				{/if}
 			</td>
 		{/if}
-		<td class="mini">
+		<td class="midi90">
 			{$it->nazev}
 			{if $it->id_k2 && $user->isAllowed('K2','find')}
 			<span style="position:relative;float:right;"><a n:href="K2:find, $it->id" title="Najít název v K2">&#x25B7;</a></span>
@@ -165,6 +188,7 @@
 					title="{$it->cena_cm|number:6:',':' '} {$it->mena}">
 				{$it->cena_kc|number:4:',':' '}</span>
 			</td>
+			{var $cm++}
 		{else}
 			<td class="tcislo">
 				<span n:if="$it->cena_kc>0" title="{$it->cena_cm|number:6:',':' '}">
@@ -211,7 +235,9 @@
 	{* paginator *}
 	{control pg}
 	<div>
-		<span class="mini"><i>(Podtržené ceny mají cenu v cizí měně, která se zobrazí po najetí kurzorem myši nad cenu v Kč.)</i></span>
+		{if $cm>0}
+			<span class="mini"><i>(Podtržené ceny mají cenu v cizí měně, která se zobrazí po najetí kurzorem myši nad cenu v Kč.)</i></span>
+		{/if}
 		<p style="float:right;"><span class="mini">Počet záznamů: </span>{$c}</p>
 	</div>
 {/if}

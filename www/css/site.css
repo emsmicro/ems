@@ -138,7 +138,7 @@ a:hover {
 	color: white;
 }
 
-a:active, a:focus {
+a.active, a.focus {
   	background-color: #4889F4;
 	text-decoration: none;
 	color: white;
@@ -268,7 +268,8 @@ table.grid td.cenanab:hover {
 }
 
 table.grid td.zkrat50 {
-    width: 35px;
+	padding:3px;
+    width: 40px;
     white-space: nowrap;
     -o-text-overflow: ellipsis;
     text-overflow: ellipsis;
@@ -591,7 +592,7 @@ td.takce {
     background-color: transparent;
 }
 
-.takce.ucho:active {
+.takce.ucho.active {
     background-color: #FFB111;
 }
 
@@ -771,14 +772,14 @@ form input.button.small:hover {
     border-color: #B4B4B4;
 }
 
-form input.button:active {
+form input.button.active {
     border-color: #134471;
     background: #2F78F2;
     background: -webkit-gradient(linear,0% 40%,0% 70%,from(#1366F0),to(#2F78F2));
     background: -moz-linear-gradient(linear,0% 40%,0% 70%,from(#1366F0),to(#2F78F2));
 }
 
-form input.button.small:active {
+form input.button.small.active {
     border-color: #999999;
     background: #DDDDDD;
     background: -webkit-gradient(linear,0% 40%,0% 70%,from(#DDDDDD),to(#EEEEEE));
@@ -829,7 +830,7 @@ span.butt:hover {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 }
 
-span.butt:active {
+span.butt.active {
     border-color: #134471;
     background: #2F78F2;
     background: -webkit-gradient(linear,0% 40%,0% 70%,from(#1366F0),to(#2F78F2));
@@ -989,14 +990,14 @@ form.hledat input.text:focus {
 	background-color: transparent;
 }
 
-#navi li:active {
-
-	background-color: #BBBBBB;
-	background-image: -webkit-linear-gradient(top,#BBBBBB,whiteSmoke);
-	background-image: -moz-linear-gradient(top,#BBBBBB,whiteSmoke);
-	background-image: -ms-linear-gradient(top,#BBBBBB,whiteSmoke);
-	background-image: -o-linear-gradient(top,#BBBBBB,whiteSmoke);
-	background-image: linear-gradient(top,#BBBBBB,whiteSmoke);
+#navi li.active {
+	border: solid 2px #FFB111;
+	background-color: #FFB111;
+	background-image: -webkit-linear-gradient(top,#FFF4DD,white);
+	background-image: -moz-linear-gradient(top,#FFF4DD,white);
+	background-image: -ms-linear-gradient(top,#FFF4DD,white);
+	background-image: -o-linear-gradient(top,#FFF4DD,white);
+	background-image: linear-gradient(top,#FFF4DD,white);
 }
 
 
@@ -1019,7 +1020,7 @@ form.hledat input.text:focus {
 	padding: 0;
 	position: relative;
 	top: -50px;
-	right: 50px;
+	right: 5px;
 }
 
 #navstat ul {
@@ -1201,12 +1202,20 @@ form.hledat input.text:focus {
 }
 
 .mini {
-  font-size: 7pt;
+  font-size: 8pt;
   cursor: default;
 }
 
 .midi {
   font-size: 75%;
+}
+
+.midi90 {
+    font-size: 90%;
+    white-space: nowrap;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
 }
 
 .invisible {
@@ -1428,7 +1437,7 @@ div.logref {
 	margin-bottom: 0;
 }
 
-.kolaps h3:active {
+.kolaps h3.active {
 	background-color: transparent;
 }
 
@@ -1599,7 +1608,7 @@ span.button.small:hover, span.button.small a:hover {
     border-color: #B4B4B4;
 }
 
-span.button.small:active {
+span.button.small.active {
     border-color: #999999;
     background: #DDDDDD;
     background: -webkit-gradient(linear,0% 40%,0% 70%,from(#DDDDDD),to(#EEEEEE));

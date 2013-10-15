@@ -1,8 +1,8 @@
-<?php //netteCache[01]000389a:2:{s:4:"time";s:21:"0.11008500 1381757391";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:67:"C:\xamlite\htdocs\ems\app\components\UserFilter\FilterControl.latte";i:2;i:1381757386;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000389a:2:{s:4:"time";s:21:"0.11250100 1381849379";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:67:"C:\xamlite\htdocs\ems\app\components\UserFilter\FilterControl.latte";i:2;i:1381848995;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\components\UserFilter\FilterControl.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'rywk2x39l7')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '14qi0m9zax')
 ;
 // snippets support
 if (!empty($control->snippetMode)) {
@@ -14,7 +14,7 @@ if (!empty($control->snippetMode)) {
 //
 ?>
 
-<div style="position:absolute;z-index:2;float:right;top:240px;left:680px;padding:0;margin:0;">
+<div style="position:absolute;z-index:2;float:right;top:-58px;left:638px;padding:0;margin:0;">
 	
 <?php $form = $control["filterForm"]; echo $form->getElementPrototype()->addAttributes(array('class' => 'hledat', 'autocomplete' => "off"))->startTag() ?>
 		<?php echo $form["filter"]->getControl()->addAttributes(array('class' => 'text', 'autofocus' => TRUE, 'onClick' => 'this.select();', 'style' => 'background:#FFF;padding-left:5px;')) ?>

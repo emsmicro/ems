@@ -48,8 +48,7 @@ class NabidkaPresenter extends ObchodPresenter
 		$instance = new Nabidka;
 		$this->template->items = $instance->show($gfil);
         $this->template->titul = self::TITUL_DEFAULT;
-
-		$ufilter->render();
+		$this->template->is_filter = TRUE;
 	}
 	/*
 	 * @param int

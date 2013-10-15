@@ -55,8 +55,12 @@ class MaterialPresenter extends NakupPresenter
 		if($id){
 			$addtitul = ' - BOM: '.$this->getNameFromMySet(4);
 		}
+		// User filter
+		$ufilter = $this['uFilter'];
+		$gfil= $ufilter->getFilter();
+		$this->template->is_filter = TRUE;
 		
-		$rows = $mat->show($id, $wh);
+		$rows = $mat->show($id, $wh, 0, 0, $gfil);
 		if ($wh>=0){
 			$paginator = $this['pg']->getPaginator();
 			$paginator->itemsPerPage = 50;
@@ -65,7 +69,7 @@ class MaterialPresenter extends NakupPresenter
 			$offset = $paginator->getOffset();
 			$paginator->page = $this['pg']->getParam('page');
 
-			$rowp = $mat->show($id, 0, $limit, $offset);		
+			$rowp = $mat->show($id, 0, $limit, $offset, $gfil);		
 
 			$this->template->items = $rowp;
 			$is_rows = count($rowp)>0;
@@ -93,6 +97,7 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->stavy6 = $mat->getProductHistory($id,6);
 
 		$this->template->is_rows = $is_rows;
+		$this->template->co = $wh;
 		$this->template->titul = self::TITUL_DEFAULT . $addtitul;
 
 	}
@@ -111,18 +116,43 @@ class MaterialPresenter extends NakupPresenter
 		if($id){
 			$addtitul = ' - BOM: '.$this->getNameFromMySet(4);
 		}
+		$idnabidka = $this->getIdFromMySet(3);
 
-		$rows = $mat->show($id, $what);
+		// User filter
+		$ufilter = $this['uFilter'];
+		$gfil= $ufilter->getFilter();
+		$this->template->is_filter = TRUE;
+
+		$rows = $mat->show($id, $what, 0, 0, $gfil);
 		$vp = $this['pg']; 
 		$paginator = $vp->paginator;
-		$paginator->itemsPerPage = 20;
+		$paginator->itemsPerPage = 50;
 		$paginator->itemCount = count($rows);
 
 		$limit = $paginator->getLength();
 		$offset = $paginator->getOffset();
-		$rowp = $mat->show($id, $what, $limit, $offset);	
+		$rowp = $mat->show($id, $what, $limit, $offset, $gfil);	
 		
+		$this->template->setFile(__DIR__ . '/../templates/Material/default.latte');
 		$is_rows = count($rowp)>0;
+		$ilocked = $mat->isProductLocked($id);
+		$this->template->unlocked = $ilocked<1;
+		$summat = $mat->sumBOM($id);
+		$this->template->sProdej = round($summat['sumProdej'],2);
+		if ($summat['sumNaklad']>0){
+			$this->template->sNaklad = round($summat['sumNaklad'],2);
+			$this->template->procprd = (round($summat['sumProdej'],2)/round($summat['sumNaklad'],2)-1)*100;
+		} else {
+			$this->template->sNaklad = 0.001;
+			$this->template->procprd = 0;
+		}
+		$kmat = $mat->getMatCoef($idnabidka);
+		$this->template->koefmat = (float)$kmat['koef'];
+		$noprices = $mat->countNoSalePrices($id);
+		$this->template->noprices = $noprices;
+
+		$this->template->rows = count($rows);
+
 		$this->template->idp=$id;
 		$this->template->stavy3 = $mat->getProductHistory($id,3);
 		$this->template->stavy6 = $mat->getProductHistory($id,6);

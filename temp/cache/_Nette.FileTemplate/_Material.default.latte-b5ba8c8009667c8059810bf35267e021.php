@@ -1,12 +1,12 @@
-<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.98933900 1359124658";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\default.latte";i:2;i:1359124655;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000394a:2:{s:4:"time";s:21:"0.53540900 1381763939";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:72:"C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\default.latte";i:2;i:1381763934;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Nakup\templates\Material\default.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '80arinn3l7')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'yu544w4rff')
 ;//
 // block drobecky3
 //
-if (!function_exists($_l->blocks['drobecky3'][] = '_lb95ffb74963_drobecky3')) { function _lb95ffb74963_drobecky3($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky3'][] = '_lb0acc0688ae_drobecky3')) { function _lb0acc0688ae_drobecky3($_l, $_args) { extract($_args)
 ?> » <a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Material:default")) ?>
 ">Materiál</a><?php call_user_func(reset($_l->blocks['drobecky4']), $_l, get_defined_vars()) ; 
 }}
@@ -14,14 +14,14 @@ if (!function_exists($_l->blocks['drobecky3'][] = '_lb95ffb74963_drobecky3')) { 
 //
 // block drobecky4
 //
-if (!function_exists($_l->blocks['drobecky4'][] = '_lbcdb61b5545_drobecky4')) { function _lbcdb61b5545_drobecky4($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky4'][] = '_lb222555eff8_drobecky4')) { function _lb222555eff8_drobecky4($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block content
 //
-if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { function _lb06fe3802af_content($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['content'][] = '_lb568161bca7_content')) { function _lb568161bca7_content($_l, $_args) { extract($_args)
 ?>
 
 <?php call_user_func(reset($_l->blocks['title']), $_l, get_defined_vars())  ?>
@@ -84,34 +84,51 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 	</div>
 <?php endif ?>
 <ul id="navi">
-<?php if ($is_rows): if ($user->isAllowed('Material','list')): ?>
-		<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(1))) ?>
-">Neoceněné položky</a></li>
-<?php endif ;if ($user->isAllowed('Material','list')): ?>
-		<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(2))) ?>
-">Oceněné položky</a></li>
-<?php endif ;else: if ($user->isAllowed('Material','add') and $unlocked): ?>
+<?php if ($is_rows): if ($co>0): if ($user->isAllowed('Material','default')): ?>
+			<li>	<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("default")) ?>
+">Všechno</a></li>
+<?php endif ;endif ;if ($co==1): if ($user->isAllowed('Material','list')): ?>
+			<li class="active">
+				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(1))) ?>
+">Neoceněné položky</a>
+			</li>
+<?php endif ;else: if ($user->isAllowed('Material','list')): ?>
+			<li>
+				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(1))) ?>
+">Neoceněné položky</a>
+			</li>
+<?php endif ;endif ;if ($co==2): if ($user->isAllowed('Material','list')): ?>
+			<li class="active">
+				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(2))) ?>
+">Oceněné položky</a>
+			</li>
+<?php endif ;else: if ($user->isAllowed('Material','list')): ?>
+			<li>
+				<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("list", array(2))) ?>
+">Oceněné položky</a>
+			</li>
+<?php endif ;endif ;else: if ($user->isAllowed('Material','add') and $unlocked): ?>
 		<li title="Přidat nový materiál"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("add")) ?>
 ">Přidat materiál</a></li>
-<?php endif ;endif ;if ($user->isAllowed('Import','default') and $unlocked): ?>
-	<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Import:default")) ?>
+<?php endif ;endif ;if ($co==0): if ($user->isAllowed('Import','default') and $unlocked): ?>
+		<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Import:default")) ?>
 ">Import BOM z CSV</a></li>
 <?php endif ;if ($user->isAllowed('Kurz','default')): ?>
-	<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Kurz:default")) ?>
+		<li><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("Kurz:default")) ?>
 ">Kurzy</a></li>
 <?php endif ;if ($is_rows): if ($user->isAllowed('Material','delete') and $unlocked): ?>
-		<li title="Odstranit celý BOM produktu"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("delete", array(0))) ?>
+			<li title="Odstranit celý BOM produktu"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("delete", array(0))) ?>
 ">Smazat vše</a></li>
 <?php endif ;if ($user->isAllowed('Material','export')): ?>
-		<li title="Export BOM do CSV"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("export")) ?>
+			<li title="Export BOM do CSV"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("export")) ?>
 ">Export BOM</a></li>
 <?php endif ;if ($user->isAllowed('Material','matPrice') and $unlocked): ?>
-		<li title="Výpočet prodejní ceny materiálu"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("matPrice", array($idp))) ?>
+			<li title="Výpočet prodejní ceny materiálu"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("matPrice", array($idp))) ?>
 ">Prodejní ceny</a></li>
 <?php endif ;if ($user->isAllowed('Material','matPrice') and $unlocked): ?>
-		<li title="Snulování prodejních cen"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("matPriceErase", array($idp))) ?>
+			<li title="Snulování prodejních cen"><a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("matPriceErase", array($idp))) ?>
 ">Snulovat PC</a></li>
-<?php endif ;endif ?>
+<?php endif ;endif ;endif ?>
 </ul>
 
 <?php $c = 0 ;if ($is_rows): ?>
@@ -136,8 +153,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 		</td>
 <?php endif ?>
 	</tr>
-
-<?php $iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($items) as $it): ?>
+<?php $cm = 0 ;$iterations = 0; foreach ($iterator = $_l->its[] = new Nette\Iterators\CachingIterator($items) as $it): ?>
 	<tr>
 <?php if ($it->id_k2): ?>
 			<td class="zkrat50" title="<?php echo htmlSpecialChars($it->zkratka) ?>">
@@ -145,12 +161,15 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 					<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("detail", array($it->id))) ?>
 "><?php echo Nette\Templating\DefaultHelpers::escapeHtml($template->truncate($it->zkratka, 25), ENT_NOQUOTES) ?></a>
 <?php else: ?>
-					<?php echo Nette\Templating\DefaultHelpers::escapeHtml($it->zkratka, ENT_NOQUOTES) ?>
+					<?php echo Nette\Templating\DefaultHelpers::escapeHtml($template->truncate($it->zkratka, 25), ENT_NOQUOTES) ?>
 
-<?php endif ;if ($user->isAllowed('K2','find')): ?>
-					<span style="position:relative;float:right;"><a title="Najít zkratku v K2" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("K2:find", array(0, $it->zkratka))) ?>
-">&#x25B7;</a></span>
 <?php endif ?>
+				
+<?php if ($user->isAllowed('K2','find')): ?>
+					<a title="Najít zkratku v K2" style="position:relative;float:right;" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("K2:find", array(0, $it->zkratka))) ?>
+">&#x25B7;</a>
+<?php endif ?>
+				
 			</td>
 <?php else: ?>
 			<td class="zkrat50" title="<?php echo htmlSpecialChars($it->zkratka) ?>" class="redlight">
@@ -158,15 +177,15 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 					<a href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("detail", array($it->id))) ?>
 "><?php echo Nette\Templating\DefaultHelpers::escapeHtml($template->truncate($it->zkratka, 25), ENT_NOQUOTES) ?></a>
 <?php else: ?>
-					<?php echo Nette\Templating\DefaultHelpers::escapeHtml($it->zkratka, ENT_NOQUOTES) ?>
+					<?php echo Nette\Templating\DefaultHelpers::escapeHtml($template->truncate($it->zkratka, 25), ENT_NOQUOTES) ?>
 
 <?php endif ;if ($user->isAllowed('K2','find')): ?>
-					<span style="position:relative;float:right;"><a title="Najít zkratku v K2" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("K2:find", array(0, $it->zkratka))) ?>
-">&#x25B7;</a></span>
+					<a title="Najít zkratku v K2" style="position:relative;float:right;" href="<?php echo Nette\Templating\DefaultHelpers::escapeHtml($control->link("K2:find", array(0, $it->zkratka))) ?>
+">&#x25B7;</a>
 <?php endif ?>
 			</td>
 <?php endif ?>
-		<td class="mini">
+		<td class="midi90">
 			<?php echo Nette\Templating\DefaultHelpers::escapeHtml($it->nazev, ENT_NOQUOTES) ?>
 
 <?php if ($it->id_k2 && $user->isAllowed('K2','find')): ?>
@@ -206,7 +225,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 				<?php echo Nette\Templating\DefaultHelpers::escapeHtml($template->number($it->cena_kc, 4, ',', ' '), ENT_NOQUOTES) ?></span>
 <?php endif ?>
 			</td>
-<?php else: ?>
+<?php $cm++ ;else: ?>
 			<td class="tcislo">
 <?php if ($it->cena_kc>0): ?>
 				<span title="<?php echo htmlSpecialChars($template->number($it->cena_cm, 6, ',', ' ')) ?>">
@@ -266,7 +285,9 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 	
 <?php $_ctrl = $control->getWidget("pg"); if ($_ctrl instanceof Nette\Application\UI\IPartiallyRenderable) $_ctrl->validateControl(); $_ctrl->render() ?>
 	<div>
-		<span class="mini"><i>(Podtržené ceny mají cenu v cizí měně, která se zobrazí po najetí kurzorem myši nad cenu v Kč.)</i></span>
+<?php if ($cm>0): ?>
+			<span class="mini"><i>(Podtržené ceny mají cenu v cizí měně, která se zobrazí po najetí kurzorem myši nad cenu v Kč.)</i></span>
+<?php endif ?>
 		<p style="float:right;"><span class="mini">Počet záznamů: </span><?php echo Nette\Templating\DefaultHelpers::escapeHtml($c, ENT_NOQUOTES) ?></p>
 	</div>
 <?php endif ;
@@ -275,7 +296,7 @@ if (!function_exists($_l->blocks['content'][] = '_lb06fe3802af_content')) { func
 //
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lbade69c784a_title')) { function _lbade69c784a_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lb471ab95c8d_title')) { function _lb471ab95c8d_title($_l, $_args) { extract($_args)
 ?>
 <h2><?php echo Nette\Templating\DefaultHelpers::escapeHtml($titul, ENT_NOQUOTES) ?></h2>
 <?php

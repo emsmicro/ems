@@ -1,19 +1,19 @@
-<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.60379800 1381680729";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1381680638;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
+<?php //netteCache[01]000384a:2:{s:4:"time";s:21:"0.89093200 1381848772";s:9:"callbacks";a:2:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:62:"C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte";i:2;i:1381848769;}i:1;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:10:"checkConst";}i:1;s:25:"Nette\Framework::REVISION";i:2;s:30:"f38d86f released on 2011-08-24";}}}?><?php
 
 // source file: C:\xamlite\htdocs\ems\app\modules\Base\templates\@layout.latte
 
-?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, 'xz8zpv5682')
+?><?php list($_l, $_g) = Nette\Latte\Macros\CoreMacros::initRuntime($template, '0a0vah8wrj')
 ;//
 // block title
 //
-if (!function_exists($_l->blocks['title'][] = '_lb845c1132ec_title')) { function _lb845c1132ec_title($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['title'][] = '_lbf92d57eb75_title')) { function _lbf92d57eb75_title($_l, $_args) { extract($_args)
 ;
 }}
 
 //
 // block drobecky
 //
-if (!function_exists($_l->blocks['drobecky'][] = '_lb4124017c39_drobecky')) { function _lb4124017c39_drobecky($_l, $_args) { extract($_args)
+if (!function_exists($_l->blocks['drobecky'][] = '_lb802a1dea47_drobecky')) { function _lb802a1dea47_drobecky($_l, $_args) { extract($_args)
 ?> <?php
 }}
 
@@ -108,7 +108,7 @@ if ($_l->extends) {
 		</div>
 
 
-<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['xz8zpv5682'])->render() ?>
+<?php Nette\Latte\Macros\CoreMacros::includeTemplate('mysetting.latte', $template->getParams(), $_l->templates['0a0vah8wrj'])->render() ?>
 
 <?php $_ctrl = $control->getWidget("navigation"); if ($_ctrl instanceof Nette\Application\UI\IPartiallyRenderable) $_ctrl->validateControl(); $_ctrl->render() ?>
 
@@ -148,6 +148,13 @@ if ($_l->extends) {
 <?php endif ?>
 
 <?php Nette\Latte\Macros\UIMacros::callBlock($_l, 'content', $template->getParams()) ?>
+		
+<?php if (isset($is_filter)): ?>
+		<?php if ($is_filter): ?> <?php $_ctrl = $control->getWidget("uFilter"); if ($_ctrl instanceof Nette\Application\UI\IPartiallyRenderable) $_ctrl->validateControl(); $_ctrl->render() ?>
+ <?php endif ?>
+
+<?php endif ?>
+		
 		<div style="height:30px;"></div>
 		
 		<div style="clear:both;"></div>	

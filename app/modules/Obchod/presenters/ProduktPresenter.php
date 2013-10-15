@@ -44,9 +44,10 @@ class ProduktPresenter extends ObchodPresenter
 	public function renderDefault()
 	{
 
+		// User filter
 		$ufilter = $this['uFilter'];
 		$gfil= $ufilter->getFilter();
-		$ufilter->render();
+		$this->template->is_filter = TRUE;
 		
         $instance = new Produkt;
 		$this->template->items = $instance->show($gfil);

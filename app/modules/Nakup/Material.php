@@ -24,7 +24,7 @@ class Material extends Model
 	 * @param int what = index of filter (used: 0 ..none,1..cena_cm=0,2..cena_cm>0,...)
 	 * @return record set
 	 */
-	public function show($idp=0,$what=0,$limit=0,$offset=0)
+	public function show($idp=0,$what=0,$limit=0,$offset=0,$filtr='')
 	{
 		$sql_cmd = "";
 		$cond = "";
@@ -104,6 +104,9 @@ class Material extends Model
 		}
 		if ($cond<>''){
 			$cond = 'WHERE '.$cond;
+			if ($filtr<>''){$cond .= " AND m.zkratka+m.nazev LIKE '%$filtr%'";}
+		} else {
+			if ($filtr<>''){$cond = " WHERE m.zkratka+m.nazev LIKE '%$filtr%'";}
 		}
 		if($limit==0 && $offset==0){
 			$rslt = $this->connection->query("$sql_cmd $cond $ordsql");
