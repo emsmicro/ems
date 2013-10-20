@@ -132,7 +132,6 @@ abstract class SecuredPresenter extends BasePresenter
 		$control->setRender($this->getPresenter()->action);
 		$control->setUser($this->user->getIdentity()->id);
 		$gfil = $control->getFilter();
-		dd($this->getPresenter(),'PRESNTR');
 		return $control;
 	}	
 	

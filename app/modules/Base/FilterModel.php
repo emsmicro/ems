@@ -39,7 +39,6 @@ class FilterModel extends Model
 								WHERE id_users=$id_user AND presenter='$presenter' AND render='$render'");
 		$cnt = $result->fetchSingle();
 		$data = array('id_users'=>$id_user,'presenter'=>$presenter,'render'=>$render,'filter'=>$filter);
-		dd($data,'DATA');
 		if ($cnt>0)
 		{
 			return $this->connection->update($this->table, $data)->where("id_users=$id_user AND presenter='$presenter' AND render='$render'")->execute();

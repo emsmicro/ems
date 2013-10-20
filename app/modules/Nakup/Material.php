@@ -117,9 +117,12 @@ class Material extends Model
 			$start = ($page - 1) * $limit + 1;
 			$end = $page * $limit;
 			$rw = "SELECT ROW_NUMBER() OVER(ORDER BY $ordovr) AS RowNum, ";
+			dd($sql_cmd,'$sql_cmd 1');
+
 			$sql_cmd = str_replace("SELECT ", $rw, $sql_cmd);
 			$sql_cmd = "$sql_cmd $cond";
-			//$sql_cmd = "$sql_cmd $cond";
+			dd($sql_cmd,'$sql_cmd 2');
+
 			$rslt = $this->connection->select("*")->from("($sql_cmd) tmp 
 								WHERE tmp.RowNum BETWEEN $start AND $end");
 			//->orderBy('cena_kc','DESC')
