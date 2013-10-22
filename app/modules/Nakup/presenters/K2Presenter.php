@@ -255,11 +255,6 @@ class K2Presenter extends NakupPresenter
 	
 	
 	/********************* component factories *********************/
-
-	protected function createComponentVp($name) {
-		$vp = new \VisualPaginator\VisualPaginator($this, $name);
-		return $vp;
-	}
 	
 	/**
 	 * stat edit form component factory.

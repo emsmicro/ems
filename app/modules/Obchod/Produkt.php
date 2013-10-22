@@ -67,12 +67,19 @@ class Produkt extends Model
 	 *  @return record set
 	 */
 
-	public function show($filtr='')
+	public function show($filtr='', $limit=0, $offset=0)
 	{
 		if($filtr<>''){
-			return dibi::query($this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev LIKE '%$filtr%'");
+			$sql_cmd = $this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev LIKE '%$filtr%'";
+			
 		} else {
-			return dibi::query($this->full_detail_query);
+			$sql_cmd = $this->full_detail_query;
+		}
+		if($limit==0 && $offset==0){
+			return dibi::query($sql_cmd);
+		} else {
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.prij_datum DESC', $limit, $offset);
+			return dibi::query($sql_pgs);
 		}
 	}
 	

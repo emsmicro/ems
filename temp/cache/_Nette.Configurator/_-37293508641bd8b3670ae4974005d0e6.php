@@ -1,4 +1,4 @@
-<?php //netteCache[01]000205a:2:{s:4:"time";s:21:"0.93304500 1382114846";s:9:"callbacks";a:1:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:35:"C:\xampp\htdocs\ems\app/config.neon";i:2;i:1381572759;}}}?><?php
+<?php //netteCache[01]000205a:2:{s:4:"time";s:21:"0.06168200 1382433991";s:9:"callbacks";a:1:{i:0;a:3:{i:0;a:2:{i:0;s:19:"Nette\Caching\Cache";i:1;s:9:"checkFile";}i:1;s:35:"C:\xampp\htdocs\ems\app/config.neon";i:2;i:1382433981;}}}?><?php
 // source file C:\xampp\htdocs\ems\app/config.neon
 
 $container->addService('robotLoader', function($container) {
@@ -53,26 +53,6 @@ $container->addService('session', function($container) {
 	);
 	return $service;
 }, NULL);
-
-$container->params['database'] = array (
-  'driver' => 'sqlsrv',
-  'host' => 'MikroSQL',
-  'username' => 'ems',
-  'password' => 'SqlPass4Ems',
-  'database' => 'DEMS',
-  'charset' => 'utf-8',
-  'profiler' => true,
-);
-
-$container->params['k2'] = array (
-  'driver' => 'sqlsrv',
-  'host' => 'MIKRO7',
-  'database' => 'K2_MIKRO',
-  'username' => 'mra',
-  'password' => 'vm123456',
-  'charset' => 'utf-8',
-  'profiler' => true,
-);
 
 $container->params['myvar'] = array (
   'todos' => true,

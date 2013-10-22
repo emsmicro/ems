@@ -24,6 +24,7 @@ $configurator = new Nette\Configurator;
 $configurator->container->params += $params;
 $configurator->container->params['tempDir'] = __DIR__ . '/../temp';
 $container = $configurator->loadConfig(__DIR__ . '/config.neon');
+$container = $configurator->loadConfig(__DIR__ . '/config.local.neon');
 
 // Setup router using mod_rewrite detection
 

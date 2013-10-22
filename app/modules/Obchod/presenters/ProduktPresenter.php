@@ -49,11 +49,22 @@ class ProduktPresenter extends ObchodPresenter
 		$gfil= $ufilter->getFilter();
 		$this->template->is_filter = TRUE;
 		
-        $instance = new Produkt;
-		$this->template->items = $instance->show($gfil);
+        $prod = new Produkt;
+
+		$rows = $prod->show($gfil);
+		// stránkování
+		$paginator = $this['vp']->getPaginator(); 
+		$paginator->itemsPerPage = 40;
+		$paginator->itemCount = count($rows);
+		$limit = $paginator->getLength();
+		$offset = $paginator->getOffset();
+		$rowp = $prod->show($gfil, $limit, $offset);			
+
+		$this->template->items = $rowp;
         $this->template->titul = self::TITUL_DEFAULT;
 		$this->template->inabidka = $this->getIdFromMySet(3);
-
+		
+		
 	}
 	
 	/**

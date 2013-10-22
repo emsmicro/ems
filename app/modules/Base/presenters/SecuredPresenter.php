@@ -135,4 +135,16 @@ abstract class SecuredPresenter extends BasePresenter
 		return $control;
 	}	
 	
+	
+	/**
+	 * Factory component paginator
+	 * @param type $name
+	 * @return \VisualPaginator\VisualPaginator 
+	 */
+	protected function createComponentVp($name) {
+//		$vp = new \VisualPaginator\VisualPaginator($this, $name);
+		return new \VisualPaginator\VisualPaginator($this, $name);
+	}	
+	
+		
 }

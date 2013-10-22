@@ -62,12 +62,13 @@ class MaterialPresenter extends NakupPresenter
 		
 		$rows = $mat->show($id, $wh, 0, 0, $gfil);
 		if ($wh>=0){
-			$paginator = $this['pg']->getPaginator();
+			// stránkování
+			$paginator = $this['vp']->getPaginator();
 			$paginator->itemsPerPage = 50;
 			$paginator->itemCount = count($rows);
 			$limit = $paginator->getLength();
 			$offset = $paginator->getOffset();
-			$paginator->page = $this['pg']->getParam('page');
+			$paginator->page = $this['vp']->getParam('page');
 
 			$rowp = $mat->show($id, 0, $limit, $offset, $gfil);		
 
@@ -124,8 +125,8 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->is_filter = TRUE;
 
 		$rows = $mat->show($id, $what, 0, 0, $gfil);
-		$vp = $this['pg']; 
-		$paginator = $vp->paginator;
+		$paginator = $this['vp']->getPaginator(); 
+		//$paginator = $pg->paginator;
 		$paginator->itemsPerPage = 50;
 		$paginator->itemCount = count($rows);
 
@@ -335,19 +336,7 @@ class MaterialPresenter extends NakupPresenter
 
 	
 	
-	/********************* component factories *********************/
-
-	/**
-	 * Foctory component paginator
-	 * @param type $name
-	 * @return \VisualPaginator\VisualPaginator 
-	 */
-	protected function createComponentPg($name) {
-//		$vp = new \VisualPaginator\VisualPaginator($this, $name);
-		$pages = new \VisualPaginator\VisualPaginator();
-		return $pages;
-	}
-	
+	/********************* component factories *********************/	
 
 	/**
 	 * Item edit form component factory.

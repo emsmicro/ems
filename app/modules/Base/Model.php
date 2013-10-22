@@ -429,8 +429,41 @@ class Model extends DibiRow
 		}
 	}
 
+	public function pagedSql($sql_cmd, $ordsql='', $ordovr='1', $limit='', $offset=''){
 
+		if($ordsql <> ''){
+			$ordovr = $ordsql . ", " . $ordovr;
+			$ordr = " ORDER BY " . $ordovr;
+		} else {
+			$ordr = " ORDER BY " . $ordovr;
+		}
+		
+		$ret_sql = $sql_cmd . $ordr;
+		
+		if($limit==0 && $offset==0){
+			// bez stránkování
+			return $ret_sql;
+
+		} else {
+			//implementace stránkování			
+			$page = (int) ($offset / $limit) + 1;
+			$start = ($page - 1) * $limit + 1;
+			$end = $page * $limit;
+			$rw = "SELECT ROW_NUMBER() OVER(ORDER BY $ordovr) AS RowNum, ";
+			$sql_cmd = $this->replaceFirstSelect($sql_cmd, $rw);
+			$ret_sql = "SELECT * FROM ($sql_cmd) tmp WHERE tmp.RowNum BETWEEN $start AND $end";
+			return $ret_sql;
+		}		
+		
+	}
 
 	
+	protected function replaceFirstSelect($sqlstr, $repstr) {
+		$sstr = ltrim($sqlstr);
+		if(strtoupper(substr($sstr, 0, 6))=='SELECT'){
+			$sstr = $repstr . substr($sstr, 6, strlen($sstr));
+		}
+		return $sstr;
+	}
 	
 }
