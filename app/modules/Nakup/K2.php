@@ -79,7 +79,7 @@ class K2 extends Model
 				}
 				$cond = substr($cond, 0, strlen($cond)-4);
 			} else {
-				$cond = " z.id = $searched";
+				$cond = " z.cislo = $searched";
 			}
 		}		
 
@@ -107,8 +107,8 @@ class K2 extends Model
 	{
 
 		$qry = "SELECT z.nazev [nazpol], c.id [idc], * FROM $this->ceny c
-					LEFT JOIN $this->table z ON c.idzbo = z.id
-					WHERE z.id=$id
+					LEFT JOIN $this->table z ON c.idzbo = z.cislo
+					WHERE z.cislo = $id
 					ORDER BY c.datum DESC";
 		
 		return $this->connk2->query($qry);

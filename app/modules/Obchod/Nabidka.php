@@ -109,7 +109,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	public function showByStatus($limitStatus = 0, $isIn="NOT"){
 		$cond = "";
 		if($limitStatus>0){
-			$cond=" WHERE id_stav=$limitStatus";
+			$cond=" WHERE id_stav IN ($limitStatus, 11, 21)";	//zadana, odmitnuta a uzamcena
 		}
 		$sql = "$this->full_detail_query WHERE 
 						n.id $isIn IN (SELECT id_nabidky FROM stav_nabidka $cond)";

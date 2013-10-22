@@ -41,7 +41,7 @@
 					</a>
 				</span>
 			{/if}
-			<a n:if="$user->isAllowed('Nabidka','detail')" n:href="Nabidka:detail, $it->idn">{$it->nabidka|truncate:60} </a>
+			<a n:if="$user->isAllowed('Nabidka','detail')" n:href="Nabidka:detail, $it->idn"  title="{$it->idn}/{$it->ze_dne|date:'%Y'}">{$it->nabidka|truncate:60} </a>
 			<span n:if="!$user->isAllowed('Nabidka','detail')">{$it->nabidka}</span>
 			<span class="mini" style="float:right;">ze dne {$it->ze_dne|date:'%d.%m.%Y'}</span>
 		{/if}
@@ -49,7 +49,7 @@
 	<td n:if="$user->isAllowed('Produkt','setProduct')"><span class="iconsel"><a n:href="setProduct, $it->id" title="Zvolit">&nbsp&nbsp;</a></span></td>
 	<td class="tcislo">{$it->id}</td>
 	<td class="tcislo">{$it->id_k2}</td>
-	<td><a n:href="detail, $it->id" title="{$it->id}">{$it->nazev}</a></td>
+	<td><a n:href="detail, $it->id">{$it->nazev}</a></td>
 	<td n:if="$cond" class="takce" title="stav: {$it->id_stav}">
 		<span class="setedit" title="Změnit">
 			<a n:if="$user->isAllowed('Produkt','edit') && $unlocked" n:href="edit, $it->id">&nbsp;&nbsp;&nbsp;&nbsp;</a>
