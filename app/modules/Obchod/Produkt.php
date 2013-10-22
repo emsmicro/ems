@@ -25,7 +25,8 @@ class Produkt extends Model
 									COALESCE(s.zkratka,'žádný') [stav], 
 									s.popis [nstav], 
 									s.username, s.uzivatel, s.id_user, s.datzmeny, 
-									p.*,
+									n.prij_datum [ze_dne],
+									p.*, p.id [idp],
 									f.id [idf], 
 									f.nazev [firma], 
 									f.zkratka [zfirma], 
@@ -67,18 +68,18 @@ class Produkt extends Model
 	 *  @return record set
 	 */
 
-	public function show($filtr='', $limit=0, $offset=0)
+	public function show()
 	{
-		if($filtr<>''){
-			$sql_cmd = $this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev LIKE '%$filtr%'";
+		if($this->filter<>''){
+			$sql_cmd = $this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev+f.nazev LIKE '%$this->filter%'";
 			
 		} else {
 			$sql_cmd = $this->full_detail_query;
 		}
-		if($limit==0 && $offset==0){
+		if($this->limit==0 && $this->offset==0){
 			return dibi::query($sql_cmd);
 		} else {
-			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.prij_datum DESC', $limit, $offset);
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'p.id DESC');
 			return dibi::query($sql_pgs);
 		}
 	}

@@ -55,22 +55,23 @@ class MaterialPresenter extends NakupPresenter
 		if($id){
 			$addtitul = ' - BOM: '.$this->getNameFromMySet(4);
 		}
+		
 		// User filter
 		$ufilter = $this['uFilter'];
-		$gfil= $ufilter->getFilter();
+		$mat->filter = $ufilter->getFilter();
 		$this->template->is_filter = TRUE;
 		
-		$rows = $mat->show($id, $wh, 0, 0, $gfil);
+		$rows = $mat->show($id, $wh);
 		if ($wh>=0){
 			// stránkování
 			$paginator = $this['vp']->getPaginator();
-			$paginator->itemsPerPage = 50;
+			$paginator->itemsPerPage = 30;
 			$paginator->itemCount = count($rows);
-			$limit = $paginator->getLength();
-			$offset = $paginator->getOffset();
-			$paginator->page = $this['vp']->getParam('page');
+			$mat->limit = $paginator->getLength();
+			$mat->offset = $paginator->getOffset();
+			//$paginator->page = $this['vp']->getParam('page');
 
-			$rowp = $mat->show($id, 0, $limit, $offset, $gfil);		
+			$rowp = $mat->show($id, 0);		
 
 			$this->template->items = $rowp;
 			$is_rows = count($rowp)>0;
@@ -112,6 +113,7 @@ class MaterialPresenter extends NakupPresenter
 	{
 
         $mat = new Material;
+		
 		$addtitul = ' (veškerý)';
 		$id = $this->idproduct;
 		if($id){
@@ -121,18 +123,18 @@ class MaterialPresenter extends NakupPresenter
 
 		// User filter
 		$ufilter = $this['uFilter'];
-		$gfil= $ufilter->getFilter();
+		$mat->filter = $ufilter->getFilter();
 		$this->template->is_filter = TRUE;
 
-		$rows = $mat->show($id, $what, 0, 0, $gfil);
+		$rows = $mat->show($id, $what);
 		$paginator = $this['vp']->getPaginator(); 
-		//$paginator = $pg->paginator;
+		
 		$paginator->itemsPerPage = 50;
 		$paginator->itemCount = count($rows);
 
-		$limit = $paginator->getLength();
-		$offset = $paginator->getOffset();
-		$rowp = $mat->show($id, $what, $limit, $offset, $gfil);	
+		$mat->limit = $paginator->getLength();
+		$mat->offset = $paginator->getOffset();
+		$rowp = $mat->show($id, $what);	
 		
 		$this->template->setFile(__DIR__ . '/../templates/Material/default.latte');
 		$is_rows = count($rowp)>0;
@@ -140,6 +142,7 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->unlocked = $ilocked<1;
 		$summat = $mat->sumBOM($id);
 		$this->template->sProdej = round($summat['sumProdej'],2);
+		
 		if ($summat['sumNaklad']>0){
 			$this->template->sNaklad = round($summat['sumNaklad'],2);
 			$this->template->procprd = (round($summat['sumProdej'],2)/round($summat['sumNaklad'],2)-1)*100;

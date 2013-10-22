@@ -21,7 +21,7 @@
 	<th>Č. nab.</th>
 	<th style="min-width:150px;">Popis</th>
 	<th>Zákazník</th>
-	<th>Založeno</th>
+	<th>Ze dne</th>
 	<th>Datum DO</th>
 	<th n:if="$user->isAllowed('Nabidka','toPdf')">Ex</th>
 	<th title="Složka se zadávací dokumentací">Data</th>
@@ -106,5 +106,7 @@
 
 {* paginator *}
 {control vp}
-
+	<div>
+		<p style="float:right;"><span class="mini">Celkem záznamů: </span>{$cnt}</p>
+	</div>
 {/block}

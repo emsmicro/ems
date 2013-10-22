@@ -41,8 +41,9 @@
 					</a>
 				</span>
 			{/if}
-			<a n:if="$user->isAllowed('Nabidka','detail')" n:href="Nabidka:detail, $it->idn">{$it->nabidka}</a>
+			<a n:if="$user->isAllowed('Nabidka','detail')" n:href="Nabidka:detail, $it->idn">{$it->nabidka|truncate:60} </a>
 			<span n:if="!$user->isAllowed('Nabidka','detail')">{$it->nabidka}</span>
+			<span class="mini" style="float:right;">ze dne {$it->ze_dne|date:'%d.%m.%Y'}</span>
 		{/if}
 	</td>
 	<td n:if="$user->isAllowed('Produkt','setProduct')"><span class="iconsel"><a n:href="setProduct, $it->id" title="Zvolit">&nbsp&nbsp;</a></span></td>
@@ -88,3 +89,6 @@
 	
 {* paginator *}
 {control vp}
+	<div>
+		<p style="float:right;"><span class="mini">Celkem záznamů: </span>{$cnt}</p>
+	</div>

@@ -29,7 +29,7 @@
 {if isset($items)}
 	<p></p>
 	{if count($items)>0}
-		<table class="grid">
+		<table class="grid" style="width:100%;">
 		<tr>
 			<th>ID</th>
 			<th>Zkratka</th>
@@ -43,7 +43,13 @@
 			<tr>
 				<td>{$it->idz}</td>
 				<td>{$it->zkratka}</td>
-				<td>{$it->nazev}</td>
+				{if strrpos($it->nazev, "zrušen")>0}
+					<td class="tselred">{$it->nazev}</td>
+				{elseif  strrpos($it->nazev, "probl")>0}
+					<td style="background-color: #FFE9A6;">{$it->nazev}</td>
+				{else}
+					<td>{$it->nazev}</td>
+				{/if}
 				<td class="tcislo" title="{$it->datum|date:'%d.%m.%Y'}, {$it->mnoz|number:0:',':' '} ks">
 						{if $it->cena>0}
 							{$it->cena|number:4:',':' '}
@@ -66,6 +72,8 @@
 			</tr>
 		{/foreach}
 		</table>
+		{* paginator *}
+		{control vp}
 		<p></p>
 	{/if}
 

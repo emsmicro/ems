@@ -35,15 +35,16 @@ class K2Presenter extends NakupPresenter
 
 		$this->redirect('find');
 		
-        $instance = new K2($this->k2param);
-		$vp = $this['vp']; //zavola komponentu Vp
-		$paginator = $vp->paginator;
+        $k2 = new K2($this->k2param);
+		$rows = $k2->show()->fetchAll();
+		// strankovani
+		$paginator = $this['vp']->getPaginator();
 		$paginator->itemsPerPage = 30;
-		$paginator->itemCount = count($instance->show()->fetchAll());
-		$limit = $paginator->getLength();
-		$offset = $paginator->getOffset();
+		$paginator->itemCount = count($rows);
+		$k2->limit = $paginator->getLength();
+		$k2->offset = $paginator->getOffset();
 
-		$result = $instance->show($limit, $offset);
+		$result = $k2->show();
 
 		$this->template->items = $result;
         $this->template->titul = self::TITUL_DEFAULT . "  (str. " . $paginator->page."/".$paginator->getPageCount() .")";
@@ -59,7 +60,8 @@ class K2Presenter extends NakupPresenter
 	 */
 	public function renderFind($id = 0, $seek = '', $type = '')
 	{
-        $instance = new K2($this->k2param);
+        $k2 = new K2($this->k2param);
+		
 		$form = $this['findForm'];
 		$this->template->titul = '';
 		if($seek<>''){ 
@@ -76,7 +78,7 @@ class K2Presenter extends NakupPresenter
 				$hledam='';
 				$item = false;
 				if($type=='' && $id>0){
-					$item = $instance->findMaterial($id)->fetch();
+					$item = $k2->findMaterial($id)->fetch();
 				}
 				if($type==''){ // first find by string
 					if($item){
@@ -90,25 +92,26 @@ class K2Presenter extends NakupPresenter
 			   	$this->template->titul = "Hledaný výraz: $item->nazev";
 			}
 		}
-		
-//		$vp = $this['vp']; //zavola komponentu Vp
-//		$paginator = $vp->paginator;
-//		$paginator->itemsPerPage = 30;
-//		$maxrows = count($instance->findName($hledam, $type));
-//		$paginator->itemCount = $maxrows;
-//		$limit = $paginator->getLength();
-//		$offset = $paginator->getOffset();
-//
-//		$rows = $instance->findName($hledam, $type, $limit, $offset);
-		$rows = $instance->findName($hledam, $type);
+
 		$this->template->hledam = $hledam;
-		if($rows){
-			$cnt = count($rows);
+		
+		$rows = $k2->findName($hledam, $type);
+
+		// stránkování
+		$paginator = $this['vp']->getPaginator(); 
+		$paginator->itemsPerPage = 30;
+		$paginator->itemCount = count($rows);
+		$k2->limit = $paginator->getLength();
+		$k2->offset = $paginator->getOffset();
+		$rowp = $k2->findName($hledam, $type);				
+		
+		if($rowp){
+			$cnt = count($rowp);
 			if ($cnt<1) {
-				$this->flashMessage('Hledaný výraz "'.$hledam.'" nebyl nalezen.','exclamation');
+				$this->flashMessage("Hledaný výraz $hledam nebyl nalezen.",'exclamation');
 			}
 			$this->template->idm = $id;
-			$this->template->items = $rows;
+			$this->template->items = $rowp;
 		}
 		$this->template->actidp = $this->getIdFromMySet(4);
 	}

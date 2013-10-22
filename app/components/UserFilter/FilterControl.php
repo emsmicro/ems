@@ -60,7 +60,7 @@ class FilterControl extends Control
 		$form = new Form;
 		$form->addText('filter', 'Hledat', 30)
 					->setAttribute('placeholder', 'Zadejte filtr ...');		
-		$form->addSubmit('setfilter', 'Filtr')->setAttribute('class', 'default');
+		$form->addSubmit('setfilter', ' ')->setAttribute('class', 'default');
 		$form->onSuccess[] = callback($this, 'filterFormSubmitted');
 
 		$form->addProtection(self::MESS_PROTECT);

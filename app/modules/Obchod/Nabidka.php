@@ -16,7 +16,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	private $full_detail_query = "SELECT n.id [id], n.pozad_datum, n.prij_datum, n.popis [popis], n.poznamka [poznamka], 
 									n.id_set_sazeb, n.id_set_sazeb_o, n.id_firmy [id_firmy], RTRIM(n.folder) [folder],
 									f.zkratka [zfirma], f.nazev [firma], s.id_stav, s.zkratka [stav], s.popis [nstav], 
-									s.username, s.uzivatel, s.id_user, s.datzmeny,
+									s.username, s.uzivatel, s.id_user, s.datzmeny, 
 									ss.nazev [sets], ss.id [sid], so.nazev [seto], so.id [oid]
 									FROM nabidky n
 									LEFT JOIN firmy f ON n.id_firmy = f.id
@@ -41,22 +41,22 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 * 	Vrací obsah tabulky 
 	 *  @return record set
 	 */
-	public function show($filtr='', $limit=0, $offset=0)
+	public function show()
 	{
-		if($filtr<>''){
-			$sql_cmd = $this->full_detail_query . "	WHERE n.popis LIKE '%$filtr%'";
+		if($this->filter<>''){
+			$sql_cmd = $this->full_detail_query . "	WHERE Convert(varchar, n.popis) + f.nazev LIKE '%$this->filter%'";
 			
 		} else {
 			$sql_cmd = $this->full_detail_query;
 		}
-		if($limit==0 && $offset==0){
+
+		if($this->limit==0 && $this->offset==0){
 			return dibi::query($sql_cmd);
 		} else {
-			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.prij_datum DESC', $limit, $offset);
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.id DESC');
 			return dibi::query($sql_pgs);
 		}
-		
-		
+				
 	}
 	
 	/**

@@ -41,22 +41,25 @@ class NabidkaPresenter extends ObchodPresenter
 	 */
 	public function renderDefault()
 	{
-
-		$ufilter = $this['uFilter'];
-		$gfil= $ufilter->getFilter();
-
+			
 		$nab = new Nabidka;
-		$rows = $nab->show($gfil);
 
+		// User filter
+		$ufilter = $this['uFilter'];
+		$nab->filter = $ufilter->getFilter();
+
+		$rows = $nab->show();
+		$cnt = count($rows);
 		// stránkování
 		$paginator = $this['vp']->getPaginator(); 
 		$paginator->itemsPerPage = 30;
-		$paginator->itemCount = count($rows);
-		$limit = $paginator->getLength();
-		$offset = $paginator->getOffset();
-		$rowp = $nab->show($gfil, $limit, $offset);			
+		$paginator->itemCount = $cnt;
+		$nab->limit = $paginator->getLength();
+		$nab->offset = $paginator->getOffset();
+		$rowp = $nab->show();			
 		
 		$this->template->items = $rowp;
+		$this->template->cnt = $cnt;
         $this->template->titul = self::TITUL_DEFAULT;
 		$this->template->is_filter = TRUE;
 	}

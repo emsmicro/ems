@@ -7,7 +7,7 @@ use Nette\Object;
 class K2 extends Model
 {
 
-	private $table = '(SELECT Cis [id], Naz [nazev], Zkr [zkratka] FROM zbozi WHERE PrKind=392)';
+	private $table = '(SELECT Cis [cislo], Naz [nazev], Zkr [zkratka] FROM zbozi WHERE PrKind=392)';
 	
 	private $ceny = "(SELECT ROW_NUMBER() OVER (ORDER BY ce.cis) [id] 
 							  ,[idzbo] = CE.Cis
@@ -53,23 +53,18 @@ class K2 extends Model
 	 * @param type $offset
 	 * @return type record page
 	 */
-	public function show($limit = 0, $offset = 0)
+	public function show()
 	{
-		if($limit==0 || $offset==0){
-			return $this->connk2->query("SELECT * FROM $this->table z");
+		$sql_cmd = "SELECT * FROM $this->table z";
+		if($this->limit==0 && $this->offset==0){
+			return $this->connk2->query($sql_cmd);
 		} else {
-			//implementace stránkování
-			$page = (int) ($offset / $limit) + 1;
-			return $this->connk2->select("*")->from("
-				    (SELECT ROW_NUMBER() OVER(ORDER BY id) AS RowNum, *
-						FROM $this->table
-					) tmp WHERE tmp.RowNum BETWEEN ($page - 1) * $limit + 1 
-						AND $page * $limit");
-			
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'id');
+			return $this->connk2->query($sql_pgs);
 		}
 	}
 
-	public function findName($searched='', $typ='', $limit=0, $offset=0)
+	public function findName($searched='', $typ='')
 	{
 		if($searched==""){
 			$cond = "";
@@ -89,24 +84,18 @@ class K2 extends Model
 		}		
 
 
-		$sql_cmd = "z.id [idz], c.id [idc], z.*, c.* FROM $this->table z
+		$sql_cmd = "z.cislo [idz],  c.id [idc], z.*, c.* FROM $this->table z
 				LEFT JOIN (SELECT *, ROW_NUMBER() OVER (PARTITION BY idzbo ORDER BY datum DESC) AS rd
 										FROM $this->ceny cc
-										) c ON z.id=c.idzbo AND rd=1";
+										) c ON z.cislo=c.idzbo AND rd=1";
+		$sql_cmd = "SELECT $sql_cmd WHERE $cond";
 		
-		if($limit==0 || $offset==0){
-			$rslt = $this->connk2->query("SELECT $sql_cmd WHERE $cond");
+		if($this->limit==0 && $this->offset==0){
+			$rslt = $this->connk2->query($sql_cmd);
 		} else {
 			//implementace stránkování
-			$page = (int) ($offset / $limit) + 1;
-			$start = ($page - 1) * $limit + 1;
-			$end = $page * $limit;
-			$rw = "SELECT ROW_NUMBER() OVER(ORDER BY idz) AS RowNum, ";
-			$sql_cmd = $rw . $sql_cmd;
-			$sql_cmd = "$sql_cmd WHERE $cond";
-		
-			$rslt = $this->connk2->select("*")->from("($sql_cmd) tmp 
-								WHERE tmp.RowNum BETWEEN $start AND $end");
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'cislo');
+			$rslt = $this->connk2->query($sql_pgs);
 			
 		}
 		

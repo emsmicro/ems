@@ -24,7 +24,7 @@ class Material extends Model
 	 * @param int what = index of filter (used: 0 ..none,1..cena_cm=0,2..cena_cm>0,...)
 	 * @return record set
 	 */
-	public function show($idp=0,$what=0,$limit=0,$offset=0,$filtr='')
+	public function show($idp=0,$what=0)
 	{
 		$sql_cmd = "";
 		$cond = "";
@@ -103,27 +103,17 @@ class Material extends Model
 			$ordovr = $ordfil.", ".$ordovr;
 		}
 		if ($cond<>''){
-			$cond = 'WHERE '.$cond;
-			if ($filtr<>''){$cond .= " AND m.zkratka+m.nazev LIKE '%$filtr%'";}
+			$cond = ' WHERE '.$cond;
+			if ($this->filter<>''){$cond .= " AND m.zkratka+m.nazev LIKE '%$this->filter%'";}
 		} else {
-			if ($filtr<>''){$cond = " WHERE m.zkratka+m.nazev LIKE '%$filtr%'";}
+			if ($this->filter<>''){$cond = " WHERE m.zkratka+m.nazev LIKE '%$this->filter%'";}
 		}
-		if($limit==0 && $offset==0){
+		if($this->limit==0 && $this->offset==0){
 			$rslt = $this->connection->query("$sql_cmd $cond $ordsql");
-			//$rslt = dibi::query("$sql_cmd $cond $ordsql");
 		} else {
-			//implementace stránkování			
-			$page = (int) ($offset / $limit) + 1;
-			$start = ($page - 1) * $limit + 1;
-			$end = $page * $limit;
-			$rw = "SELECT ROW_NUMBER() OVER(ORDER BY $ordovr) AS RowNum, ";
-
-			$sql_cmd = str_replace("SELECT ", $rw, $sql_cmd);
-			$sql_cmd = "$sql_cmd $cond";
-
-			$rslt = $this->connection->select("*")->from("($sql_cmd) tmp 
-								WHERE tmp.RowNum BETWEEN $start AND $end");
-			
+			//implementace stránkování
+			$sql_pgs = $this->pagedSql($sql_cmd.$cond, '', $ordovr);
+			$rslt = $this->connection->query($sql_pgs);
 		}
 		return $rslt->fetchAll();
 	}
