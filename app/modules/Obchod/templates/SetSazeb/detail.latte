@@ -23,12 +23,13 @@
 	{* $cond .. pokud jsou práva na add/edit/delete zobrazí se záhlaví. Testujeme pak: n:if="$cond"*}
 	{var $cond = $user->isAllowed('SetSazeb','add') || $user->isAllowed('SetSazeb','edit') || $user->isAllowed('SetSazeb','delete')}
 
-	<table class="grid">
+	<table class="grid" style="width:100%;">
 	<tr>
 		<th>#</th>
 		<th>Sazby</th>
 		<th>Zkratka</th>
 		<th>Hodnota [%]</th>
+		<th>Pravidlo</th>
 		<th style="text-align:center">Akce</th>
 	</tr>
 	{foreach $sazby as $saz}
@@ -37,6 +38,7 @@
 		<td><i>{$saz->typ}</i></td>
 		<td class="mini">{$saz->zkratka}</td>
 		<td class="tcislo"><b>{$saz->hodnota|number:1:',':' '} %</b></td>
+		<td>{$saz->pravidlo}</td>
 		<td class="takce">
 			{if $saz->sid > 0}
 				<span class="setedit" title="Změnit">

@@ -6,3 +6,5 @@
 
 {control rateForm}
 {include '../../../Base/templates/js_number.latte'}
+
+{if isset($control['rateForm']['pravidlo'])}{include 'helpRate.latte'}{/if}

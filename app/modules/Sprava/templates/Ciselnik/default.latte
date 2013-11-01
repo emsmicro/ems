@@ -151,6 +151,7 @@
 	<th>Id</th>
 	<th>Zkratka</th>
 	<th>Název</th>
+	<th title='Základna pro pravidla'>Zakladna</th>
 </tr>
 
 {foreach $tsazeb as $ts}
@@ -158,6 +159,7 @@
 	<td>{$ts->id}</td>
 	<td>{$ts->zkratka}</td>
 	<td>{$ts->nazev}</td>
+	<td>{$ts->zakladna}</td>
 </tr>
 {/foreach}
 </table>

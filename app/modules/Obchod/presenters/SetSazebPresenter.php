@@ -52,6 +52,12 @@ class SetSazebPresenter extends ObchodPresenter
 		$item = new SetSazeb;
 		$this->template->items = $item->show();
         $this->template->titul = self::TITUL_DEFAULT;
+		$saz = new Sazba;	
+//        $this->template->sazby = $sazby;
+//		$this->template->idss = $item->id;
+		$vzorce = $saz->getKalkVzorce();		
+        $this->template->vzorce = $vzorce;
+		$this->template->isakce = TRUE;
 	}
 	/********************* views detail *********************/
 	/*
@@ -385,16 +391,23 @@ class SetSazebPresenter extends ObchodPresenter
 	protected function createComponentRateForm()
 	{
 		$form = new Form;
+		$sazba = new Sazba;
+        $row = $sazba->find($this->getParam('sid'))->fetch();		
 		$form->addText('hodnota', 'Hodnota [%]:')
 				->setAttribute('class', 'cislo')
 				->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))
 					->controlPrototype->autocomplete('off')
 				->addCondition($form::FILLED)
 					->addRule($form::FLOAT, 'Hodnota musí být celé nebo reálné číslo.');
-
+		$tzkr = $row['zkratka'];
+		dd($tzkr,'FormVal');
+		if(strpos('ZasR,MatM', $tzkr)>-1){
+			$form->addTextArea('pravidlo', 'Pravidlo:')
+				->addRule(Form::MAX_LENGTH, 'Pravidlo je příliš dlouhé', 2000)
+				->setAttribute('style', 'width:150%;');
+		}
 		$form->addHidden('id_set_sazeb');
 		$form->addHidden('id_typy_sazeb');
-
 		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
 		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'rateFormSubmitted');
@@ -578,6 +591,7 @@ class SetSazebPresenter extends ObchodPresenter
 				->setOption('description', '(definice kalkulace prodejní ceny materiálu)');
 
 		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
+		$form->addSubmit('saveas', 'Uložit kopii');
 		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'kalkFormSubmitted');
 
@@ -591,9 +605,9 @@ class SetSazebPresenter extends ObchodPresenter
 	 */
 	public function kalkFormSubmitted(Form $form)
 	{
+		$id = (int) $this->getParam('id');
+		$item = new SetSazeb;
 		if ($form['save']->isSubmittedBy()) {
-			$id = (int) $this->getParam('id');
-			$item = new SetSazeb;
 			$sets = (array) $form->values;
 			if ($id > 0) {
 				$item->updateKalk($id,(array) $sets);
@@ -602,6 +616,12 @@ class SetSazebPresenter extends ObchodPresenter
 			} else {
 				$item->insertKalk((array) $sets);
 				$this->flashMessage('Položka byla přidána.');
+			}
+		} else {
+			if ($form['saveas']->isSubmittedBy()) {
+				$sets = (array) $form->values;
+				$item->insertKalk((array) $sets);
+				$this->flashMessage('Kopie byla uložena.');
 			}
 		}
 		$this->redirect('default');

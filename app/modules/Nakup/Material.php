@@ -21,7 +21,7 @@ class Material extends Model
 	/**
 	 * Vrací obsah tabulky
 	 * @param int idp = id_product
-	 * @param int what = index of filter (used: 0 ..none,1..cena_cm=0,2..cena_cm>0,...)
+	 * @param int what = index of filter (used: 0..none, 1..cena_cm=0, 2..cena_cm>0,...)
 	 * @return record set
 	 */
 	public function show($idp=0,$what=0)
@@ -128,7 +128,7 @@ class Material extends Model
 		$cond = "";
 		if($id_produkt>0){$cond = " AND v.id_vyssi = $id_produkt";}
 		
-		return dibi::dataSource("SELECT m.id [id],m.id_k2 [id_k2],m.zkratka [zkratka], m.nazev [nazev], ROUND(m.cena_cm,5) [cena_cm], ROUND(m.cena_kc,5) [cena_kc], ROUND(m.cena_kc2,5) [cena_kc2], m.id_kurzy [id_kurzy], m.id_meny [id_meny], m.id_merne_jednotky [id_merne_jednotky], 
+		return dibi::dataSource("SELECT m.id [id],m.id_k2 [id_k2],m.zkratka [zkratka], m.nazev [nazev], ROUND(m.cena_cm,5) [cena_cm], ROUND(m.cena_kc,5) [cena_kc], ROUND(m.cena_kc2,5) [cena_kc2], ROUND(m.cena_kc3,5) [cena_kc3], m.id_kurzy [id_kurzy], m.id_meny [id_meny], m.id_merne_jednotky [id_merne_jednotky], 
 										mj.zkratka [jednotka], mj.koeficient [koeficient],
 										ROUND(k.kurz_nakupni,5) [kurz_nakupni],
 										ROUND(k.kurz_prodejni,5) [kurz_prodejni],
@@ -211,20 +211,65 @@ class Material extends Model
 	 * @param type $koeficient
 	 * @return type 
 	 */
-	public function insertMatPrices($idproduktu, $koeficient)
+	public function insertMatPrices($idproduktu, $koeficient, $meze=FALSE)
 	{
-		$sql_cmd = "UPDATE material  
+		if($meze & $meze<>''){
+			// alternativní cena
+			$sql_cmd = "UPDATE material  
+						SET cena_kc3 = cena_kc * $koeficient
+						FROM material m
+									LEFT JOIN vazby v ON m.id=v.id_material 
+									LEFT JOIN meny me ON m.id_meny = me.id
+									WHERE v.id_vyssi=$idproduktu";
+			dibi::query($sql_cmd);
+			
+			// cena s mezemi - kalkulační
+			$sql_cmd = "UPDATE material SET cena_kc2 = CASE";
+			$case = '';
+			for($i = 0; $i < count($meze); ++$i) {
+				$do = $meze[$i]['mez'];
+				$koef = 1 + $meze[$i]['sazba']/100;
+				$max = 0;
+				if($do>0){
+					// menší než
+					if($max<$do){$max=$do;}
+					$case .= " WHEN cena_kc < $do THEN cena_kc * $koef";
+				} else {
+					// větší nebo rovno max
+					$case .= " WHEN cena_kc >= $max THEN cena_kc * $koef";
+				}
+			}
+			$sql_cmd .= $case .	" END
+						FROM material m
+									LEFT JOIN vazby v ON m.id=v.id_material 
+									LEFT JOIN meny me ON m.id_meny = me.id
+									WHERE v.id_vyssi=$idproduktu";
+		} else {
+			// alternativní cena - vynulování
+			$sql_cmd = "UPDATE material  
+						SET cena_kc3 = 0
+						FROM material m
+									LEFT JOIN vazby v ON m.id=v.id_material 
+									LEFT JOIN meny me ON m.id_meny = me.id
+									WHERE v.id_vyssi=$idproduktu";
+			dibi::query($sql_cmd);
+			// cena kalkulační
+			$sql_cmd = "UPDATE material  
 						SET cena_kc2 = cena_kc * $koeficient
 						FROM material m
 									LEFT JOIN vazby v ON m.id=v.id_material 
-									LEFT JOIN meny me ON m.id_meny=me.id
+									LEFT JOIN meny me ON m.id_meny = me.id
 									WHERE v.id_vyssi=$idproduktu";
+		}
+		//dd($sql_cmd,'SQL');
+		//return false;
 		return dibi::query($sql_cmd);
 	}
 	
+	
 	public function sumBOM($idprodukt)
 	{
-		$data = dibi::query("SELECT sum(m.cena_kc) [skc], sum(m.cena_kc2) [skc2]
+		$data = dibi::query("SELECT sum(m.cena_kc) [skc], sum(m.cena_kc2) [skc2], sum(m.cena_kc3) [skc3]
 						FROM material m
 							LEFT JOIN vazby v ON m.id=v.id_material 
 							LEFT JOIN meny me ON m.id_meny=me.id
@@ -232,6 +277,7 @@ class Material extends Model
 		foreach ($data as $d){
 			$ret['sumNaklad'] = $d['skc'];
 			$ret['sumProdej'] = $d['skc2'];
+			$ret['sumProAlt'] = $d['skc3'];
 		}
 		return $ret;
 	}

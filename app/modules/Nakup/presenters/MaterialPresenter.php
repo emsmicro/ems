@@ -62,15 +62,18 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->is_filter = TRUE;
 		
 		$rows = $mat->show($id, $wh);
+		$cnt = count($rows);
+
 		if ($wh>=0){
 			// stránkování
 			$paginator = $this['vp']->getPaginator();
 			$paginator->itemsPerPage = 30;
-			$paginator->itemCount = count($rows);
+			$paginator->itemCount = $cnt;
 			$mat->limit = $paginator->getLength();
 			$mat->offset = $paginator->getOffset();
-			//$paginator->page = $this['vp']->getParam('page');
-
+			$start = $mat->offset+1;
+			$end = $mat->offset+$mat->limit;
+			$nav = "$start - $end / $cnt";
 			$rowp = $mat->show($id, 0);		
 
 			$this->template->items = $rowp;
@@ -78,7 +81,9 @@ class MaterialPresenter extends NakupPresenter
 		} else {
 			$this->template->items = $rows;
 			$is_rows = count($rows)>0;
+			$nav = "$cnt";
 		}
+		$this->template->nav = $nav;
 		$this->template->idp=$id;
 		$this->template->koefmat = (float)$kmat['koef'];
 		$ilocked = $mat->isProductLocked($id);
@@ -88,6 +93,7 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->noprices = $noprices;
 		$summat = $mat->sumBOM($id);
 		$this->template->sProdej = round($summat['sumProdej'],2);
+		$this->template->sProAlt = round($summat['sumProAlt'],2);
 		if ($summat['sumNaklad']>0){
 			$this->template->sNaklad = round($summat['sumNaklad'],2);
 			$this->template->procprd = (round($summat['sumProdej'],2)/round($summat['sumNaklad'],2)-1)*100;
@@ -142,6 +148,7 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->unlocked = $ilocked<1;
 		$summat = $mat->sumBOM($id);
 		$this->template->sProdej = round($summat['sumProdej'],2);
+		$this->template->sProAlt = round($summat['sumProAlt'],2);
 		
 		if ($summat['sumNaklad']>0){
 			$this->template->sNaklad = round($summat['sumNaklad'],2);
@@ -318,8 +325,13 @@ class MaterialPresenter extends NakupPresenter
 	{
         $mat = new Material;
 		$kmat = $mat->getMatCoef($this->getIdFromMySet(3));
-		$mat->insertMatPrices($id, $kmat['koef']);
-		$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny koeficientem ".str_replace(".", ",", $kmat['koef']).".");
+		$meze = $mat->parsePravidlo($kmat['przr']);
+		$mat->insertMatPrices($id, $kmat['koef'], $meze);
+		if($meze){
+			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny dle pravidel ".$kmat['przr'].".");
+		} else {
+			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny koeficientem ".str_replace(".", ",", $kmat['koef']).".");
+		}
 		$this->goBack();
 
 	}	

@@ -11,10 +11,13 @@
 	</h2>
 	{foreach $vzorce as $it}
 	{var $light = ""}
-	{if $vzorec == $it->id}
-		{var $light = "light"}
+	{if isset($vzorec)}
+		{if $vzorec == $it->id}
+			{var $light = "light"}
+		{/if}
 	{/if}
 	<div class="vzorec {$light}">
+		<span style="font: Curier;">{$it->id}</span>
 		<span class="iditemin" style="font-size:medium;" title="id: {$it->id}"><b> {$it->zkratka} </b></span>
 		<span class="nazev">{$it->nazev}</span>
 		{if $isakce}

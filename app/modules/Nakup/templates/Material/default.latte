@@ -67,7 +67,7 @@
 		<div class="infosum">
 			<span>Náklad:  </span><span><b>{$sNaklad|number:2:',':' '}</b> Kč/ks</span>
 		</div>
-		<div class="infosum">
+		<div class="infosum" title="Alt. cena: {$sProAlt|number:2:',':' '} Kč/ks">
 			<span>Cena:  </span><span><b>{$sProdej|number:2:',':' '}</b> Kč/ks</span>
 		</div>
 		<div class="infosum2 {$colclass}">
@@ -121,31 +121,34 @@
 
 	<table class="grid" style="width:100%;">
 	<tr>
-		<th>Zkratka</th>
+		<th style="text-align:center;">ID</th>
 		<th>Název</th>
-		<th>K2 číslo</th>
-		<th>Počet</th>
-		<th><u><a n:href="default, $idp, -9" title="Setřídit sestupně">Nákup [Kč]</a></u></th>
-		<th>Prodej [Kč]</th>
+		<th style="text-align:center;">K2 číslo</th>
+		<th style="text-align:center;">Počet</th>
+		<th style="text-align:right;"><u><a n:href="default, $idp, -9" title="Setřídit sestupně">Nákup [Kč]</a></u></th>
+		<th style="text-align:right;">Prodej [Kč]</th>
+		<th style="text-align:right;">Prodej alt.</th>
+		<th style="text-align:right;" title="Diference alternativní ceny k prodejní.">Difer.</th>
 		<td n:if="$cond and $unlocked" class="takce">
 			<span class="setadd" title="Přidat novou položku"><a n:if="$user->isAllowed('Material','add')" n:href="add">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
 		</td>
 	</tr>
 	{var $cm = 0}
+	{var $dif = 0}
 	{foreach $items as $it}
 	<tr>
 		{if $it->id_k2}
-			<td class="zkrat50" title="{$it->zkratka}">
+			<td class="zkrat50" style="text-align:right;" title="{$it->zkratka}">
 				{if $user->isAllowed('Material','detail')}
-					<a n:href="detail, $it->id">{$it->zkratka|truncate:25}</a>
+					<a n:href="detail, $it->id">{$it->id}</a>
 				{else}
-					{$it->zkratka|truncate:25}
+					{$it->id}
 				{/if}
-				
+				{*
 				{if $user->isAllowed('K2','find')}
 					<a n:href="K2:find, 0, $it->zkratka" title="Najít zkratku v K2" style="position:relative;float:right;">&#x25B7;</a>
 				{/if}
-				
+				*}
 			</td>
 		{else}
 			<td class="zkrat50" title="{$it->zkratka}" class="redlight">
@@ -221,6 +224,35 @@
 				</span>
 			</td>
 		{/if}
+		{if $it->cena_kc3 > $it->cena_kc2}
+			<td class="tcislo tselorange" title="Tato cena je lepší.">
+				<span n:if="$it->cena_kc3>0">
+					{$it->cena_kc3|number:4:',':' '}
+				</span>
+			</td>
+		{elseif $it->cena_kc3 > $it->cena_kc2*1.05}
+			<td class="tcislo tselored" title="Tato cena je výrazně lepší.">
+				<span n:if="$it->cena_kc3>0">
+					{$it->cena_kc3|number:4:',':' '}
+				</span>
+			</td>
+		{else}
+			<td class="tcislo tselgreen" title="Tato cena je horší.">
+				<span n:if="$it->cena_kc3>0">
+					{$it->cena_kc3|number:4:',':' '}
+				</span>
+			</td>
+		{/if}
+		{if $it->cena_kc3>0}
+			{var $dif = ($it->cena_kc3 - $it->cena_kc2)/($it->cena_kc2)*100}
+		{else}
+			{var $dif = 0}
+		{/if}
+		<td class="tcislo">
+			<span n:if="$it->cena_kc2>0">
+				{$dif|number:2:',':' '} %
+			</span>
+		</td>
 		<td n:if="$cond and $unlocked" class="takce">
 			<span class="setedit" title="Změnit"><a n:if="$user->isAllowed('Material','edit')" n:href="edit, $it->id">&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
 			<span class="setdel" title="Odstranit"><a n:if="$user->isAllowed('Material','delete')" n:href="delete, $it->id">&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
@@ -238,6 +270,6 @@
 		{if $cm>0}
 			<span class="mini"><i>(Podtržené ceny mají cenu v cizí měně, která se zobrazí po najetí kurzorem myši nad cenu v Kč.)</i></span>
 		{/if}
-		<p style="float:right;"><span class="mini">Počet záznamů: </span>{$c}</p>
+		<p style="float:right;"><span class="mini">Záznamy: {$nav}</span></p>
 	</div>
 {/if}
