@@ -358,50 +358,7 @@ class Model extends DibiRow
 			return '[' . substr($retstr,0,strlen($retstr)-1) . ']';		
 		}
 	}
-	/**
-	 * Vrací pole s hodnotami koeficinetu ZasR, MatM, vzorec pro cenu materiálu a výsledný koeficient
-	 * @param type $idnabidka
-	 * @return type array
-	 */
-	public function getMatCoef($idnabidka){
-		$data = dibi::query("SELECT t.zkratka, s.hodnota, k.mater_c, COALESCE(s.pravidlo,'') [pravidlo]
-								FROM sazby s
-								left join typy_sazeb t ON s.id_typy_sazeb = t.id
-								left join set_sazeb ss ON s.id_set_sazeb = ss.id
-								left join kalkulace k ON ss.kalkulace = k.id
-								left join nabidky n ON ss.id = n.id_set_sazeb
-								WHERE n.id = $idnabidka AND t.zkratka IN ('ZasR','MatM')
-							")->fetchAll();
-		$zasr = 0;
-		$matm = 0;
-		$vzor = "";
-		$koef = 0;
-		$przr = "";	// pravidlo u zasobovaci režie
-		$prmm = "";	// pravidlo u materiálové marže
-		foreach ($data as $d){
-			if($d['zkratka']=="ZasR"){
-				$zasr = $d['hodnota'];
-				$przr = trim($d['pravidlo']);
-			}
-			if($d['zkratka']=="MatM"){
-				$matm = $d['hodnota'];
-				$prmm = trim($d['pravidlo']);
-			}
-			$vzor = $d['mater_c'];
-		}
-		
-		$vzorec = str_replace("MaterialN", "1", $vzor);
-		$vzorec = str_replace("ZasR", (string)$zasr, $vzorec);
-		$vzorec = str_replace("MatM", (string)$matm, $vzorec);
-		eval("\$koef = $vzorec;");	//vyhodnotí string výraz jako php kód
-		$ret['zasr'] = $zasr;
-		$ret['matm'] = $matm;
-		$ret['vzor'] = $vzorec;
-		$ret['koef'] = $koef;
-		$ret['przr'] = $przr;
-		$ret['prmm'] = $prmm;
-		return $ret;
-	}
+
 
 	/**
 	 * Test, zda je produkt uzamčen
@@ -487,25 +444,4 @@ class Model extends DibiRow
 		return $sstr;
 	}
 	
-	
-	public function parsePravidlo($pravidlo){
-		$ret = array();
-		if ($pravidlo==''){
-			return false;
-		}
-		$meze = explode(';', $pravidlo);
-		//dd($meze,'Meze');
-		$i = 0;
-		foreach ($meze as $m){
-			$m = str_replace(' ', '', $m);
-			$m = str_replace(',', '.', $m);
-			$m = str_replace(')', '', $m);
-			$p = explode('(', $m);
-			$ret[$i]['mez'] = floatval($p[0]);
-			$ret[$i]['sazba'] = floatval($p[1]);
-			$i++;
-		}
-		//dd($ret,'Pravidla');
-		return $ret;
-	}
 }

@@ -110,8 +110,8 @@ class ProduktPresenter extends ObchodPresenter
 		$isceny = count($prices)>0;
         $this->template->isceny = $isceny;
         $this->template->prices = $prices;
-		
-		$aval = $instance->calcAddedValue($id, $this->idn);
+		$kalk = new Kalkul;
+		$aval = $kalk->calcAddedValue($id, $this->idn);
 		$this->template->aval = $aval;
 		$hist = $instance->getProductHistory($id);
 		$this->template->history = $hist;
@@ -381,7 +381,8 @@ class ProduktPresenter extends ObchodPresenter
 	{
 		$instance = new Produkt;
 		$item = $instance->find($id)->fetch();
-		$result = $instance->costsCalc($id, $item->idsso);
+		$kalk = new Kalkul;
+		$result = $kalk->costsCalc($id, $item->idsso);
 		if(!$result){
 			$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 		} else {
@@ -434,6 +435,7 @@ class ProduktPresenter extends ObchodPresenter
 		}
 		
 		$item = new Produkt;
+		$kalk = new Kalkul;
 		$data = $item->findPrice($id);
 		if ($data){
 			$id_nabidka = (int) $data['id_nabidky'];
@@ -444,7 +446,7 @@ class ProduktPresenter extends ObchodPresenter
 			$id_vzorec = (int) $data['id_vzorec'];
 			$id_set_sazeb_o = (int) $data['id_set_sazeb_o'];
 			//recalculate costs
-			$result = $item->costsCalc($id_produkt, $id_set_sazeb_o);
+			$result = $kalk->costsCalc($id_produkt, $id_set_sazeb_o);
 			if(!$result){
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {
@@ -919,9 +921,10 @@ class ProduktPresenter extends ObchodPresenter
 	{
 		if ($form['costcalc']->isSubmittedBy()) {
 	        $instance = new Produkt;
+			$kalk = new Kalkul;
 			$idp = $this->getParam('id');
 			$item = $instance->find($idp)->fetch();
-			$result = $instance->costsCalc($idp, $item->idsso);
+			$result = $kalk->costsCalc($idp, $item->idsso);
 			if(!$result){
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {
@@ -966,6 +969,7 @@ class ProduktPresenter extends ObchodPresenter
 	{
 		if ($form['pricecalc']->isSubmittedBy()) {
 	        $instance = new Produkt;
+			$kalk = new Kalkul;
 			$data = (array) $form->values;
 			$idp = (int) $this->getParam('id');
 			$item = $instance->find($idp)->fetch();
@@ -973,7 +977,7 @@ class ProduktPresenter extends ObchodPresenter
 			$id_pocty = (int) $data['id_pocty'];
 			$vzorec = (int) $data['vzorec'];
 			//recalculate costs
-			$result = $instance->costsCalc($idp, $item->idsso);
+			$result = $kalk->costsCalc($idp, $item->idsso);
 			if(!$result){
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {

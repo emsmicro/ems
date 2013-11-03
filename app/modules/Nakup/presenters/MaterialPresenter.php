@@ -51,7 +51,8 @@ class MaterialPresenter extends NakupPresenter
 		}
 		$id = $this->idproduct;
 		$idnabidka = $this->getIdFromMySet(3);
-		$kmat = $mat->getMatCoef($idnabidka);
+		$kalk = new Kalkul;
+		$kmat = $kalk->getMatCoef($idnabidka);
 		if($id){
 			$addtitul = ' - BOM: '.$this->getNameFromMySet(4);
 		}
@@ -92,14 +93,19 @@ class MaterialPresenter extends NakupPresenter
 		$this->template->rows = count($rows);
 		$this->template->noprices = $noprices;
 		$summat = $mat->sumBOM($id);
-		$this->template->sProdej = round($summat['sumProdej'],2);
-		$this->template->sProAlt = round($summat['sumProAlt'],2);
+		$sProdej = round($summat['sumProdej'],2);
+		$sProAlt = round($summat['sumProAlt'],2);
+		$this->template->sProdej = $sProdej;
+		$this->template->sProAlt = $sProAlt;
+		$this->template->noAltProdej = ($sProdej == $sProAlt or $sProAlt == 0);
 		if ($summat['sumNaklad']>0){
 			$this->template->sNaklad = round($summat['sumNaklad'],2);
 			$this->template->procprd = (round($summat['sumProdej'],2)/round($summat['sumNaklad'],2)-1)*100;
+			$this->template->procpra = (round($summat['sumProAlt'],2)/round($summat['sumNaklad'],2)-1)*100;
 		} else {
 			$this->template->sNaklad = 0.001;
 			$this->template->procprd = 0;
+			$this->template->procpra = 0;
 		}
 		$this->template->stavy3 = $mat->getProductHistory($id,3);
 		$this->template->stavy6 = $mat->getProductHistory($id,6);
@@ -119,7 +125,7 @@ class MaterialPresenter extends NakupPresenter
 	{
 
         $mat = new Material;
-		
+		$kalk = new Kalkul;
 		$addtitul = ' (veškerý)';
 		$id = $this->idproduct;
 		if($id){
@@ -157,7 +163,7 @@ class MaterialPresenter extends NakupPresenter
 			$this->template->sNaklad = 0.001;
 			$this->template->procprd = 0;
 		}
-		$kmat = $mat->getMatCoef($idnabidka);
+		$kmat = $kalk->getMatCoef($idnabidka);
 		$this->template->koefmat = (float)$kmat['koef'];
 		$noprices = $mat->countNoSalePrices($id);
 		$this->template->noprices = $noprices;
@@ -323,12 +329,16 @@ class MaterialPresenter extends NakupPresenter
 	 */
 	public function actionMatPrice($id)
 	{
-        $mat = new Material;
-		$kmat = $mat->getMatCoef($this->getIdFromMySet(3));
-		$meze = $mat->parsePravidlo($kmat['przr']);
-		$mat->insertMatPrices($id, $kmat['koef'], $meze);
-		if($meze){
-			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny dle pravidel ".$kmat['przr'].".");
+		$kalk = new Kalkul;
+		$kmat = $kalk->getMatCoef($this->getIdFromMySet(3));
+		$pravidlo1 = $kmat['przr'];	// zásobovací režie
+		$meze1 = $kalk->parsePravidlo($pravidlo1);
+		$kalk->recalMatPrices($id, $kmat['koef'], $meze1, FALSE);
+		$pravidlo2 = $kmat['prmm']; // materiálová marže
+		$meze2 = $kalk->parsePravidlo($pravidlo2);
+		$kalk->recalMatPrices($id, $kmat['koef'], $meze2, TRUE);
+		if($meze1 || $meze2){
+			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny dle pravidel: zásobovací režie: ".$pravidlo1. " marže: ". $pravidlo2.".");
 		} else {
 			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny koeficientem ".str_replace(".", ",", $kmat['koef']).".");
 		}
@@ -342,8 +352,8 @@ class MaterialPresenter extends NakupPresenter
 	 */
 	public function actionMatPriceErase($id)
 	{
-        $mat = new Material;
-		$mat->insertMatPrices($id, 0);
+        $kalk = new Kalkul;
+		$mat->recalMatPrices($id, 0);
 		$this->flashMessage("Prodejní ceny materiálových položek byly vynulovány",'exclamation');
 		$this->goBack();
 

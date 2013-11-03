@@ -205,67 +205,6 @@ class Material extends Model
 		return $idm;
 	}
 	
-	/**
-	 * Recaclutate prices of material BOM of product
-	 * @param type $idproduktu
-	 * @param type $koeficient
-	 * @return type 
-	 */
-	public function insertMatPrices($idproduktu, $koeficient, $meze=FALSE)
-	{
-		if($meze & $meze<>''){
-			// alternativní cena
-			$sql_cmd = "UPDATE material  
-						SET cena_kc3 = cena_kc * $koeficient
-						FROM material m
-									LEFT JOIN vazby v ON m.id=v.id_material 
-									LEFT JOIN meny me ON m.id_meny = me.id
-									WHERE v.id_vyssi=$idproduktu";
-			dibi::query($sql_cmd);
-			
-			// cena s mezemi - kalkulační
-			$sql_cmd = "UPDATE material SET cena_kc2 = CASE";
-			$case = '';
-			for($i = 0; $i < count($meze); ++$i) {
-				$do = $meze[$i]['mez'];
-				$koef = 1 + $meze[$i]['sazba']/100;
-				$max = 0;
-				if($do>0){
-					// menší než
-					if($max<$do){$max=$do;}
-					$case .= " WHEN cena_kc < $do THEN cena_kc * $koef";
-				} else {
-					// větší nebo rovno max
-					$case .= " WHEN cena_kc >= $max THEN cena_kc * $koef";
-				}
-			}
-			$sql_cmd .= $case .	" END
-						FROM material m
-									LEFT JOIN vazby v ON m.id=v.id_material 
-									LEFT JOIN meny me ON m.id_meny = me.id
-									WHERE v.id_vyssi=$idproduktu";
-		} else {
-			// alternativní cena - vynulování
-			$sql_cmd = "UPDATE material  
-						SET cena_kc3 = 0
-						FROM material m
-									LEFT JOIN vazby v ON m.id=v.id_material 
-									LEFT JOIN meny me ON m.id_meny = me.id
-									WHERE v.id_vyssi=$idproduktu";
-			dibi::query($sql_cmd);
-			// cena kalkulační
-			$sql_cmd = "UPDATE material  
-						SET cena_kc2 = cena_kc * $koeficient
-						FROM material m
-									LEFT JOIN vazby v ON m.id=v.id_material 
-									LEFT JOIN meny me ON m.id_meny = me.id
-									WHERE v.id_vyssi=$idproduktu";
-		}
-		//dd($sql_cmd,'SQL');
-		//return false;
-		return dibi::query($sql_cmd);
-	}
-	
 	
 	public function sumBOM($idprodukt)
 	{

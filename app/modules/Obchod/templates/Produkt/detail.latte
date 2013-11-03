@@ -285,6 +285,7 @@
 							  <span class="subtitle">{$cen->nvzorec}</span>
 							  <br>
 							  {$cen->pvzorec}
+							  <a n:if="$user->isAllowed('SetSazeb','editKalk')" n:href="SetSazeb:editKalk, $cen->id_vzorec">&nbsp;edit&nbsp;</a>
 							</div>	
 							<span class="kvzorec {$actclass}">
 								<span class="tooltip">&nbsp;&nbsp;&nbsp;</span>

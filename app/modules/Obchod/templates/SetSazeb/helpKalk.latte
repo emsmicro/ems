@@ -10,8 +10,9 @@
 		<ul>
 		<li><b>= 0 .. cena materiálu</b> = náklady materiálu + zásobovací režie, tedy MaterialC = MaterialN * (1 + ZasR)</li>
 		<li><b>> 0 .. cena materiálu</b> = náklady materiálu + zásobovací režie + materiálová marže, tedy MaterialC = MaterialN * (1 + ZasR + MatM)</li>
+		<li><b>= 4 .. cena materiálu</b> = náklady materiálu + zásobovací režie + materiálová marže dle pravidel - mezí pro nákupní ceny materiálu, tedy MaterialC = MaterialN * (1 + ZasR + MatM)</li>
 		<li><b>= 1 .. správní režie</b>  = výrobní náklady (bez ceny materiálu) * zvýšená sazba správní režie, tedy SprvRezie = (VyrobniN - MaterialC) * SprR2</li>
-		<li><b>= 2</b> nebo <b>= 0 .. správní režie</b>  = výrobní náklady (vč. ceny materiálu) * základní sazba správní režie, tedy SprvRezie = VyrobniN * SprR1</li>
+		<li><b>= 0, 2, 4 .. správní režie</b>  = výrobní náklady (vč. ceny materiálu) * základní sazba správní režie, tedy SprvRezie = VyrobniN * SprR1</li>
 		</ul>
 	</li>
 

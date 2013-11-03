@@ -1038,9 +1038,9 @@ form.hledat input.text:focus {
 	text-align: center;
     background-color: #EEE8C8;
     border: solid 1px #7A6B25;
-     border-radius: 8px;
+/*     border-radius: 8px;
     -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
+    -moz-border-radius: 8px;*/
 }
 
 #navstat li:hover, #navstat li.active:hover {
@@ -1665,18 +1665,18 @@ form.sign tr {
 	/*right:160px;*/
 	border:3px solid #ADD4FB;
 	background:#E2F0FE;
-	margin-right: 2px;
+	margin: 0 1px 0 1px;
 }
 
 .infosum2 {
 	position:relative;
 	float:left;
-	padding: 5px 10px 5px 10px; 
+	padding: 5px 10px 5px 10px;
 	font-size:small;
 	/*right:70px;*/
-	border:3px solid #FFF; 
+	border:3px solid #FFF;
 	background:#FFF;
-	margin-right: 2px;
+	margin: 0 1px 0 1px;
 }
 
 .infosum2.orange {
@@ -1747,8 +1747,16 @@ span.iditemin {
 
 }
 
+.kvzorce .vzorec:hover {
+	background-color: #FFF4EA;
+}
+
 .kvzorce .vzorec.light {
 	background: #E4F1FC;
+}
+
+.kvzorce .vzorec.light:hover {
+	background: #F1F9FE;
 }
 
 .kvzorce .nazev {
@@ -1794,6 +1802,7 @@ div.daval {
 	position:absolute;
 	top: 0;
 	right: 30px;
+	min-width: 25%;
 	padding: 6px;
 	border: 1px solid #BBB;
     border-radius: 			5px;
@@ -1807,8 +1816,8 @@ div.daval {
 table.grid.aval {
 	padding: 0;
 	margin: 0;
-	border: none;
-	border-color: #DDD;
+	border: solid 2px #FFF;
+	width: 100%;
 }
 
 
