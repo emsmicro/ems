@@ -131,33 +131,6 @@ class Produkt extends Model
 		return dibi::query($this->full_detail_query . "	WHERE p.id=$id");
 		
 	}
-
-
-		/**
-	 * 
-	 * Vrací detailní data o cene dle id ceny
-	 * @param int
-	 * @return record set
-	 */		
-	public function findPrice($id)
-	{
-		return dibi::query("
-						SELECT 
-							c.id_nabidky,
-							c.id_produkty,
-							n.id_set_sazeb,
-							c.id_meny,
-							c.id_pocty,
-							c.id_vzorec,
-							n.id_set_sazeb_o,
-							k.param
-						FROM ceny c
-						LEFT JOIN nabidky n ON c.id_nabidky = n.id
-						LEFT JOIN kalkulace k ON c.id_vzorec = k.id
-						WHERE c.id=$id
-				")->fetch();
-	}
-
 	
 	
 	/**
@@ -198,7 +171,7 @@ class Produkt extends Model
 										LEFT JOIN pocty		p ON c.id_pocty=p.id
 										LEFT JOIN nabidky	n ON c.id_nabidky=n.id
 										LEFT JOIN kalkulace v ON c.id_vzorec=v.id
-								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky
+								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky AND c.id is not null
 									ORDER BY id, c.id, m.id, p.id, t.poradi
 									")->fetchAll();
 		}else{
@@ -296,58 +269,6 @@ class Produkt extends Model
 	public function remove4offer($idp, $idn)
 	{
 		$this->connection->delete("ceny")->where("id_nabidky=$idn AND id_produkty=$idp")->execute();
-	}
-
-
-	/**
-	 * Recalculate prices of products by currency
-	 * @param int, int, int, int, int $id_nabidka, $id_produkt, , $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec
-	 * @return void
-	 */
-	public function pricesCalc($id_nabidka, $id_produkt, $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec = 0)
-	{
-		if($id_nabidka>0 && $id_produkt>0 && $id_set_sazeb>0 && $id_meny>0 && $id_pocty>0){
-			//zjištění dalších parametrů výpočtu
-			if ($id_vzorec>0){
-				$proc = dibi::query("SELECT id [kid], procedura [procedura], RTRIM(param) [param]
-										FROM kalkulace
-										WHERE id = $id_vzorec")->fetchAll();
-			} else {
-				$proc = dibi::query("SELECT COALESCE(k.id,0) [kid], k.procedura [procedura], RTRIM(k.param) [param]
-										FROM nabidky n
-										LEFT JOIN set_sazeb s ON n.id_set_sazeb=s.id
-										LEFT JOIN kalkulace k ON s.kalkulace=k.id
-										WHERE n.id = $id_nabidka")->fetchAll();
-			}
-			if($proc){
-				$procedura = $proc[0]['procedura'];
-				if ($id_vzorec == 0) {
-					$id_vzorec = $proc[0]['kid'];
-				}
-				$parameter = trim($proc[0]['param']);
-				if ($parameter==""){$parameter = "0";}
-				$result = dibi::query("
-									DECLARE @r_ins int, @r_upd int
-									EXECUTE $procedura	
-												$id_nabidka, 
-												$id_produkt, 
-												$id_set_sazeb, 
-												$id_meny, 
-												$id_pocty,
-												$id_vzorec,
-												$parameter,
-												@r_ins OUTPUT,
-												@r_upd OUTPUT
-									SELECT @r_ins [r_ins], @r_upd [r_upd]
-									")->fetch();
-				return $result;
-			} else {
-				return false;
-			}
-		} else {
-			return false;
-		}
-
 	}
 	
 	/**

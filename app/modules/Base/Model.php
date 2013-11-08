@@ -10,6 +10,7 @@ class Model extends DibiRow
 {
 	/** @var Dibi\Connection */
 	public $connection;
+	public $CONN;
 	
 	public $limit = 0;
 	public $offset = 0;
@@ -20,7 +21,7 @@ class Model extends DibiRow
         parent::__construct($arr);
 		
 		$this->connection = dibi::getConnection();
-		
+		$this->CONN = $this->connection;
 	}
 
 
@@ -212,6 +213,15 @@ class Model extends DibiRow
 										$cond ORDER BY sa.id"
 		);
 		return $units;
+	}
+	
+	/**
+	 * Return all data from table
+	 * @param type $table
+	 * @return type
+	 */
+	public function getTableData($table) {
+		return dibi::query("SELECT * FROM $table")->fetchAll();
 	}
 	
 	public function getContactType($id) {

@@ -4,14 +4,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Nakup/Material.php</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/SetSazeb.php</file>
             <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/presenters/SetSazebPresenter.php</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Nakup/presenters/MaterialPresenter.php</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/templates/SetSazeb/default.latte</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Nakup/templates/Material/default.latte</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/templates/SetSazeb/detail.latte</file>
+            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/Kalkul.php</file>
+            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/presenters/ProduktPresenter.php</file>
             <file>file:/C:/xampp/htdocs/ems/app/modules/Base/Model.php</file>
+            <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/Produkt.php</file>
         </group>
     </open-files>
 </project-private>

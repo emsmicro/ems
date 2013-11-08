@@ -239,6 +239,10 @@ class SetSazebPresenter extends ObchodPresenter
 	public function renderAddKalk()
 	{
 		$this['kalkForm']['save']->caption = 'Přidat';
+		$m = new Model;
+		$this->template->tceny = $m->getTableData("typy_cen ORDER BY poradi");
+		$this->template->tnakl = $m->getTableData("typy_nakladu ORDER BY poradi");
+		$this->template->tsazb = $m->getTableData("typy_sazeb ORDER BY poradi");
         $this->template->titul = "Nový kalkulační vzorec";
 
 	}
@@ -261,6 +265,10 @@ class SetSazebPresenter extends ObchodPresenter
 			}
 			$form->setDefaults($row);
 		}
+		$m = new Model;
+		$this->template->tceny = $m->getTableData("typy_cen ORDER BY poradi");
+		$this->template->tnakl = $m->getTableData("typy_nakladu ORDER BY poradi");
+		$this->template->tsazb = $m->getTableData("typy_sazeb ORDER BY poradi");
 		$this->template->titul = "Změna kalkulačního vzorce ".$row->zkratka;
 
 	}
@@ -401,11 +409,11 @@ class SetSazebPresenter extends ObchodPresenter
 					->addRule($form::FLOAT, 'Hodnota musí být celé nebo reálné číslo.');
 		$tzkr = $row['zkratka'];
 		dd($tzkr,'FormVal');
-		if(strpos('ZasR,MatM', $tzkr)>-1){
-			$form->addTextArea('pravidlo', 'Pravidlo:')
-				->addRule(Form::MAX_LENGTH, 'Pravidlo je příliš dlouhé', 2000)
-				->setAttribute('style', 'width:150%;');
-		}
+//		if(strpos('ZasR,MatM', $tzkr)>-1){
+			$form->addTextArea('pravidlo', 'Pravidlo:', 60, 4)
+				->addRule(Form::MAX_LENGTH, 'Pravidlo je příliš dlouhé', 2000);
+				//->setAttribute('style', 'width:150%;');
+//		}
 		$form->addHidden('id_set_sazeb');
 		$form->addHidden('id_typy_sazeb');
 		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
@@ -580,9 +588,9 @@ class SetSazebPresenter extends ObchodPresenter
 		$form->addText('nazev', 'Název:', 60)
 				->setRequired('Uveďte název.');
 
-		$form->addTextArea('popis', 'Popis:');
-		$form->addTextArea('definice', 'Definice:');
-		
+		$form->addTextArea('popis', 'Popis:', 94, 10);
+		$form->addTextArea('definice', 'Definice:', 72, 20)
+			->setAttribute('style', 'font: 14px "Droid Sans Mono", "Courier new", Courier, monospace; padding: 8px; color: #1A4571;');		
 		$form->addText('procedura', 'Procedura:')
 				->setRequired('Uveďte název uložené procedury.');
 		$form->addText('param', 'Parametry:')

@@ -393,6 +393,64 @@ span.tooltip2 {
     background: #EEE url('../images/tooltip_icon2.png') left center no-repeat;
 }
 
+div.skryto1, div.skryto2, div.skryto3 {
+      display: none;
+      margin: 5px;
+      padding: 5px;
+      background-color: #EEE;
+}
+
+div.skryvat1, div.skryvat2, div.skryvat3 {
+    cursor: default;
+    position:absolute;
+    float:right;
+    top:50px;
+    width:96px;
+    z-index: 1;
+    text-align: center;
+    padding: 3px;
+    border: dotted 1px #555;
+    background-color: #FFF7E6;
+    font-size: small;
+}
+
+    div.skryvat1:hover,
+    div.skryvat2:hover,
+    div.skryvat3:hover
+    {
+          background-color: #FFFCF4;
+    }
+
+
+    div.skryvat1:hover div.skryto1,
+    div.skryvat2:hover div.skryto2,
+    div.skryvat3:hover div.skryto3
+    {
+      display: block;
+    	position: absolute;
+     	z-index: 3;
+      min-width: 300px;
+    }
+
+    div.skryto1 table,
+    div.skryto2 table,
+    div.skryto3 table
+    {
+      float:right;
+      right: 0;
+      background-color: white;
+      min-width: 300px;
+      text-align: left;
+}
+
+    div.skryto1 table td,
+    div.skryto2 table td,
+    div.skryto3 table td
+    {
+       padding: 3px;
+       font-size: 12px;
+    }
+
 
 span.kvzorec {
 	float: left;
@@ -438,7 +496,7 @@ td:hover div.popgr {
 
 
 table.grid td.alt {
-	background: #EEEEEE;
+    background: #EEEEEE;
     padding-top: 3px;
     padding-bottom: 3px;
 }
@@ -706,7 +764,11 @@ form .required label {
 }
 
 
+.uform form {
+    max-width: 100%;
+    font: Courier, monospace 13px;
 
+}
 
 /*-----------------------------------*/
 

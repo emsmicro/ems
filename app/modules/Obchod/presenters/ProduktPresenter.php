@@ -201,6 +201,19 @@ class ProduktPresenter extends ObchodPresenter
 		//empty method - only for ACL permissions
 	}
 	
+	public function actionKalkulatePrices(){
+		$idp = $this->getIdFromMySet(4);
+		$idn = $this->getIdFromMySet(3);
+		$kalk = new Kalkul;
+		$ret = $kalk->kalkulPrices($idn, $idp, 4);  // přidat dávku do parametrů
+		$this->flashMessage('Defaultní ceny produktu byly spočteny.');
+		//dd($ret, "DATA");
+//		var_dump($ret['vzor']);
+		//exit();
+		$this->goBack();
+	}
+
+	
 	/********************* views add & edit *********************/
 
 
@@ -255,7 +268,7 @@ class ProduktPresenter extends ObchodPresenter
         $instance = new Produkt;
 		$this->template->item = $instance->find($id)->fetch();
 		if (!$this->template->item) {
-			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+			throw new NA\BadRequestException('Záznam nenalezen!');
 		}
 		$this->template->anabidka = $this->getNameFromMySet(3);
 		$this->template->titul = "Přiřazení produktu k nabídce";
@@ -276,7 +289,7 @@ class ProduktPresenter extends ObchodPresenter
 		$row = $item->find($id)->fetch();
 		$this->template->item = $row;
 		if (!$this->template->item) {
-			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+			throw new NA\BadRequestException('Záznam nenalezen!');
 		}
 		$this->template->anabidka = $row->nabidka;
 		$this->template->titul = "Zrušení přiřazení produktu k nabídce";
@@ -297,7 +310,7 @@ class ProduktPresenter extends ObchodPresenter
         $instance = new Produkt;
 		$this->template->item = $instance->find($id)->fetch();
 		if (!$this->template->item) {
-			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+			throw new NA\BadRequestException('Záznam nenalezen!');
 		}
 		$this->template->titul = self::TITUL_DELETE;
 
@@ -352,7 +365,7 @@ class ProduktPresenter extends ObchodPresenter
 		$amount = new Pocet;
 		$this->template->contact = $amount->find($id)->fetch();
 		if (!$this->template->contact) {
-			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+			throw new NA\BadRequestException('Záznam nenalezen!');
 		}
 		$this->template->titul = "Výmaz plánovaného množství";
 
@@ -412,7 +425,7 @@ class ProduktPresenter extends ObchodPresenter
 			$this->template->item = $prod;
 			$form['vzorec']->value = $prod['vzorec'];			
 			if (!$this->template->item) {
-				throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+				throw new NA\BadRequestException('Záznam nenalezen!');
 			}
 			$this->template->titul = "Aktualizace cen produktu";
 		}
@@ -436,7 +449,7 @@ class ProduktPresenter extends ObchodPresenter
 		
 		$item = new Produkt;
 		$kalk = new Kalkul;
-		$data = $item->findPrice($id);
+		$data = $kalk->findPrice($id);
 		if ($data){
 			$id_nabidka = (int) $data['id_nabidky'];
 			$id_produkt = (int) $data['id_produkty'];
@@ -451,7 +464,8 @@ class ProduktPresenter extends ObchodPresenter
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {
 				//calculate prices
-				$res = $item->pricesCalc($id_nabidka, $id_produkt, $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec);
+				$res = $kalk->kalkulPrices($id_nabidka, $id_produkt, $id_vzorec, $id_set_sazeb, $id_pocty, $id_meny);
+				//$res = $kalk->pricesCalc($id_nabidka, $id_produkt, $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec);
 				if($res){
 					$rins = $res['r_ins'];
 					$rupd = $res['r_upd'];
@@ -982,7 +996,8 @@ class ProduktPresenter extends ObchodPresenter
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {
 				//calculate prices
-				$res = $instance->pricesCalc($item->idn, $idp, $item->idss, $id_meny, $id_pocty, $vzorec);
+				$res = $kalk->kalkulPrices($id_nabidka, $id_produkt, $id_vzorec, $id_set_sazeb, $id_pocty, $id_meny);
+				//$res = $kalk->pricesCalc($item->idn, $idp, $item->idss, $id_meny, $id_pocty, $vzorec);
 				if($res){
 					$rins = $res['r_ins'];
 					$rupd = $res['r_upd'];

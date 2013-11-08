@@ -7,6 +7,9 @@
 <h2>{$company}</h2>
 <h3>{$subtitle}</h3>
 
+
+<div class="uform" style="position:relative; width:650px;padding-top:62px;">
+
 {if $item}
 	<p style="margin: 20px 0 50px 20px;">Opravdu chcete vypočítat novou sadu cen produktu?</p>
 	<ul id="navi">
@@ -18,7 +21,7 @@
 		</li>
 	</ul>
 	{control pricesUpdForm}
-	<p style="font-size:x-small;"/>
+	<p style="font-size:small;"/>
 		<i>Pro výpočet ceny v cizí měně je nutné zvolit měnu a kurz, popř. zadejte nový kurz a akci opakujte.</i><br />
 		<i>Rovněž je možné změnit kalkulační vzorec za jiný, než defaultní a vypočítat jinou cenovou variantu.</i><br />
 	</p>
@@ -26,3 +29,5 @@
 {else}
 	<p>Produkt nebyl nalezen.</p>
 {/if}
+
+</div>
