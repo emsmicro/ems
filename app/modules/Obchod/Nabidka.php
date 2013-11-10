@@ -51,10 +51,10 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 		}
 
 		if($this->limit==0 && $this->offset==0){
-			return dibi::query($sql_cmd);
+			return $this->CONN->query($sql_cmd);
 		} else {
 			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.id DESC');
-			return dibi::query($sql_pgs);
+			return $this->CONN->query($sql_pgs);
 		}
 				
 	}
@@ -65,7 +65,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function showOffer($id_firmy)
 	{
-		return dibi::dataSource("SELECT n.*,f.nazev [nfirma], f.id [idf] FROM nabidky n
+		return $this->CONN->dataSource("SELECT n.*,f.nazev [nfirma], f.id [idf] FROM nabidky n
                                 LEFT JOIN firmy f ON n.id_firmy=f.id
                                 WHERE n.id_firmy = $id_firmy");
 	}
@@ -77,7 +77,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */	
 	public function find($id)
 	{
-		return dibi::query($this->full_detail_query . "	WHERE n.id=$id");
+		return $this->CONN->query($this->full_detail_query . "	WHERE n.id=$id");
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */	
 	public function findByIdOffer($id)
 	{
-		return dibi::query($this->full_detail_query . "	WHERE n.id=$id");
+		return $this->CONN->query($this->full_detail_query . "	WHERE n.id=$id");
 	}
 
 	/**
@@ -97,7 +97,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */	
 	public function findByCompany($id_firmy)
 	{
-		return dibi::query($this->full_detail_query . "	WHERE n.id_firmy=$id_firmy");
+		return $this->CONN->query($this->full_detail_query . "	WHERE n.id_firmy=$id_firmy ORDER BY n.id DESC");
 	}
 	
 	/**
@@ -113,7 +113,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 		}
 		$sql = "$this->full_detail_query WHERE 
 						n.id $isIn IN (SELECT id_nabidky FROM stav_nabidka $cond)";
-		return dibi::query( $sql )->fetchAll();
+		return $this->CONN->query( $sql )->fetchAll();
 	}	
 	
 	/**
@@ -121,7 +121,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 * @return type 
 	 */
 	public function getSummary(){
-		return dibi::query("SELECT CAST(s.popis AS varchar) [name], s.zkratka2 [category], COUNT(*) [value]
+		return $this->CONN->query("SELECT CAST(s.popis AS varchar) [name], s.zkratka2 [category], COUNT(*) [value]
 								FROM stav_nabidka sn
 									LEFT JOIN stav s ON sn.id_stav=s.id
 								GROUP BY id_stav, CAST(s.popis AS varchar), s.zkratka2
@@ -135,7 +135,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -145,7 +145,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -155,7 +155,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -167,24 +167,24 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	{
 		if($id_nabidky==0){return false;}
 		//("INSERT id_nabidky, id_stav, datum_zmeny, id_user");
-		$result = dibi::query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=$status");
+		$result = $this->CONN->query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=$status");
 		$cnt = $result->fetchSingle();
 		if ($cnt>0)
 		{
 			//mozna update?? co, pokud se vrati stav o krok zpet?? asi delete
-			dibi::query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=$status");
+			$this->CONN->query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=$status");
 		} 
 		if ($status == 21){
 			//vymazat případný status "ODEMČENO"
-			dibi::query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=22");
+			$this->CONN->query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=22");
 		}
 		if ($status == 22){
 			//vymazat případný status "UZAMČENO"
-			dibi::query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=21");
+			$this->CONN->query("DELETE FROM stav_nabidka WHERE id_nabidky=$id_nabidky AND id_stav=21");
 		}
 
 		$data = array('id_nabidky' => $id_nabidky, 'id_stav' => $status, 'datum_zmeny' => date("Ymd H:i:s"), 'id_user' => $id_user );
-		return $this->connection->insert('stav_nabidka', $data)->execute();
+		return $this->CONN->insert('stav_nabidka', $data)->execute();
 
 	}
 	
@@ -196,7 +196,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	public function deleteStatus($ioffer=0, $istat=0, $iuser=0)
 	{
 		if($ioffer>0 && $istat>0 && $iuser>0){
-			return	dibi::query("DELETE FROM stav_nabidka WHERE id_nabidky=$ioffer AND id_stav=$istat AND id_user=$iuser");
+			return	$this->CONN->query("DELETE FROM stav_nabidka WHERE id_nabidky=$ioffer AND id_stav=$istat AND id_user=$iuser");
 		}
 
 	}
@@ -207,7 +207,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 * @return type 
 	 */
 	public function sumVolume($id){
-		return dibi::dataSource("SELECT TOP 1 c.id_nabidky, 
+		return $this->CONN->dataSource("SELECT TOP 1 c.id_nabidky, 
 									SUM(CASE WHEN c.id_typy_cen=8 THEN hodnota ELSE (hodnota * p.mnozstvi) END) [objem],
 									p.mnozstvi [pocty],
 									COUNT(c.id_produkty) [pprod]
@@ -228,7 +228,7 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	public function copyNabidka($id, $id_user)
 	{
 		if($id>0 && $id_user>0){
-			$res = dibi::query("
+			$res = $this->CONN->query("
 								DECLARE @id_nab int
 								EXECUTE copyOffer $id, $id_user, @id_nab OUTPUT
 								SELECT @id_nab [nid]

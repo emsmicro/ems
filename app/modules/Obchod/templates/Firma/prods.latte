@@ -1,24 +1,33 @@
-	<table class="grid">
+	<table class="grid" style="width:98%;">
 
 	{var $naz = "xxx"}
 	{var $rws = 0}
-	{foreach $produkty as $prod}
+	{foreach $cenyprod as $prod}
 		{if $prod->id_nabidky == $nabid}
 			{if $rws == 0}
 				<tr>
+					<th>ID</th>
 					<th>Název produktu</th>
 					<th>Dávka [ks]</th>
 					<th>≈ ks/rok</th>
 					<th>Cena/ks</th>
-					<th>Jednorázové náklady</th>
+					<th>Jednoráz. nákl.</th>
 				</tr>
 				{var $rws++}
 			{/if}
-			{if $prod->idtc == 7}
+			{if $prod->idtc == 10}
 				<tr>
+					<td class="tcislo">
+						{if $prod->nazev <> $naz}
+							{$prod->id_produkty}
+						{/if}
+					</td>
 					<td>
 						{if $prod->nazev <> $naz}
-							<a n:if="$user->isAllowed('Produkt','detail')" n:href="Produkt:detail, $prod->id_produkty" title="{$prod->id_produkty}">{$prod->nazev}</a>
+							<a n:if="$user->isAllowed('Produkt','detail')" n:href="Produkt:detail, $prod->id_produkty" 
+							   title="{$prod->id_produkty}: {$prod->nazev}">
+								{$prod->nazev|truncate:45}
+							</a>
 							{var $naz = $prod->nazev}
 						{/if}
 					</td>
@@ -26,6 +35,7 @@
 					<td class="tcislo">{$prod->mnozstvi|number:0:',':' '}</td>
 					<td class="tcislo">{$prod->hodnota_cm|number:2:',':' '} {$prod->mena}</td>
 			{else}
+				
 				{if $prod->idtc == 8}
 					<td class="tcislo">{$prod->hodnota|number:2:',':' '} {$prod->mena}</td>
 				{/if}

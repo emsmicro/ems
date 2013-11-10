@@ -13,7 +13,6 @@ class Query extends Model // DibiRow obstará korektní načtení dat
     public function __construct($arr = array())
     {
         parent::__construct($arr);
-		$this->connection = dibi::getConnection();
     }
 	
 	/**
@@ -28,7 +27,7 @@ class Query extends Model // DibiRow obstará korektní načtení dat
 				&& strpos(strtoupper($ssql),'DELETE') === false) {
 			
 //		if($ssql<>''){
-			return dibi::query($ssql)->fetchAll();
+			return $this->CONN->query($ssql)->fetchAll();
 			
 		} else {
 			return array();

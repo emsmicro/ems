@@ -27,7 +27,7 @@ class FilterModel extends Model
 	 */
 	
 	public function getUserFilter($id_user, $presenter, $render='default'){
-		return dibi::dataSource("SELECT filter FROM $this->table 
+		return $this->CONN->dataSource("SELECT filter FROM $this->table 
 								WHERE id_users=$id_user AND presenter='$presenter' AND render='$render'"
 							);
 	}
@@ -35,15 +35,15 @@ class FilterModel extends Model
 	
 	public function setUserFilter($id_user, $presenter, $render='default', $filter='')
 	{
-		$result = dibi::query("SELECT count(*) FROM $this->table 
+		$result = $this->CONN->query("SELECT count(*) FROM $this->table 
 								WHERE id_users=$id_user AND presenter='$presenter' AND render='$render'");
 		$cnt = $result->fetchSingle();
 		$data = array('id_users'=>$id_user,'presenter'=>$presenter,'render'=>$render,'filter'=>$filter);
 		if ($cnt>0)
 		{
-			return $this->connection->update($this->table, $data)->where("id_users=$id_user AND presenter='$presenter' AND render='$render'")->execute();
+			return $this->CONN->update($this->table, $data)->where("id_users=$id_user AND presenter='$presenter' AND render='$render'")->execute();
 		} else {
-			return $this->connection->insert($this->table, $data)->execute();
+			return $this->CONN->insert($this->table, $data)->execute();
 		} 
 	}	
 		

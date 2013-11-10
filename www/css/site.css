@@ -12,7 +12,7 @@ body {
 h1 {
 	font-size: 1.9em;
 	color: #3484D2;
-    text-shadow: 2px 2px 2px #999999;
+      text-shadow: 2px 2px 2px #999999;
 	padding-bottom: 10px;
 }
 
@@ -60,6 +60,7 @@ h3 {
 	position: relative;
 	top: -82px;
 	width: 893px;
+      margin: auto;
 /*	overflow: auto;*/ /*scrollbar*/
 	height: auto;
 	min-height: 1000px;
@@ -97,7 +98,7 @@ h3 {
 }
 
 #contbase {
-	position: absolute;
+	position: relative;
 	float: none;
 	width: 95%;
 }
@@ -331,66 +332,93 @@ table.grid td.cenanab.simulacni {
 	color: #FFF;
 }
 
+div.popup {
+    	position: absolute;
+    	padding: 3px 5px 3px 5px;
+    	text-align: left;
+    	cursor: help;
+    	margin-left: 5px;
+    	max-width: 90%;
+    	background: white;
+        border: solid 1px #DDD;
+        border-radius: 			3px;
+        -webkit-border-radius: 	3px;
+        -moz-border-radius: 	3px;
+    	color: #333333;
+        -moz-box-shadow: 1px 2px 3px #444444;
+    	-webkit-box-shadow: 1px 2px 3px #444444;
+        box-shadow: 1px 2px 3px #444444;
+    	z-index: 1;
+}
 
 td div.popup {
 	display: none;
 	font-size: x-small;
 }
 
-td:hover div.popup {
-	display: block;
-	position: absolute;
-	padding: 3px 5px 3px 5px;
-	text-align: left;
-	cursor: help;
-	margin-left: 5px;
-	max-width: 90%;
-	background: white;
-    border: solid 1px #DDD;
-    border-radius: 			3px;
-    -webkit-border-radius: 	3px;
-    -moz-border-radius: 	3px;
-	color: #333333;
-    -moz-box-shadow: 1px 2px 3px #444444;
-	-webkit-box-shadow: 1px 2px 3px #444444;
-    box-shadow: 1px 2px 3px #444444;
-	z-index: 1;
+    td:hover div.popup {
+    	display: block;
+    }
+
+    td div.popup span.title {
+    	font-weight: bold;
+    	font-size: small;
+    }
+
+    td div.popup span.subtitle {
+    	font-size: small;
+    	color: #2870B7;
+    }
+
+    td div.popup span.label {
+    	font-size: x-small;
+    	color: #2870B7;
+    }
+
+    td div.popup span.value {
+    	font-size: x-small;
+    	float:right;
+    	font-weight: bold;
+    }
+
+span.def {
+    	position: absolute;
+    	padding: 3px 5px 3px 5px;
+    	text-align: left;
+    	cursor: help;
+    	margin-left: 5px;
+    	background: #FFF7E6;
+        border: solid 1px #DDD;
+        border-radius: 			3px;
+        -webkit-border-radius: 	3px;
+        -moz-border-radius: 	3px;
+    	color: #333333;
+        -moz-box-shadow: 1px 2px 3px #444444;
+    	-webkit-box-shadow: 1px 2px 3px #444444;
+        box-shadow: 1px 2px 3px #444444;
+    	z-index: 1;
 }
 
-td div.popup span.title {
-	font-weight: bold;
-	font-size: small;
+span.hlp span.def {
+	display: none;
 }
-
-td div.popup span.subtitle {
-	font-size: small;
-	color: #2870B7;
-}
-
-td div.popup span.label {
-	font-size: x-small;
-	color: #2870B7;
-}
-
-td div.popup span.value {
-	font-size: x-small;
-	float:right;
-	font-weight: bold;
-}
-
+    span.hlp:hover span.def {
+    	display: block;
+    }
 
 span.tooltip {
 	position: relative;
-	left:-8px;
-	margin: 0 0 0 0;
-    background: #EEE url('../images/tooltip_icon.png') left center no-repeat;
+	left:-4px;
+	margin: 0;
+      padding: 0;
+      background: transparent url('../images/tooltip_icon.png') left center no-repeat;
 }
 
 span.tooltip2 {
 	position: relative;
 	left:-20px;
-	margin: 0 0 0 0;
-    background: #EEE url('../images/tooltip_icon2.png') left center no-repeat;
+	margin: 0;
+      background: transparent url('../images/tooltip_icon2.png') left center no-repeat;
 }
 
 div.skryto1, div.skryto2, div.skryto3 {
@@ -1358,7 +1386,7 @@ div.logref {
     margin-top: 30px;
     padding: 10px 10px 10px 10px;
     position: relative;
-	width:923px;
+    width:923px;
     min-height: 1000px;
     left: -30px;
      border-bottom-right-radius:        10px;
@@ -1548,8 +1576,8 @@ div.logref {
 
 .detail {
 	width: 97%;
-	margin: 5px 10px 0 20px;
-    border-top-left-radius: 5px;
+	margin: 2px 10px 0 20px;
+      border-top-left-radius: 5px;
 }
 
 .detail div.detailin {
@@ -1558,13 +1586,13 @@ div.logref {
     -webkit-border-top-left-radius: 5px;
     -moz-border-radius-topleft: 5px;
 	border-top: dotted 1px #79A8F7;*/
-	border-left: dotted 1px #79A8F7;
-	border-bottom: dotted 1px #CCCCCC;
-	border-right: dotted 1px #CCCCCC;
+	border-left: solid 1px #DDD;
+	border-bottom: solid 1px #DDD;
+	border-right: solid 1px #DDD;
 }
 
 .detail div.dtitul {
-	margin: 0 0 5px 0;
+	margin: 0 0 2px 0;
   	padding: 5px 5px 5px 5px;
 /*     border-top-left-radius: 5px;
     -webkit-border-top-left-radius: 5px;
@@ -1588,10 +1616,22 @@ div.logref {
 	border: none;
 	margin: 0;
 	padding: 3px 5px 3px 25px;
-	background-color: #EAF2FF;
+	background-color: #F8F8F8;
+      border-bottom: solid 1px #DDD;
 	font-size: small;
 	color: #5B4E00;
 }
+
+.detail div.dtitul h3.active, .detail div.dtitul h3.active a {
+      background-color: #2870B7;
+      color: #FFFFFF;
+}
+
+.detail div.dtitul h3.active:hover, .detail div.dtitul h3.active a:hover {
+      color: #0F3557;
+      background-color: #ADCDED;
+}
+
 
 .detail div.dtitul div.prod {
 	border: none;
@@ -1882,42 +1922,41 @@ table.grid.aval {
 	width: 100%;
 }
 
+    table.grid.aval td, table.grid.aval th {
+    	padding: 3px 5px 3px 5px;
+    	border-color: #DDD;
+    }
 
-table.grid.aval td, table.grid.aval th {
-	padding: 3px 5px 3px 5px;
-	border-color: #DDD;
-}
+    table.grid.aval td {
+    	background-color: #FFF;
+    	border: none;
+    }
 
-table.grid.aval td {
-	background-color: #FFF;
-	border: none;
-}
-
-table.grid.aval th {
-	font-size: x-small;
-	border: none;
-	text-align: right;
-}
+    table.grid.aval th {
+    	font-size: x-small;
+    	border: none;
+    	text-align: right;
+    }
 
 
-table.grid.aval.best td {
-	background: #FFF4DD;
-}
+    table.grid.aval.best td {
+    	background: #FFF4DD;
+    }
 
-table.grid.aval.best th {
-	background: #FFD659;
-	color: #111;
-}
+    table.grid.aval.best th {
+    	background: #FFD659;
+    	color: #111;
+    }
 
-table.grid.aval.best td.light {
-	background: #FFD659;
-	font-weight: bold;
-}
+    table.grid.aval.best td.light {
+    	background: #FFD659;
+    	font-weight: bold;
+    }
 
-table.grid.aval td.light {
-	background: #E4F1FC;
-	font-weight: bold;
-}
+    table.grid.aval td.light {
+    	background: #E4F1FC;
+    	font-weight: bold;
+    }
 
 div.detcol {
 	width:99%;

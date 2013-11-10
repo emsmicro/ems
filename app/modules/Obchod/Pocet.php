@@ -25,7 +25,7 @@ class Pocet extends Model
 	 */
 	public function show($idp=0)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id_produkty=%i', $idp);
+		return $this->CONN->select('*')->from($this->table)->where('id_produkty=%i', $idp);
 	}
 
 	/**
@@ -35,7 +35,7 @@ class Pocet extends Model
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
 	}
 	
 	/**
@@ -45,7 +45,7 @@ class Pocet extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -55,7 +55,7 @@ class Pocet extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class Pocet extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 

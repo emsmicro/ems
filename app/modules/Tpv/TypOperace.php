@@ -25,7 +25,7 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show()
 	{
-		return dibi::dataSource('SELECT tp.*, d.nazev [druh] FROM typy_operaci tp
+		return $this->CONN->dataSource('SELECT tp.*, d.nazev [druh] FROM typy_operaci tp
                                      LEFT JOIN druhy_operaci d ON tp.id_druhy_operaci=d.id
 								');
 	}
@@ -37,7 +37,7 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function find($id)
 	{
-		return dibi::dataSource('SELECT tp.*,d.nazev [druh] FROM typy_operaci tp
+		return $this->CONN->dataSource('SELECT tp.*,d.nazev [druh] FROM typy_operaci tp
                                          LEFT JOIN druhy_operaci d ON tp.id_druhy_operaci=d.id
                                          WHERE tp.id='.$id);
 	}
@@ -49,7 +49,7 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -59,7 +59,7 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }

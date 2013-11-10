@@ -86,15 +86,14 @@ class QueryPresenter extends SpravaPresenter
 	{
 		$form = new Form;
 
-        $form->addTextArea('dotaz', '', 94, 10)
+        $form->addTextArea('dotaz', '', 100, 10)
             ->addRule(Form::MAX_LENGTH, 'Dotaz je příliš dlouhý.', 15000);
 			
 		$form->addSubmit('gou', 'Spustit SQL')->setAttribute('class', 'default');
 		$form->addSubmit('tbs', 'Tabulky');
 		$form->addSubmit('sch', 'Schéma');
-//		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
+		$form->addSubmit('srv', 'Server');
 		$form->onSuccess[] = callback($this, 'qFormSubmitted');
-
 		$form->addProtection(self::MESS_PROTECT);
 		return $form;
 	}
@@ -131,7 +130,17 @@ ORDER BY name";
 FROM information_schema.columns 
 WHERE table_name like '%%'
 ORDER BY table_name, pos
--- mezi znaky %% doplňte název tabulky";
+-- mezi znaky %% doplňte název tabulky spusťte dotaz znovu";
+			$this->redirect('default', $dot, 1);
+		}		
+		if ($form['srv']->isSubmittedBy()) {
+			$dot = "SELECT @@SERVERNAME AS 'Server Name'
+,@@VERSION AS 'Server Version'
+,@@LANGUAGE AS 'Language'
+,@@SERVICENAME AS 'Service'
+,SYSTEM_USER AS 'Login'
+,USER AS 'User'
+";
 			$this->redirect('default', $dot, 1);
 		}		
 		

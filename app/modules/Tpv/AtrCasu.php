@@ -25,7 +25,7 @@ class AtrCasu extends Model
 	 */
 	public function show()
 	{
-		return $this->connection->select('*')->from($this->table);
+		return $this->CONN->select('*')->from($this->table);
 	}
 
 	
@@ -36,7 +36,7 @@ class AtrCasu extends Model
 	 */
 	public function showto()
 	{
-		return dibi::dataSource("
+		return $this->CONN->dataSource("
 				SELECT	a.id
 						, a.zkratka
 						, a.nazev
@@ -59,7 +59,7 @@ class AtrCasu extends Model
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('id, zkratka, nazev, typ, ROUND(cas_sec,3) [cas_sec]')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('id, zkratka, nazev, typ, ROUND(cas_sec,3) [cas_sec]')->from($this->table)->where('id=%i', $id);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class AtrCasu extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -79,7 +79,7 @@ class AtrCasu extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 
 	/**
@@ -89,7 +89,7 @@ class AtrCasu extends Model
 	 */
 	public function insertATO($data = array())
 	{
-		return $this->connection->insert('atr_typy_oper', $data)->execute();
+		return $this->CONN->insert('atr_typy_oper', $data)->execute();
 	}
 	
 	
@@ -100,7 +100,7 @@ class AtrCasu extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -110,7 +110,7 @@ class AtrCasu extends Model
 	 */
 	public function deleteATO($id_atr)
 	{
-		return $this->connection->delete('atr_typy_oper')->where('id_atr_casu=%i', $id_atr)->execute();
+		return $this->CONN->delete('atr_typy_oper')->where('id_atr_casu=%i', $id_atr)->execute();
 	}
 	
 	/**
@@ -119,7 +119,7 @@ class AtrCasu extends Model
 	 */
 	public function getTypesOper($ida)
 	{
-		return dibi::dataSource("
+		return $this->CONN->dataSource("
 				SELECT t.nazev [nazev], t.id [idto], d.zkratka, t.zkratka [tzkratka], 
 						 case when a.id is null then 'false' else 'true' end [yes]
 				FROM typy_operaci t 

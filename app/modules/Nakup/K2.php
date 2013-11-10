@@ -137,7 +137,7 @@ class K2 extends Model
 	 */
 	public function findMaterial($id)
 	{
-		return $this->connection->select('*')->from('material')->where('id=%i', $id);
+		return $this->CONN->select('*')->from('material')->where('id=%i', $id);
 	}
 
 	/**

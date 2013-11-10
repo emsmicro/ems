@@ -29,9 +29,9 @@ class Postup extends Model
 	public function show($id = 0)
 	{
 		if ($id > 0) {
-			return $this->connection->select('*')->from($this->table)->where('id_produkty=%i', $id);
+			return $this->CONN->select('*')->from($this->table)->where('id_produkty=%i', $id);
 		} else {
-			return $this->connection->select('*')->from($this->table);
+			return $this->CONN->select('*')->from($this->table);
 		}
 
 	}
@@ -43,8 +43,8 @@ class Postup extends Model
 	 */
 	public function find($id)
 	{
-		//return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
-		return dibi::query("SELECT tp.*, 
+		//return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->query("SELECT tp.*, 
 								(SELECT MAX(poradi) FROM tpostupy_sablony
 												WHERE id_tpostup = $id) [mporadi]
 								FROM tpostupy tp
@@ -60,7 +60,7 @@ class Postup extends Model
 	 */
 	public function findTPSabl($id, $ids)
 	{
-		return $this->connection->select('*')->from('tpostupy_sablony')->where("id_tpostup=$id AND id_sablony=$ids");
+		return $this->CONN->select('*')->from('tpostupy_sablony')->where("id_tpostup=$id AND id_sablony=$ids");
 	}
 	
 	
@@ -71,7 +71,7 @@ class Postup extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class Postup extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class Postup extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -101,7 +101,7 @@ class Postup extends Model
 	 */
 	public function showTPSablony($id)
 	{
-		return dibi::query("SELECT ps.id_tpostup [idtp], ps.id_sablony [ids], 
+		return $this->CONN->query("SELECT ps.id_tpostup [idtp], ps.id_sablony [ids], 
 								tp.zkratka [tzkratka], tp.nazev [tnazev], tp.id_k2 [k2tp], tp.id_produkty, ps.poradi,
 								ts.zkratka [szkratka], ts.nazev [snazev],
 								pr.zkratka [pzkratka], pr.nazev [pnazev], pr.id_k2 [k2prod]
@@ -129,7 +129,7 @@ class Postup extends Model
 			$conds = " AND ps.id_sablony = $idsa ";
 			$condo = " AND op.id_sablony = $idsa ";
 		}
-		$res = dibi::query("SELECT 
+		$res = $this->CONN->query("SELECT 
 									  COALESCE(s.poradi, o.oporadi, o.tporadi) [poradi]
 									, COALESCE(s.poradi, o.oporadi, o.tporadi)+RIGHT('000' + CAST(COALESCE(s.id_typy_operaci, o.id_typy_operaci) AS VARCHAR(3)), 3) [key]
 									, COALESCE(s.id_typy_operaci, o.id_typy_operaci) [id_typy_operaci]
@@ -218,7 +218,7 @@ class Postup extends Model
 	{
 		$cond = "";
 		if ($idsa > 0) {$cond = " AND ts.id_tp_sablony = $idsa ";}
-		$res = dibi::query("SELECT 
+		$res = $this->CONN->query("SELECT 
 									  ts.poradi [poradi]
 									, ot.id [id_typ_operace]
 									, ot.nazev  [typ]
@@ -308,7 +308,7 @@ class Postup extends Model
 								WHERE tp.id = $id $cond
 								ORDER BY ps.poradi, ts.id_tp_sablony, ts.poradi			
 			";
-		$data = dibi::query($qry);
+		$data = $this->CONN->query($qry);
 		/*
 		dump($qry, $id, $id_sablony, $poradi);
 		dump($data);
@@ -323,17 +323,17 @@ class Postup extends Model
 	
 	public function updateSabl($id, $ids, $data = array())
 	{
-		return $this->connection->update('tpostupy_sablony', $data)->where("id_tpostup=$id AND id_sablony=$ids")->execute();
+		return $this->CONN->update('tpostupy_sablony', $data)->where("id_tpostup=$id AND id_sablony=$ids")->execute();
 	}
 	
 	public function insertSabl($data = array())
 	{
-		return $this->connection->insert('tpostupy_sablony', $data)->execute();
+		return $this->CONN->insert('tpostupy_sablony', $data)->execute();
 	}
 	
 	public function deleteSabl($id, $ids)
 	{
-		return $this->connection->delete('tpostupy_sablony')->where("id_tpostup=$id AND id_sablony=$ids")->execute();
+		return $this->CONN->delete('tpostupy_sablony')->where("id_tpostup=$id AND id_sablony=$ids")->execute();
 	}
 	
 }

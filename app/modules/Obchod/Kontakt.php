@@ -23,7 +23,7 @@ class Kontakt extends Model
 	 */
 	public function showO($ido=0)
 	{
-		return dibi::dataSource('SELECT k.*, o.prijmeni [osoba], tk.nazev [ktyp]
+		return $this->CONN->dataSource('SELECT k.*, o.prijmeni [osoba], tk.nazev [ktyp]
 								FROM kontakty k
 								LEFT JOIN osoby o ON k.id_osoby=o.id
 								LEFT JOIN typy_kontaktu tk ON k.id_typy_kontaktu=tk.id
@@ -36,7 +36,7 @@ class Kontakt extends Model
 	 */
     public function showF($idf=0)
 	{
-		return dibi::dataSource('SELECT k.*, f.nazev [firma], tk.nazev [ktyp]
+		return $this->CONN->dataSource('SELECT k.*, f.nazev [firma], tk.nazev [ktyp]
 								FROM kontakty k
 								LEFT JOIN firmy f ON k.id_firmy=f.id
 								LEFT JOIN typy_kontaktu tk ON k.id_typy_kontaktu=tk.id
@@ -50,7 +50,7 @@ class Kontakt extends Model
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
 	}
 	/*
 	 * Updates data in the table
@@ -59,7 +59,7 @@ class Kontakt extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	/*
 	 * Inserts data to the table
@@ -68,7 +68,7 @@ class Kontakt extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	/*
 	 * Deletes record in the table
@@ -77,7 +77,7 @@ class Kontakt extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 

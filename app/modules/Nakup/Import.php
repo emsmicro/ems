@@ -317,7 +317,7 @@ class Import extends Material
 	 */
 	public function insertMaterial($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 
 	/**
@@ -326,7 +326,7 @@ class Import extends Material
 	 */
 	public function insertVazby($data = array())
 	{
-		$this->connection->insert('vazby', $data)->execute();
+		$this->CONN->insert('vazby', $data)->execute();
 	}
 
 	/**
@@ -335,7 +335,7 @@ class Import extends Material
 	 */
 	public function deleteVazby($id)
 	{
-		$this->connection->delete('vazby')->where('id_material > 0 AND id_vyssi=%i', $id)->execute();
+		$this->CONN->delete('vazby')->where('id_material > 0 AND id_vyssi=%i', $id)->execute();
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Import extends Material
 	 */
 	public function deleteMaterNullMJ()
 	{
-		$this->connection->delete($this->table)->where('id_merne_jednotky is null OR cena_cm is null')->execute();
+		$this->CONN->delete($this->table)->where('id_merne_jednotky is null OR cena_cm is null')->execute();
 	}
 
 }

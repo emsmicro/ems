@@ -77,10 +77,10 @@ class Produkt extends Model
 			$sql_cmd = $this->full_detail_query;
 		}
 		if($this->limit==0 && $this->offset==0){
-			return dibi::query($sql_cmd);
+			return $this->CONN->query($sql_cmd);
 		} else {
 			$sql_pgs = $this->pagedSql($sql_cmd, '', 'p.id DESC');
-			return dibi::query($sql_pgs);
+			return $this->CONN->query($sql_pgs);
 		}
 	}
 	
@@ -101,7 +101,7 @@ class Produkt extends Model
 		if($id_firmy==0){
 			$cond=" WHERE c.id_nabidky=$id_nabidky";
 		}
-		return dibi::query($this->full_detail_query . $cond);
+		return $this->CONN->query($this->full_detail_query . $cond);
 	}
 		
 	/**
@@ -117,7 +117,7 @@ class Produkt extends Model
 		}
 		$sql = "$this->full_detail_query WHERE 
 						p.id $isIn IN (SELECT id_produkty FROM stav_produkt $cond)";
-		return dibi::query( $sql );
+		return $this->CONN->query( $sql );
 	}
 	
 	/**
@@ -128,7 +128,7 @@ class Produkt extends Model
 	 */		
 	public function find($id=0)
 	{
-		return dibi::query($this->full_detail_query . "	WHERE p.id=$id");
+		return $this->CONN->query($this->full_detail_query . "	WHERE p.id=$id");
 		
 	}
 	
@@ -142,7 +142,7 @@ class Produkt extends Model
 	public function costs($id)
 	{
 
-		return dibi::query("SELECT tn.nazev, tn.zkratka, n.hodnota
+		return $this->CONN->query("SELECT tn.poradi, tn.nazev, tn.zkratka, n.hodnota
 									FROM naklady n
 									LEFT JOIN typy_nakladu tn ON n.id_typy_nakladu=tn.id
 								WHERE n.id_produkty=$id
@@ -158,12 +158,13 @@ class Produkt extends Model
 	public function prices($id, $id_nabidky)
 	{
 		if($id>0 && $id_nabidky>0){
-			return dibi::query("SELECT c.id_produkty [id], c.id_nabidky [idn], n.popis [nabidka], c.aktivni, c.id_vzorec, c.id [id_cena],
+			return $this->CONN->query("SELECT c.id_produkty [id], c.id_nabidky [idn], n.popis [nabidka], c.aktivni, c.id_vzorec, c.id [id_cena],
 									t.zkratka, RTRIM(t.zkratka2) [zkratka2], t.id [idt], t.nazev, c.hodnota, c.hodnota_cm, 
 									m.zkratka [mena], m.nazev [n_mena], m.id [idm], 
 									COALESCE(k.kurz_prodejni,1) [kurz],
 									p.id [idpoc], p.vyrobni_davka [davka], p.mnozstvi, t.poradi, 
-									v.zkratka [kvzorec], v.nazev [nvzorec], v.popis [pvzorec]
+									v.zkratka [kvzorec], v.nazev [nvzorec], v.popis [pvzorec], ltrim(rtrim(v.definice)) [definice], 
+									ltrim(rtrim(v.procedura)) [procedura], ltrim(rtrim(v.param)) [param], ltrim(rtrim(v.mater_c)) [mater_c]
 									FROM ceny c
 										LEFT JOIN typy_cen	t ON c.id_typy_cen=t.id
 										LEFT JOIN meny		m ON c.id_meny=m.id
@@ -177,7 +178,7 @@ class Produkt extends Model
 		}else{
 			return null;
 		}
-		//return $this->connection->select('*')->from($this->table)->where('id_produkty=%i', $idp);
+		//return $this->CONN->select('*')->from($this->table)->where('id_produkty=%i', $idp);
 
 	}
 
@@ -191,10 +192,10 @@ class Produkt extends Model
 	public function activateProductPrice($id, $id_nabidky, $id_cena)
 	{
 		if($id_nabidky>0 && $id>0 && $id_cena>0){
-			$d1 = dibi::query("UPDATE ceny SET aktivni = 0
+			$d1 = $this->CONN->query("UPDATE ceny SET aktivni = 0
 								WHERE	id_nabidky = $id_nabidky AND id_produkty = $id");
 			if ($d1) {
-				$d2 = dibi::query("UPDATE ceny SET aktivni = 1
+				$d2 = $this->CONN->query("UPDATE ceny SET aktivni = 1
 									WHERE	id_nabidky = $id_nabidky 
 											AND id_produkty = $id
 											AND id = $id_cena");
@@ -215,7 +216,7 @@ class Produkt extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -225,7 +226,7 @@ class Produkt extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 
 	/**
@@ -240,7 +241,7 @@ class Produkt extends Model
 		$rmat = $mat->delete(0, $id);
 		$ope = new Operace;
 		$rope = $ope->delete(0, $id);
-		$rdel = $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		$rdel = $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 		return $rdel;
 	}
 
@@ -251,13 +252,13 @@ class Produkt extends Model
 	 */
 	public function assign2offer($idp, $idn)
 	{
-		$result = dibi::query("SELECT count(*) FROM ceny WHERE id_nabidky=$idn AND id_produkty=$idp");
+		$result = $this->CONN->query("SELECT count(*) FROM ceny WHERE id_nabidky=$idn AND id_produkty=$idp");
 		$cnt = $result->fetchSingle();
 		if ($cnt==0)
 		{
 			// k přiřazení dojde, pakliže už nebylo přiřazení produkt -> nabídka pprovedeno již dříve
 			$data = array('id_nabidky' => $idn, 'id_produkty' => $idp, 'id_typy_cen' => 1, 'id_meny' => 1 );
-			$this->connection->insert('ceny', $data)->execute();
+			$this->CONN->insert('ceny', $data)->execute();
 		} 
 	}
 
@@ -268,7 +269,7 @@ class Produkt extends Model
 	 */
 	public function remove4offer($idp, $idn)
 	{
-		$this->connection->delete("ceny")->where("id_nabidky=$idn AND id_produkty=$idp")->execute();
+		$this->CONN->delete("ceny")->where("id_nabidky=$idn AND id_produkty=$idp")->execute();
 	}
 	
 	/**
@@ -283,7 +284,7 @@ class Produkt extends Model
 		$cond2 = "";
 		if($id_produkt>0)	{$cond1 = " AND c.id_produkty=$id_produkt ";}
 		if($aktivni>0)		{$cond2 = " AND c.aktivni=$aktivni ";}
-		return dibi::query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], t.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
+		return $this->CONN->query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], t.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
 								c.id_pocty, n.mnozstvi, n.vyrobni_davka, m.zkratka [mena],
 								p.zkratka, p.nazev, t.nazev [nceny], c.aktivni
 								FROM ceny c
@@ -306,17 +307,24 @@ class Produkt extends Model
 	public function getOffersCompany($id_firma, $id_mena, $id_produkt = 0){
 		$cond = "";
 		if($id_produkt>0){$cond = " AND c.id_produkty=$id_produkt ";}
-		return dibi::query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], t.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
+		return $this->CONN->query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], 
+								tt.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
 								c.id_pocty, n.mnozstvi, n.vyrobni_davka, m.zkratka [mena],
-								p.zkratka, p.nazev, t.nazev [nceny]
+								p.zkratka, p.nazev, tt.nazev [nceny],
+								Convert(varchar(10), c.id_nabidky) + '+'
+								+ Convert(varchar(10), c.id_produkty) + '+'
+								+ Convert(varchar(10), c.id_pocty) + '+'
+								+ Convert(varchar(10), c.id_meny) + '+'
+								+ Convert(varchar(10), c.id_typy_cen) [klic]
 								FROM ceny c
 								LEFT JOIN nabidky o  ON c.id_nabidky=o.id
 								LEFT JOIN produkty p ON c.id_produkty=p.id
-								LEFT JOIN typy_cen t ON c.id_typy_cen=t.id
+								LEFT JOIN typy_cen tt ON c.id_typy_cen=tt.id
 								LEFT JOIN pocty n ON c.id_pocty=n.id
 								LEFT JOIN meny m ON c.id_meny=m.id
-							WHERE o.id_firmy=$id_firma $cond  AND c.id_typy_cen>6
-							ORDER BY c.id_produkty, c.id_meny, c.id_pocty");
+							WHERE o.id_firmy=$id_firma $cond  AND c.id_typy_cen in(10,8)
+							ORDER BY c.id_produkty, c.id_meny, c.id_pocty, tt.poradi")->fetchAll();
+								//->fetchAssoc('klic');
 	}
 	
 	/**
@@ -330,7 +338,7 @@ class Produkt extends Model
 	public function pricesErase($id_cena)
 	{
 		if($id_cena>0){
-			return dibi::query("DELETE FROM ceny WHERE id=$id_cena");
+			return $this->CONN->query("DELETE FROM ceny WHERE id=$id_cena");
 		} else {
 			return false;
 		}
@@ -347,7 +355,7 @@ class Produkt extends Model
 	public function getPriceNabOld($id_nabidka, $id_produkt, $id_meny, $id_pocty)
 	{
 		if($id_nabidka>0 && $id_produkt>0 && $id_meny>0 && $id_pocty>0){
-		return dibi::query("SELECT	c.*
+		return $this->CONN->query("SELECT	c.*
 									, COALESCE(k.kurz_prodejni,1) [kurz]
 									, COALESCE(m.zkratka, 'Kč') [mena] 
 									, t.id [tid]
@@ -371,7 +379,7 @@ class Produkt extends Model
 	public function getPriceNab($id)
 	{
 		if($id > 0){
-		return dibi::query("SELECT	c.*
+		return $this->CONN->query("SELECT	c.*
 									, COALESCE(k.kurz_prodejni,1) [kurz]
 									, COALESCE(m.zkratka, 'Kč') [mena] 
 									, t.id [tid]
@@ -389,7 +397,7 @@ class Produkt extends Model
 	public function updPriceNab($id, $id_typceny, $hodnota, $hodnota_cm)
 	{
 		if($id > 0){
-		return dibi::query("UPDATE ceny SET hodnota = $hodnota, hodnota_cm = $hodnota_cm
+		return $this->CONN->query("UPDATE ceny SET hodnota = $hodnota, hodnota_cm = $hodnota_cm
 								WHERE id_typy_cen = $id_typceny AND	id = $id");
 		} else {
 			return false;
@@ -409,7 +417,7 @@ class Produkt extends Model
 	public function updPriceNabOld($id_nabidka, $id_produkt, $id_meny, $id_pocty, $id_typceny, $hodnota, $hodnota_cm)
 	{
 		if($id_nabidka>0 && $id_produkt>0 && $id_meny>0 && $id_pocty>0){
-		return dibi::query("UPDATE ceny SET hodnota = $hodnota, hodnota_cm = $hodnota_cm
+		return $this->CONN->query("UPDATE ceny SET hodnota = $hodnota, hodnota_cm = $hodnota_cm
 							WHERE	id_typy_cen = $id_typceny
 									AND id_nabidky = $id_nabidka AND id_produkty = $id_produkt 
 									AND id_meny = $id_meny AND id_pocty = $id_pocty");
@@ -427,23 +435,23 @@ class Produkt extends Model
 	{
 		if($id==0){return false;}
 		//("INSERT id_nabidky, id_stav, datum_zmeny, id_user");
-		$result = dibi::query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status");
+		$result = $this->CONN->query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status");
 		$cnt = $result->fetchSingle();
 		if ($cnt>0)
 		{
 			//mozna update?? co, pokud se vrati stav o krok zpet?? asi delete
-			dibi::query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status");
+			$this->CONN->query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status");
 		} 
 		if ($status == 21){
 			//vymazat případný status "ODEMČENO"
-			dibi::query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=22");
+			$this->CONN->query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=22");
 		}
 		if ($status == 22){
 			//vymazat případný status "UZAMČENO"
-			dibi::query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=21");
+			$this->CONN->query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=21");
 		}
 		$data = array('id_produkty' => $id, 'id_stav' => $status, 'datum_zmeny' => date("Ymd H:i:s"), 'id_user' => $id_user );
-		return $this->connection->insert('stav_produkt', $data)->execute();
+		return $this->CONN->insert('stav_produkt', $data)->execute();
 
 	}
 	
@@ -455,7 +463,7 @@ class Produkt extends Model
 	 */
 	public function setStatusProdsByOffers($id_nabidky, $status, $id_user)
 	{
-		$prods = dibi::query("SELECT DISTINCT id_produkty FROM ceny WHERE id_nabidky = $id_nabidky")->fetchAll();
+		$prods = $this->CONN->query("SELECT DISTINCT id_produkty FROM ceny WHERE id_nabidky = $id_nabidky")->fetchAll();
 		$i=0;
 		foreach ($prods as $prod){
 			$res = $this->insertProductStatus($prod['id_produkty'], $status, $id_user);
@@ -473,7 +481,7 @@ class Produkt extends Model
 	public function deleteProductStatus($id=0, $status=0, $id_user=0)
 	{
 		if($iprod>0 && $istat>0 && $iuser>0){
-			return	dibi::query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status AND id_user=$id_user");
+			return	$this->CONN->query("DELETE FROM stav_produkt WHERE id_produkty=$id AND id_stav=$status AND id_user=$id_user");
 		}
 
 	}
@@ -519,7 +527,7 @@ class Produkt extends Model
 		$order = "";
 		if($desc_order==1){$order = " ORDER BY tc.id DESC";}
 		/*
-		$data = dibi::query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
+		$data = $this->CONN->query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
 								FROM ceny c
 								LEFT JOIN typy_cen tc ON c.id_typy_cen = tc.id
 								WHERE 
@@ -530,7 +538,7 @@ class Produkt extends Model
 								$order
 							")->fetchAll();
 		*/
-		$data = dibi::query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
+		$data = $this->CONN->query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
 								FROM ceny c
 								LEFT JOIN typy_cen tc ON c.id_typy_cen = tc.id
 								WHERE	c.id_produkty = $id 
@@ -551,7 +559,7 @@ class Produkt extends Model
 	public function copyProdukt($id, $id_user)
 	{
 		if($id>0 && $id_user>0){
-			$res = dibi::query("
+			$res = $this->CONN->query("
 								DECLARE @id_prod int
 								EXECUTE copyProduct $id, $id_user, @id_prod OUTPUT
 								SELECT @id_prod [p_id]

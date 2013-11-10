@@ -281,7 +281,7 @@ class Kalkul extends Model
 										ORDER BY poradi");
 		$tdavka		= $this->CONN->fetchAll("SELECT id, davka = 'Davka', vyrobni_davka [hodnota] FROM pocty WHERE id=$id_pocty");
 		$tmena		= $this->CONN->fetchAll("SELECT id, zkratka [mena] FROM meny WHERE id=$id_meny");
-
+		/*
 		$ret['ceny']	= $tceny;
 		$ret['naklady'] = $tnaklady;
 		$ret['sazby']	= $tsazby;
@@ -289,7 +289,7 @@ class Kalkul extends Model
 		$ret['mena']	= $tmena;
 		$ret['vzorec']	= $vzorec;
 		$ret['kurz']	= $kurz;
-
+		*/
 		$vzor = $vzorec[0]['definice'];
 		$proc = $vzorec[0]['procedura'];
 		if($vzor==''){
@@ -310,7 +310,7 @@ class Kalkul extends Model
 		}
 		$vzor = $this->replVzorec($vzor, $tdavka, 'davka', 'hodnota');
 		$vzor = $this->replVzorec($vzor, $tceny, 'cena', 'cena', '$ceny["','"]');
-		$ret['vzor'] = $vzor;
+		//$ret['vzor'] = $vzor;
 		$ceny = FALSE;
 		try {
 			eval($vzor);	//vyhodnotí string výraz jako php kód
@@ -331,7 +331,7 @@ class Kalkul extends Model
 									@id_pocty	= $id_pocty,
 									@id_vzorec	= $id_vzorec");
 
-		$ret['IDs'] = $ids;
+		//$ret['IDs'] = $ids;
 		if($ceny){
 			// doplnime hodnoty do pole a upravime pole
 			$tceny = $this->addPriceData($tceny, $ceny, $kurz, $ids);
@@ -467,76 +467,7 @@ class Kalkul extends Model
 
 		return $formula;
 	}		
-	
-	private function replPravidla2($formula, $data, $field, $repl_field, 
-								$prefix='', $suffix='', $rule_field='', $base_field='') 
-	{
-		$debug = 1;
 		
-		if ($debug>0){
-			echo "<div style='width:60%; font-family: Courier; font-size: 14px; margin:10px; padding: 10px;'>";
-		}
-		for($i = 0; $i < count($data); ++$i) {
-			$s = ''; $t = ''; $r = ''; $b = ''; $h = '';
-			foreach ($data[$i] as $k => $v) {
-				if($rule_field <> '' and $base_field <> ''){
-					if($k == $field)	 {$s = $v;}		// s1 = sazba - zkratka nazvu, ma byt nahrazena hodnotou
-					if($k == $repl_field){$h = $v;}		// s1 = sazba - zkratka nazvu, ma byt nahrazena hodnotou
-					if($k == $base_field){$b = $v;}		// b  = zakladna - nazev - test zda neni MATER
-					if($k == $rule_field){$r = $v;}		// r  = pravidlo - hodnota (musi byt prevdeno na cislo)
-
-					if($s<>'' and $h<>'' and $b<>''){
-
-						if ($debug>0){
-							echo "<div style='border: dotted 1px; margin:5px; padding: 5px; color:blue;'>";
-							echo "s=[$s], b=[$b], r=[$r]<br />";
-							echo "--- vzorec_pred ----------------------------------------------------- <br />"
-									.str_replace(';',';<br/>',$formula)."<br />";
-							echo "<p style='color:darkgreen'>";
-						}
-						
-						if ($r<>'' and strtoupper(substr($b,0,5)) <> 'MATER'){
-							$r = $this->jakoDesCislo($r);
-							if($r==''){$q = $h;} else {$q = $r;}
-							$formula = str_replace($s, $prefix.$q.$suffix, $formula);
-							if ($debug>0){echo "1: zmeneno = $s => $q ($r)</p>";}
-						} else {
-							$formula = str_replace($s, $prefix.$h.$suffix, $formula);
-							if ($debug>0){echo "2: zmeneno = $s => $h def.</p>";}
-						}
-						if ($debug>0){
-							echo "<p style='color:darkgreen'>"
-									. "--- vzorec_po -------------------------------------------------------<br /> "
-									.str_replace(';',';<br/>',$formula)."</p>";
-							echo "</div>";
-						}
-
-						$s = ''; $h = ''; $r = ''; $b = '';
-						
-					} else {
-						//if($k == $repl_field){$formula = str_replace($s, $prefix.$v.$suffix, $formula);}
-					}
-				} else {
-					if($k == $field){$t = $v;}
-					if($k == $repl_field){$formula = str_replace($t, $prefix.$v.$suffix, $formula);}
-				}
-				if ($debug>0){
-					echo "<div style='border: solid 2px darkred; margin:5px; padding: 5px;'>";
-					echo "i=$i, f=$field, k=$k, v=$v, s=[$s], h=[$h], t=[$t], b=[$b], r=[$r]<br />";
-					echo "--- vzorec_final --------------------------------------------------------<br />"
-							.str_replace(';',';<br/>',$formula)."<br />";
-					echo "</div>";
-				}
-
-			}
-		}
-		if ($debug>0){
-			echo "</div>";
-		}
-
-		return $formula;
-	}	
-	
 	/**
 	 * If PRAVIDLA is in formula string
 	 * @param type $formula

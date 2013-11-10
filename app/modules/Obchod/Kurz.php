@@ -24,7 +24,7 @@ class Kurz extends Model
 	 */
 	public function show()
 	{
-		return dibi::dataSource("SELECT k.*, m.zkratka [mzkratka] FROM kurzy k
+		return $this->CONN->dataSource("SELECT k.*, m.zkratka [mzkratka] FROM kurzy k
 									LEFT JOIN meny m ON k.id_meny=m.id
 								");
 	}
@@ -36,7 +36,7 @@ class Kurz extends Model
 	 */
 	public function find($id)
 	{
-		return dibi::query("SELECT 	k.id,m.zkratka [mzkratka], m.nazev [mnazev],
+		return $this->CONN->query("SELECT 	k.id,m.zkratka [mzkratka], m.nazev [mnazev],
 								k.id_meny [k_id_meny], 
 								ROUND(k.kurz_nakupni,5) [k_kurz_nakupni],
 								ROUND(k.kurz_prodejni,5) [k_kurz_prodejni],
@@ -55,7 +55,7 @@ class Kurz extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -65,7 +65,7 @@ class Kurz extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -75,7 +75,7 @@ class Kurz extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }

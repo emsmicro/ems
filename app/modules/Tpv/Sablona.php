@@ -26,7 +26,7 @@ class Sablona extends Model
 	
 	public function show()
 	{
-		return $this->connection->select('*')->from($this->table);
+		return $this->CONN->select('*')->from($this->table);
 
 	}
 	
@@ -37,8 +37,8 @@ class Sablona extends Model
 	 */
 	public function find($id)
 	{
-//		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
-		return dibi::query("SELECT sa.*, 
+//		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->query("SELECT sa.*, 
 								(SELECT MAX(CONVERT(int, poradi)) FROM tp_sablony_typy
 												WHERE id_tp_sablony = $id) [mporadi]
 								FROM tp_sablony sa
@@ -49,7 +49,7 @@ class Sablona extends Model
 	
 	public function findSablTyp($id, $idt)
 	{
-		return $this->connection->select('*')->from('tp_sablony_typy')->where("id_tp_sablony=$id AND id_typy_operaci=$idt");
+		return $this->CONN->select('*')->from('tp_sablony_typy')->where("id_tp_sablony=$id AND id_typy_operaci=$idt");
 	}
 	
 	
@@ -60,7 +60,7 @@ class Sablona extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -70,7 +70,7 @@ class Sablona extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -80,7 +80,7 @@ class Sablona extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -90,7 +90,7 @@ class Sablona extends Model
 	 */
 	public function showSablTypOper($id)
 	{
-		return dibi::query("SELECT st.id_tp_sablony [idts], st.id_typy_operaci [idto], st.nazev, 
+		return $this->CONN->query("SELECT st.id_tp_sablony [idts], st.id_typy_operaci [idto], st.nazev, 
 								tt.zkratka [tzkratka], tt.nazev [tnazev],
 								dd.zkratka [dzkratka], dd.nazev [dnazev],
 								ts.zkratka [szkratka], ts.nazev [snazev],
@@ -106,17 +106,17 @@ class Sablona extends Model
 
 	public function updateTypo($id, $idt, $data = array())
 	{
-		return $this->connection->update('tp_sablony_typy', $data)->where("id_tp_sablony=$id AND id_typy_operaci=$idt")->execute();
+		return $this->CONN->update('tp_sablony_typy', $data)->where("id_tp_sablony=$id AND id_typy_operaci=$idt")->execute();
 	}
 	
 	public function insertTypo($data = array())
 	{
-		return $this->connection->insert('tp_sablony_typy', $data)->execute();
+		return $this->CONN->insert('tp_sablony_typy', $data)->execute();
 	}
 	
 	public function deleteTypo($id, $idt)
 	{
-		return $this->connection->delete('tp_sablony_typy')->where("id_tp_sablony=$id AND id_typy_operaci=$idt")->execute();
+		return $this->CONN->delete('tp_sablony_typy')->where("id_tp_sablony=$id AND id_typy_operaci=$idt")->execute();
 	}
 	
 }

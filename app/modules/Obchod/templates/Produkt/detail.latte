@@ -113,7 +113,7 @@
 <div class="kol-0">
 	<h3>Plánovaná množství</h3>
 	<div>
-		<table class="grid">
+		<table class="grid" style="width:40%;">
 			<tr>
 				<th>Celkové množství</th>
 				<th>Výrobní dávka</th>
@@ -127,8 +127,8 @@
 
 			{foreach $pocet as $poc}
 			<tr>
-				<td class="tcislo">{$poc->mnozstvi|number:0:',':' '}</td>
-				<td class="tcislo">{$poc->vyrobni_davka|number:0:',':' '}</td>
+				<td class="tcislo">{$poc->mnozstvi|number:0:',':' '} ks/rok</td>
+				<td class="tcislo">{$poc->vyrobni_davka|number:0:',':' '} ks</td>
 				<td n:if="$cond && $unlocked" class="takce">
 					<span class="setedit" title="Změnit množství">
 						<a n:if="$user->isAllowed('Produkt','editAmount') && $unlocked" n:href="editAmount, $poc->id, $idp">&nbsp;&nbsp;&nbsp;&nbsp;</a>
@@ -172,6 +172,7 @@
 				{var $i = 0}
 				<table class="grid">
 					<tr>
+						<th>#</th>
 						<th>Popis</th>
 						<th>Náklad [Kč]</th>
 					</tr>
@@ -179,7 +180,8 @@
 					{foreach $costs as $nak}
 					{var $i++;}
 					<tr>
-						{if $nak->zkratka=="MaterialPC"} {* zvýraznění ceny materialu *}
+						<td>{$nak->poradi}</td>
+						{if $nak->zkratka=="MaterialPC" or $nak->zkratka=="MaterialPA"} {* zvýraznění prod. cen materialu *}
 							<td class="cena">{$nak->nazev}</td>
 							<td class="tcislo cena">{$nak->hodnota|number:2:',':' '}</td>
 						{else}

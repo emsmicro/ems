@@ -16,6 +16,7 @@
 		<th>#</th>
 		<th>Popis</th>
 		<th>Sazba [%]</th>
+		<th>Pravidlo (meze hodnot sazby)</th>
 	</tr>
 	{var $i = 0}
 	{foreach $items as $item}
@@ -24,10 +25,11 @@
 			<td>{$item->poradi}</td>
 			<td class="ntext2">{$item->nazev}<span class="mini"> ({$item->id})</span></td>
 			<td class="cislo input">{$control['addGroupForm']['mpole']['hodnota'.$i]->control}</td>
+			<td class="popis input">{$control['addGroupForm']['mpole']['pravidlo'.$i]->control}</td>
         </tr>
 	{/foreach}
 	<tr class="noborder">
-		<td colspan="3" class="tdcenter">
+		<td colspan="4" class="tdcenter">
 			<span>{$control['addGroupForm']['save']->control}</span>
 			<span>{$control['addGroupForm']['cancel']->control}</span>
 		</td>
@@ -38,6 +40,8 @@
 {control addGroupForm end}
 
 </div>
+
+{include 'helpRate.latte'}
 
 {if $vzorce}
 	{include '../vzorce.latte'}

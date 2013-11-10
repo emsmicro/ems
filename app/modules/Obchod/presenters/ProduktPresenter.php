@@ -101,6 +101,11 @@ class ProduktPresenter extends ObchodPresenter
 		$this->idn = $item->idn;
 		$this->template->inabidka = $this->idn;
 		
+		$idss = $item->idss;
+		$sazb = new Sazba;	
+        $sazby = $sazb->show($idss);
+		$this->template->sazby = $sazby;
+		
 		$costs = $instance->costs($id);
 		$isnaklady = count($costs)>0;
         $this->template->isnaklady = $isnaklady;

@@ -137,10 +137,10 @@
 							<div class="nab-{$it->id}">
 								<h3>
 									{$it->id}/{$it->prij_datum|date:'%Y'} | 
-									{$it->popis} | 
+									{$it->popis|truncate:50} | 
 									{$it->prij_datum|date:'%d.%m.%Y'} - 
 									{$it->pozad_datum|date:'%d.%m.%Y'} | 
-									{$it->nstav} {$it->datzmeny|date:'%d.%m.%Y'} | 
+									<span class="mini" style="float:right;">{$it->nstav} {$it->datzmeny|date:'%d.%m.%Y'}</span>
 								</h3>
 								<div class="detailin">
 									<span class="tit">Přijato:</span><span class="val">{$it->prij_datum|date:'%d.%m.%Y'} | </span>
@@ -174,7 +174,9 @@
 									</div>
 									
 									<div class="prod">
-										{include 'prods.latte', nabid => $it->id}
+										{if isset($produkty[$it->id])}
+										{include 'prods.latte', cenyprod => $produkty , nabid => $it->id}
+										{/if}
 									</div>
 								</div>
 							</div>

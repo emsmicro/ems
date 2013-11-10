@@ -25,7 +25,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show($id=0)
 	{
-		return dibi::query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], s.id_set_sazeb_o [idss], ts.poradi
+		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], s.id_set_sazeb_o [idss], ts.poradi
 								FROM typy_operaci ts
 								LEFT JOIN (SELECT * FROM sazby_o WHERE id_set_sazeb_o=$id) s ON ts.id=s.id_typy_operaci
 								LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
@@ -41,7 +41,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
 	}
 	
 	/**
@@ -51,7 +51,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -80,8 +80,8 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 * @return string
 	 */
 	public function getTypSazby($id) {
-		//return $this->connection->select('nazev')->from('typy_sazeb')->where('id=%i', $id);
-		$pom = dibi::fetchPairs('SELECT nazev FROM typy_operaci WHERE id='.$id);
+		//return $this->CONN->select('nazev')->from('typy_sazeb')->where('id=%i', $id);
+		$pom = $this->CONN->fetchPairs('SELECT nazev FROM typy_operaci WHERE id='.$id);
 		return $pom[0];
 	}
 	
@@ -91,7 +91,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function getTypesOper($id_set_sazeb_o)
 	{
-		return dibi::query("SELECT COALESCE(so.id,0) [idso], ts.nazev [typ], ts.id [idto], d.zkratka, ts.poradi, so.hodnota
+		return $this->CONN->query("SELECT COALESCE(so.id,0) [idso], ts.nazev [typ], ts.id [idto], d.zkratka, ts.poradi, so.hodnota
 									FROM typy_operaci ts
 									LEFT JOIN druhy_operaci d ON ts.id_druhy_operaci=d.id
 									LEFT JOIN sazby_o so ON ts.id = so.id_typy_operaci
@@ -103,7 +103,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 
 	public function getIdTypesOper()
 	{
-		return dibi::fetchPairs("SELECT t.id, t.nazev
+		return $this->CONN->fetchPairs("SELECT t.id, t.nazev
 									FROM typy_operaci t 
 									LEFT JOIN druhy_operaci d ON t.id_druhy_operaci=d.id
 									WHERE d.zkratka NOT IN ('Ostatní','Jednorázové')
@@ -169,7 +169,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	{
 			$cnt=0;
 			//stavajici sazby nejprve smazeme
-			$this->connection->delete($this->table)->where('id_set_sazeb_o=%i', $idss)->execute();
+			$this->CONN->delete($this->table)->where('id_set_sazeb_o=%i', $idss)->execute();
 			for($i=1; $i<=$pocet; $i++){
 				$opdata = $data[$i];
 				if($opdata){

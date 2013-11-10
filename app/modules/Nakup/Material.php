@@ -109,11 +109,11 @@ class Material extends Model
 			if ($this->filter<>''){$cond = " WHERE m.zkratka+m.nazev LIKE '%$this->filter%'";}
 		}
 		if($this->limit==0 && $this->offset==0){
-			$rslt = $this->connection->query("$sql_cmd $cond $ordsql");
+			$rslt = $this->CONN->query("$sql_cmd $cond $ordsql");
 		} else {
 			//implementace stránkování
 			$sql_pgs = $this->pagedSql($sql_cmd.$cond, '', $ordovr);
-			$rslt = $this->connection->query($sql_pgs);
+			$rslt = $this->CONN->query($sql_pgs);
 		}
 		return $rslt->fetchAll();
 	}
@@ -128,7 +128,7 @@ class Material extends Model
 		$cond = "";
 		if($id_produkt>0){$cond = " AND v.id_vyssi = $id_produkt";}
 		
-		return dibi::dataSource("SELECT m.id [id],m.id_k2 [id_k2],m.zkratka [zkratka], m.nazev [nazev], ROUND(m.cena_cm,5) [cena_cm], ROUND(m.cena_kc,5) [cena_kc], ROUND(m.cena_kc2,5) [cena_kc2], ROUND(m.cena_kc3,5) [cena_kc3], m.id_kurzy [id_kurzy], m.id_meny [id_meny], m.id_merne_jednotky [id_merne_jednotky], 
+		return $this->CONN->dataSource("SELECT m.id [id],m.id_k2 [id_k2],m.zkratka [zkratka], m.nazev [nazev], ROUND(m.cena_cm,5) [cena_cm], ROUND(m.cena_kc,5) [cena_kc], ROUND(m.cena_kc2,5) [cena_kc2], ROUND(m.cena_kc3,5) [cena_kc3], m.id_kurzy [id_kurzy], m.id_meny [id_meny], m.id_merne_jednotky [id_merne_jednotky], 
 										mj.zkratka [jednotka], mj.koeficient [koeficient],
 										ROUND(k.kurz_nakupni,5) [kurz_nakupni],
 										ROUND(k.kurz_prodejni,5) [kurz_prodejni],
@@ -148,7 +148,7 @@ class Material extends Model
 	 * @return type array
 	 */
 	public function countNoPrices(){
-		return $this->connection->select("COUNT(*) [pocet], (SELECT COUNT(*) FROM $this->table) [celkem]")
+		return $this->CONN->select("COUNT(*) [pocet], (SELECT COUNT(*) FROM $this->table) [celkem]")
 						->from($this->table)->where("cena_cm is NULL OR cena_cm=%i", 0)->fetch();
 	}
 	
@@ -162,9 +162,9 @@ class Material extends Model
 		if($id_produkty>0 && $pocet > 0){
 			// update vazeb
 			$datav = array('mnozstvi' => $pocet);
-			$this->connection->update('vazby', $datav)->where("id_vyssi=$id_produkty AND id_material=%i", $id)->execute();
+			$this->CONN->update('vazby', $datav)->where("id_vyssi=$id_produkty AND id_material=%i", $id)->execute();
 		}
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -175,7 +175,7 @@ class Material extends Model
 	public function updateK2id($id, $data)
 	{
 //		dumpBar($data, 'K2 id');
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -186,7 +186,7 @@ class Material extends Model
 	public function updateK2price($id, $data)
 	{
 //		dumpBar($data['id_k2'], 'K2 id');
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -196,10 +196,10 @@ class Material extends Model
 	 */
 	public function insert($data = array(), $id_produkty = 0, $pocet = 0)
 	{
-		$idm = $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		$idm = $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 		if($id_produkty>0 && $pocet > 0){
 			$datav = array('id_vyssi' => $id_produkty, 'id_material' => $idm, 'mnozstvi' => $pocet);
-			$this->connection->insert('vazby', $datav)->execute();
+			$this->CONN->insert('vazby', $datav)->execute();
 		}
 //		dumpBar($data['id_k2'], 'K2 id');
 		return $idm;
@@ -208,7 +208,7 @@ class Material extends Model
 	
 	public function sumBOM($idprodukt)
 	{
-		$data = dibi::query("SELECT sum(m.cena_kc) [skc], sum(m.cena_kc2) [skc2], sum(m.cena_kc3) [skc3]
+		$data = $this->CONN->query("SELECT sum(m.cena_kc) [skc], sum(m.cena_kc2) [skc2], sum(m.cena_kc3) [skc3]
 						FROM material m
 							LEFT JOIN vazby v ON m.id=v.id_material 
 							LEFT JOIN meny me ON m.id_meny=me.id
@@ -228,7 +228,7 @@ class Material extends Model
 	 */
 //	public function delete($id)
 //	{
-//		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+//		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 //	}
 
 	/**
@@ -239,10 +239,10 @@ class Material extends Model
 	public function delete($id, $id_produkt = 0)
 	{
 		if($id>0){
-			return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+			return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 		}
 		if($id==0 && $id_produkt>0){
-			return dibi::query("DELETE FROM material 
+			return $this->CONN->query("DELETE FROM material 
 									WHERE id IN 
 									(SELECT id_material FROM vazby WHERE id_vyssi=$id_produkt 
 											AND id_material is not null)
@@ -257,7 +257,7 @@ class Material extends Model
 	 */
 	public function countNoSalePrices($id_produkty)
 	{
-		return dibi::query("SELECT COUNT(*) [cnt] FROM material m
+		return $this->CONN->query("SELECT COUNT(*) [cnt] FROM material m
 							LEFT JOIN vazby v ON m.id=v.id_material 
 							WHERE CAST(m.cena_kc2 AS money) <= 0 AND v.id_vyssi=$id_produkty")->fetchSingle();
 	}

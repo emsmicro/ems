@@ -26,7 +26,7 @@ class SetSazebO extends Model
 	
 	public function show()
 	{
-		return $this->connection->select('*')->from($this->table)->orderBy('platnost_od','DESC');
+		return $this->CONN->select('*')->from($this->table)->orderBy('platnost_od','DESC');
 
 	}
 	
@@ -37,7 +37,7 @@ class SetSazebO extends Model
 	 */
 	public function find($id)
 	{
-		return dibi::query("SELECT id, nazev [nazev], 
+		return $this->CONN->query("SELECT id, nazev [nazev], 
 								platnost_od, 
 								platnost_do 
 								FROM set_sazeb_o
@@ -51,7 +51,7 @@ class SetSazebO extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -61,7 +61,7 @@ class SetSazebO extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ class SetSazebO extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }

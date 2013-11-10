@@ -21,7 +21,7 @@ class Ciselnik extends Model
 	 */
 	public function showCis($table)
 	{
-		return $this->connection->select('*')->from($table);
+		return $this->CONN->select('*')->from($table);
 	}
 
 }

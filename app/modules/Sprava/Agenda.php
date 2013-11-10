@@ -16,7 +16,6 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
     public function __construct($arr = array())
     {
         parent::__construct($arr);
-		$this->connection = dibi::getConnection();
     }
 	
 	/**
@@ -25,7 +24,7 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show()
 	{
-		return $this->connection->select('*')->from($this->table);
+		return $this->CONN->select('*')->from($this->table);
 	}
 	
 	/**
@@ -35,7 +34,7 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
 	}
 	
 	/**
@@ -45,7 +44,7 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -55,7 +54,7 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -65,7 +64,7 @@ class Agenda extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }

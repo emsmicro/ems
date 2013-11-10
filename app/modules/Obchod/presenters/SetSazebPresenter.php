@@ -501,7 +501,9 @@ class SetSazebPresenter extends ObchodPresenter
 					->controlPrototype->autocomplete('off')
 				->addCondition($form::FILLED)
 					->addRule($form::FLOAT, 'Hodnota musí být celé nebo reálné číslo.');
+			$container->addText('pravidlo'.$i,  'Pravidlo:',200)->setValue($v['pravidlo']);
 			$container->addHidden('hodn'.$i)->setValue($v['hodnota']*100);
+			$container->addHidden('prav'.$i)->setValue($v['pravidlo']);
 			$container->addHidden('idts'.$i)->setValue($v['id']);
 			$container->addHidden('ids'.$i)->setValue($v['ids']);
 		}
@@ -529,7 +531,9 @@ class SetSazebPresenter extends ObchodPresenter
 			$j = 0;
 			$r = 0;
 			$h = 0;
+			$p = '';
 			$h0 = 0;
+			$p0 = '';
 			$idts = 0;
 			$ids = 0;
 			foreach($rows as $k => $v ){
@@ -538,23 +542,30 @@ class SetSazebPresenter extends ObchodPresenter
 					case 1:
 						$h = floatval($v);
 					case 2:
-						$h0 = floatval($v);
+						$p = $v;
 					case 3:
-						$idts = intval($v);
+						$h0 = floatval($v);
 					case 4:
+						$p0 = $v;
+					case 5:
+						$idts = intval($v);
+					case 6:
 						$ids = intval($v);
 				}
-				if($j == 4){
-					if ($h <> $h0){
+				if($j == 6){
+					if ($h <> $h0 or $p<>$p0){
 						$r++;
 						$idata[$r]['ids']			= $ids;
 						$gdata[$r]['hodnota']		= ($h/100);
+						$gdata[$r]['pravidlo']		= $p;
 						$gdata[$r]['id_typy_sazeb'] = $idts;
 						$gdata[$r]['id_set_sazeb']	= (int) $idss;
 					}
 					$j = 0;
 					$h = 0;
+					$p = '';
 					$h0 = 0;
+					$p0 = '';
 					$idts = 0;
 					$ids = 0;
 				}
@@ -563,7 +574,7 @@ class SetSazebPresenter extends ObchodPresenter
 					$pocet = $sazba->insUpdGroup($gdata, $idata, $idss, $r);
 					$instext = "";
 					if($pocet['i'] > 0){$instext = ", vloženo ".$pocet['i'];}
-					$this->flashMessage("Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb režií.");
+					$this->flashMessage("Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb režií (či jejich pravidel).");
 				
 			} else {
 					$this->flashMessage('Hromadné uložení sazeb režií nebylo provedeno, neboť nebyly změněny žádné údaje.');

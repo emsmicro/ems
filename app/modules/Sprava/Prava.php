@@ -26,7 +26,7 @@ class Prava extends Model
 	 */
 	public function show()
 	{
-		return dibi::dataSource("
+		return $this->CONN->dataSource("
 						SELECT	r.id [idr]
 								, r.nazev [role]
 								, r.popis [prole]
@@ -52,7 +52,7 @@ class Prava extends Model
 	 */
 	public function find($id)
 	{
-		return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
 	}
 	
 	/**
@@ -62,7 +62,7 @@ class Prava extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -82,7 +82,7 @@ class Prava extends Model
 	 */
 	public function insertATR($data = array())
 	{
-		return $this->connection->insert('prava', $data)->execute();
+		return $this->CONN->insert('prava', $data)->execute();
 	}
 	
 	
@@ -93,7 +93,7 @@ class Prava extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -104,9 +104,9 @@ class Prava extends Model
 	public function deleteATR($id_role, $modul='')
 	{
 		if($modul==''){
-			return $this->connection->delete('prava')->where('id_role=%i', $id_role)->execute();
+			return $this->CONN->delete('prava')->where('id_role=%i', $id_role)->execute();
 		} else {
-			return dibi::query("DELETE FROM prava
+			return $this->CONN->query("DELETE FROM prava
 									WHERE id_role = $id_role
 										AND id_permission IN (SELECT id FROM permission WHERE modul = '$modul')
 								");
@@ -132,7 +132,7 @@ class Prava extends Model
 		} else {
 			$cond = "";
 		}
-		return dibi::dataSource($qry . $cond);
+		return $this->CONN->dataSource($qry . $cond);
 	}
 
 	
@@ -162,7 +162,7 @@ class Prava extends Model
 	
 	public function getResources()
 	{
-		$data = $this->connection->select('modul,presenter,funkce,poradi')->from('permission')->orderBy('modul,presenter,poradi')->fetchAll();
+		$data = $this->CONN->select('modul,presenter,funkce,poradi')->from('permission')->orderBy('modul,presenter,poradi')->fetchAll();
 		return $data;
 	}
 	/**
@@ -179,7 +179,7 @@ class Prava extends Model
 					LEFT JOIN role r ON pr.id_role = r.id 
 					$cond
 				";
-		return dibi::dataSource($qry);
+		return $this->CONN->dataSource($qry);
 	}
 
 	/**
@@ -189,7 +189,7 @@ class Prava extends Model
 	public function getRole()
 	{
 		$qry = "SELECT nazev [role] FROM role";
-		return dibi::dataSource($qry);
+		return $this->CONN->dataSource($qry);
 	}
 	
 }

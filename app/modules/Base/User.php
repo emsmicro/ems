@@ -5,7 +5,7 @@ class User extends Model
 {
 	public static function find($username)
 	{
-		$row = self::$connection->table('users')
+		$row = $this->CONN->table('users')
 			->where('username', $username)
 			->fetch();
 

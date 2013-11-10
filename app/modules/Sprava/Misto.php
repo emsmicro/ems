@@ -20,7 +20,7 @@ class Misto extends Model
 	 */
 	public function showCis($table)
 	{
-		return $this->connection->select('*')->from($table);
+		return $this->CONN->select('*')->from($table);
 	}
 	
 	/**
@@ -30,7 +30,7 @@ class Misto extends Model
 	 */
 	public function find($id,$table)
 	{
-		return $this->connection->select('*')->from($table)->where('id=%i', $id);
+		return $this->CONN->select('*')->from($table)->where('id=%i', $id);
 	}
 
 
@@ -41,7 +41,7 @@ class Misto extends Model
 	 */
 	public function delete($id, $table)
 	{
-		return $this->connection->delete($table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($table)->where('id=%i', $id)->execute();
 	}
 
 }

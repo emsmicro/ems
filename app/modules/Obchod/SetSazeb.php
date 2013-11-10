@@ -25,8 +25,8 @@ class SetSazeb extends Model
 	 */
 	public function show()
 	{
-		//return $this->connection->select('*')->from($this->table)->orderBy('platnost_od','DESC');
-		return dibi::query("SELECT ss.id, ss.nazev [nazev], 
+		//return $this->CONN->select('*')->from($this->table)->orderBy('platnost_od','DESC');
+		return $this->CONN->query("SELECT ss.id, ss.nazev [nazev], 
 								platnost_od,
 								platnost_do,
 								ka.zkratka [kzkratka], ka.nazev [knazev], ka.popis
@@ -43,7 +43,7 @@ class SetSazeb extends Model
 	 */	
 	public function find($id)
 	{
-		return dibi::query("SELECT ss.id, ss.nazev [nazev], 
+		return $this->CONN->query("SELECT ss.id, ss.nazev [nazev], 
 								platnost_od,
 								platnost_do,
 								kalkulace,
@@ -61,7 +61,7 @@ class SetSazeb extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -71,7 +71,7 @@ class SetSazeb extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -81,7 +81,7 @@ class SetSazeb extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 	/**
@@ -91,7 +91,7 @@ class SetSazeb extends Model
 	 */
 	public function showKalk()
 	{
-		return $this->connection->select('*')->from('kalkulace');
+		return $this->CONN->select('*')->from('kalkulace');
 	}
 	
 	/**
@@ -99,7 +99,7 @@ class SetSazeb extends Model
 	 * @return type 
 	 */
 	public function getKalkul() {
-		$kalk = dibi::fetchPairs("SELECT id, zkratka+': '+nazev [nazev] from kalkulace");
+		$kalk = $this->CONN->fetchPairs("SELECT id, zkratka+': '+nazev [nazev] from kalkulace");
 		return $kalk;
 	}	
 
@@ -110,7 +110,7 @@ class SetSazeb extends Model
 	 */	
 	public function findKalk($id)
 	{
-		return $this->connection->select('*')->from('kalkulace')->where('id=%i', $id);
+		return $this->CONN->select('*')->from('kalkulace')->where('id=%i', $id);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ class SetSazeb extends Model
 	 */
 	public function updateKalk($id, $data = array())
 	{
-		return $this->connection->update('kalkulace', $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update('kalkulace', $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -130,7 +130,7 @@ class SetSazeb extends Model
 	 */
 	public function insertKalk($data = array())
 	{
-		return $this->connection->insert('kalkulace', $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert('kalkulace', $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -140,7 +140,7 @@ class SetSazeb extends Model
 	 */
 	public function deleteKalk($id)
 	{
-		return $this->connection->delete('kalkulace')->where('id=%i', $id)->execute();
+		return $this->CONN->delete('kalkulace')->where('id=%i', $id)->execute();
 	}
 	
 	

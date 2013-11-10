@@ -26,7 +26,7 @@ class Osoba extends Model
 	 */
 	public function show()
 	{
-		return dibi::dataSource('SELECT o.*,f.nazev [ofirma],os.nazev [oosloveni], f.id [idf] FROM osoby o
+		return $this->CONN->dataSource('SELECT o.*,f.nazev [ofirma],os.nazev [oosloveni], f.id [idf] FROM osoby o
                                 LEFT JOIN firmy f ON o.id_firmy=f.id
                                 LEFT JOIN osloveni os ON o.id_osloveni=os.id');
 	}
@@ -37,7 +37,7 @@ class Osoba extends Model
 	 */
 	public function showPeople($id_firmy)
 	{
-		return dibi::query("SELECT o.*,f.nazev [ofirma],os.nazev [oosloveni], f.id [idf], 
+		return $this->CONN->query("SELECT o.*,f.nazev [ofirma],os.nazev [oosloveni], f.id [idf], 
 									COALESCE(k.hodnota,'žádný') [kontakt], k.id_typy_kontaktu [idk]
 								FROM osoby o
                                 LEFT JOIN firmy f ON o.id_firmy=f.id
@@ -55,7 +55,7 @@ class Osoba extends Model
 	 */
 	public function find($id)
 	{
-		return dibi::dataSource('SELECT o.*,f.nazev [ofirma],os.nazev [osloveni] FROM osoby o
+		return $this->CONN->dataSource('SELECT o.*,f.nazev [ofirma],os.nazev [osloveni] FROM osoby o
                                 LEFT JOIN firmy f ON o.id_firmy=f.id
                                 LEFT JOIN osloveni os ON o.id_osloveni=os.id
                                 WHERE o.id='.$id
@@ -69,7 +69,7 @@ class Osoba extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -79,7 +79,7 @@ class Osoba extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -89,7 +89,7 @@ class Osoba extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }

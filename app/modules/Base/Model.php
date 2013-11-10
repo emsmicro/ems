@@ -9,8 +9,7 @@ use Nette\DI\Container;
 class Model extends DibiRow
 {
 	/** @var Dibi\Connection */
-	public $connection;
-	public $CONN;
+	public $CONN;		// connection object
 	
 	public $limit = 0;
 	public $offset = 0;
@@ -19,15 +18,13 @@ class Model extends DibiRow
     public function __construct($arr = array())
     {
         parent::__construct($arr);
-		
-		$this->connection = dibi::getConnection();
-		$this->CONN = $this->connection;
+		$this->CONN = dibi::getConnection();
 	}
 
 
 	public function createAuthenticatorService()
 	{
-		$autent = new Authenticator(dibi::dataSource('SELECT u.*, r.nazev [nrole] FROM users u LEFT JOIN role r ON u.role=r.id'));
+		$autent = new Authenticator($this->CONN->dataSource('SELECT u.*, r.nazev [nrole] FROM users u LEFT JOIN role r ON u.role=r.id'));
 		return $autent;
 
 	}
@@ -43,12 +40,12 @@ class Model extends DibiRow
 
 	public function updateCis($table, $id, $data = array())
 	{
-		return $this->connection->update($table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($table, $data)->where('id=%i', $id)->execute();
 	}
 
 	public function insertCis($table, $data = array())
 	{
-		return $this->connection->insert($table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($table, $data)->execute($this->CONN->IDENTIFIER);
 	}
 	
 	public function getPrefixedFormFields($hashData, $prefix = '_', $prefpos = 1){
@@ -92,26 +89,26 @@ class Model extends DibiRow
 	 }
  
 	public function getActualPurchaseRates() {
-		$nkurz = dibi::fetchPairs("SELECT k.id [id_kurzy], zkratka+ ' ['+RTRIM(CONVERT(varchar, ROUND(k.kurz_nakupni,4)))+']' [KURZ] FROM kurzy k 
+		$nkurz = $this->CONN->fetchPairs("SELECT k.id [id_kurzy], zkratka+ ' ['+RTRIM(CONVERT(varchar, ROUND(k.kurz_nakupni,4)))+']' [KURZ] FROM kurzy k 
 								LEFT JOIN meny m ON k.id_meny=m.id
 								WHERE k.platnost_do < '19710101' OR k.platnost_do > GETDATE() OR k.platnost_do IS NULL");
 		return $nkurz;
 	}
 
 	public function getActualSalesRates() {
-		$nkurz = dibi::fetchPairs("SELECT k.id [id_kurzy], zkratka+ ' ['+RTRIM(CONVERT(varchar, ROUND(k.kurz_prodejni,4)))+']' [KURZ] FROM kurzy k 
+		$nkurz = $this->CONN->fetchPairs("SELECT k.id [id_kurzy], zkratka+ ' ['+RTRIM(CONVERT(varchar, ROUND(k.kurz_prodejni,4)))+']' [KURZ] FROM kurzy k 
 								LEFT JOIN meny m ON k.id_meny=m.id
 								WHERE k.platnost_do < '19710101' OR k.platnost_do > GETDATE() OR k.platnost_do IS NULL");
 		return $nkurz;
 	}
 
 	public function getMeasureUnits() {
-		$units = dibi::fetchPairs("SELECT id, zkratka from merne_jednotky ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, zkratka from merne_jednotky ORDER BY id");
 		return $units;
 	}
 
 	public function getCurrencyRates() {
-		$units = dibi::fetchPairs("SELECT m.id [id_meny],  
+		$units = $this->CONN->fetchPairs("SELECT m.id [id_meny],  
 									(CASE WHEN k.kurz_prodejni is null
 											THEN zkratka 
 											ELSE zkratka +' [' + replace(replace(convert(varchar,cast(k.kurz_prodejni as money),1),',',' '),'.',',')+ '] '
@@ -123,90 +120,90 @@ class Model extends DibiRow
 	}
 
 	public function getBatches($id_nabidky, $id_produkty) {
-		$units = dibi::fetchPairs("SELECT id, vyrobni_davka FROM pocty WHERE id_nabidky=$id_nabidky AND id_produkty=$id_produkty");
+		$units = $this->CONN->fetchPairs("SELECT id, vyrobni_davka FROM pocty WHERE id_nabidky=$id_nabidky AND id_produkty=$id_produkty");
 		return $units;
 	}
 
 	public function getCalculs() {
-		$units = dibi::fetchPairs("SELECT id, zkratka+' : '+nazev [nazev] FROM kalkulace");
+		$units = $this->CONN->fetchPairs("SELECT id, zkratka+' : '+nazev [nazev] FROM kalkulace");
 		return $units;
 	}
 
 	public function getKalkVzorce() {
-		return dibi::query("SELECT * FROM kalkulace")->fetchAll();
+		return $this->CONN->query("SELECT * FROM kalkulace")->fetchAll();
 	}
 	
 	
 	public function getQuantities($id_nabidky, $id_produkty) {
-		$units = dibi::fetchPairs("SELECT id, mnozstvi FROM pocty WHERE id_nabidky=$id_nabidky AND id_produkty=$id_produkty");
+		$units = $this->CONN->fetchPairs("SELECT id, mnozstvi FROM pocty WHERE id_nabidky=$id_nabidky AND id_produkty=$id_produkty");
 		return $units;
 	}
 
 	public function getCompany() {
-		$units = dibi::fetchPairs("SELECT id, nazev from firmy ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from firmy ORDER BY id");
 		return $units;
 	}
 
 	public function getOsloveni() {
-		$units = dibi::fetchPairs("SELECT id, nazev from osloveni ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from osloveni ORDER BY id");
 		return $units;
 	}
 	public function getSetR() {
-		$units = dibi::fetchPairs("SELECT id, nazev from set_sazeb ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from set_sazeb ORDER BY id");
 		return $units;
 	}
 	public function getSetO() {
-		$units = dibi::fetchPairs("SELECT id, nazev from set_sazeb_o ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from set_sazeb_o ORDER BY id");
 		return $units;
 	}
 	public function getCurrency() {
-		$units = dibi::fetchPairs("SELECT id, zkratka from meny ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, zkratka from meny ORDER BY id");
 		return $units;
 	}
 	public function getCompanyKind() {
-		$units = dibi::fetchPairs("SELECT id, zkratka from druhy_firem ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, zkratka from druhy_firem ORDER BY id");
 		return $units;
 	}
 	public function getCity() {
-		$units = dibi::fetchPairs("SELECT id, nazev+' ('+psc+')' [obec] from obce ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev+' ('+psc+')' [obec] from obce ORDER BY id");
 		return $units;
 	}
 	public function getProvince() {
-		$units = dibi::fetchPairs("SELECT id, nazev+' ('+zkratka+')' [kraj] from kraje ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev+' ('+zkratka+')' [kraj] from kraje ORDER BY id");
 		return $units;
 	}
 	public function getCountry() {
-		$units = dibi::fetchPairs("SELECT id, nazev+' ('+zkratka+')' [stat] from staty ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev+' ('+zkratka+')' [stat] from staty ORDER BY id");
 		return $units;
 	}
 	public function getRole() {
-		$units = dibi::fetchPairs("SELECT id, popis from role ORDER BY id");
+		$units = $this->CONN->fetchPairs("SELECT id, popis from role ORDER BY id");
 		return $units;
 	}
 	public function getOperationKind() {
-		$units = dibi::fetchPairs("SELECT id, nazev from druhy_operaci ORDER BY poradi");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from druhy_operaci ORDER BY poradi");
 		return $units;
 	}
 	public function getOperationType($idd = 0) {
 		$cond = "";
 		if($idd > 0){$cond = " WHERE id_druhy_operaci = $idd";}
-		$units = dibi::fetchPairs("SELECT id, nazev FROM typy_operaci $cond ORDER BY poradi");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev FROM typy_operaci $cond ORDER BY poradi");
 		return $units;
 	}
 	public function getOperAllKind($id = 0) {
 		$cond = "";
 		if($id > 0){$cond = " WHERE id = $id";}
-		$units = dibi::query("SELECT * FROM druhy_operaci $cond ORDER BY poradi")->fetchAll();
+		$units = $this->CONN->query("SELECT * FROM druhy_operaci $cond ORDER BY poradi")->fetchAll();
 		return $units;
 	}
 	public function getSablony() {
-		$units = dibi::fetchPairs("SELECT id, nazev from tp_sablony");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev from tp_sablony");
 		return $units;
 	}
 	public function getProduktSablony($id_produkty = 0) {
 		$cond = "";
 		if($id_produkty > 0){$cond = " WHERE tp.id_produkty = $id_produkty";}
-		$units = dibi::fetchPairs("SELECT DISTINCT sa.id, sa.zkratka, sa.nazev
+		$units = $this->CONN->fetchPairs("SELECT DISTINCT sa.id, sa.zkratka, sa.nazev
 										FROM tpostupy_sablony ps 
 										LEFT JOIN tp_sablony sa ON ps.id_sablony = sa.id
 										LEFT JOIN tpostupy tp ON ps.id_tpostup = tp.id
@@ -221,11 +218,11 @@ class Model extends DibiRow
 	 * @return type
 	 */
 	public function getTableData($table) {
-		return dibi::query("SELECT * FROM $table")->fetchAll();
+		return $this->CONN->query("SELECT * FROM $table")->fetchAll();
 	}
 	
 	public function getContactType($id) {
-		$units = dibi::fetchPairs("SELECT id, nazev
+		$units = $this->CONN->fetchPairs("SELECT id, nazev
                                             FROM typy_kontaktu
                                             WHERE id NOT IN 
                                             (SELECT id_typy_kontaktu 
@@ -237,7 +234,7 @@ class Model extends DibiRow
 	public function getStatus($role) {
 		$cond="";
 		if(strtoupper($role)<>"ADMIN"){$cond=" WHERE r.nazev Like '%$role%'";}
-		$stavs = dibi::fetchPairs("SELECT s.id, s.zkratka + ' --- ' + CAST(s.popis as nvarchar) [nazev] FROM stav_role sr
+		$stavs = $this->CONN->fetchPairs("SELECT s.id, s.zkratka + ' --- ' + CAST(s.popis as nvarchar) [nazev] FROM stav_role sr
 										LEFT JOIN stav s ON sr.id_stav = s.id
 										LEFT JOIN role r ON sr.id_role = r.id
 										$cond
@@ -247,7 +244,7 @@ class Model extends DibiRow
 
 	public function getOfferHistory($id_nabidka) {
 		
-		$stavs = dibi::query("SELECT sn.id_nabidky, sn.datum_zmeny [datzmeny], st.zkratka, st.popis, st.id [id_stav], 
+		$stavs = $this->CONN->query("SELECT sn.id_nabidky, sn.datum_zmeny [datzmeny], st.zkratka, st.popis, st.id [id_stav], 
 								u.username, u.prijmeni+' '+left(u.jmeno,1)+'.' [uzivatel], sn.id_user
 								FROM stav_nabidka sn
 									LEFT JOIN stav st ON sn.id_stav = st.id
@@ -269,7 +266,7 @@ class Model extends DibiRow
 			$cond = " AND sp.id_stav = $type";
 			$range = " TOP 1 ";
 		}
-		$stavs = dibi::query("SELECT $range sp.id_produkty, sp.datum_zmeny [datzmeny], st.zkratka, st.popis, st.id [id_stav], sp.id_user, 
+		$stavs = $this->CONN->query("SELECT $range sp.id_produkty, sp.datum_zmeny [datzmeny], st.zkratka, st.popis, st.id [id_stav], sp.id_user, 
 								u.username, u.prijmeni+' '+left(u.jmeno,1)+'.' [uzivatel]
 								FROM stav_produkt sp
 									LEFT JOIN stav st ON sp.id_stav = st.id
@@ -377,8 +374,8 @@ class Model extends DibiRow
 	 */
 	
 	public function isProductLocked($id){
-		$cnt1 = dibi::query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=21")->fetchSingle();
-		$cnt2 = dibi::query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=22")->fetchSingle();
+		$cnt1 = $this->CONN->query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=21")->fetchSingle();
+		$cnt2 = $this->CONN->query("SELECT count(*) FROM stav_produkt WHERE id_produkty=$id AND id_stav=22")->fetchSingle();
 		if ($cnt2>0){
 			return 0;
 		} elseif ($cnt1>0){
@@ -395,8 +392,8 @@ class Model extends DibiRow
 	 */
 	
 	public function isOfferLocked($id){
-		$cnt1 = dibi::query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id AND id_stav=21")->fetchSingle();
-		$cnt2 = dibi::query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id AND id_stav=22")->fetchSingle();
+		$cnt1 = $this->CONN->query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id AND id_stav=21")->fetchSingle();
+		$cnt2 = $this->CONN->query("SELECT count(*) FROM stav_nabidka WHERE id_nabidky=$id AND id_stav=22")->fetchSingle();
 		if ($cnt2>0){
 			return 0;
 		} elseif ($cnt1>0){

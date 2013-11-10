@@ -26,7 +26,7 @@ class Sazba extends Model
 	 */
 	public function show($id=0)
 	{
-		return dibi::query("SELECT	ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota*100,2) [hodnota], 
+		return $this->CONN->query("SELECT	ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota*100,2) [hodnota], 
 									s.id_set_sazeb [idss], ts.zkratka, ts.poradi, s.pravidlo
 								FROM typy_sazeb ts
 								LEFT JOIN (SELECT * FROM sazby WHERE id_set_sazeb=$id) s ON ts.id=s.id_typy_sazeb
@@ -42,8 +42,8 @@ class Sazba extends Model
 	 */	
 	public function find($id)
 	{
-		//return $this->connection->select('*')->from($this->table)->where('id=%i', $id);
-		return dibi::dataSource('SELECT ts.nazev, ROUND(s.hodnota*100,2) [hodnota], ts.zkratka, s.pravidlo
+		//return $this->CONN->select('*')->from($this->table)->where('id=%i', $id);
+		return $this->CONN->dataSource('SELECT ts.nazev, ROUND(s.hodnota*100,2) [hodnota], ts.zkratka, s.pravidlo
 									FROM sazby s LEFT JOIN typy_sazeb ts ON s.id_typy_sazeb=ts.id  
 									WHERE s.id='.$id
 								);
@@ -56,7 +56,7 @@ class Sazba extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -66,7 +66,7 @@ class Sazba extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	/**
@@ -76,7 +76,7 @@ class Sazba extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 	
 	/**
@@ -85,7 +85,7 @@ class Sazba extends Model
 	 * @return mixed
 	 */
 	public function getTypSazby($id) {
-		$pom = dibi::fetchPairs('SELECT nazev FROM typy_sazeb WHERE id='.$id);
+		$pom = $this->CONN->fetchPairs('SELECT nazev FROM typy_sazeb WHERE id='.$id);
 		return $pom[0];
 	}
 	
@@ -97,7 +97,7 @@ class Sazba extends Model
 	 */
 	public function getTypeRates($id_set_sazeb)
 	{
-		return dibi::dataSource("SELECT ts.id, ts.zkratka, ts.nazev, ts.poradi, ss.hodnota, COALESCE(ss.id,0) [ids], ss.pravidlo
+		return $this->CONN->dataSource("SELECT ts.id, ts.zkratka, ts.nazev, ts.poradi, ss.hodnota, COALESCE(ss.id,0) [ids], ss.pravidlo
 									FROM typy_sazeb ts
 									LEFT JOIN sazby ss ON ts.id = ss.id_typy_sazeb
 									WHERE ss.id_set_sazeb = $id_set_sazeb OR ss.id_set_sazeb is null
@@ -107,7 +107,7 @@ class Sazba extends Model
 
 	public function getIdTypeRates()
 	{
-		return dibi::fetchPairs("SELECT id, nazev
+		return $this->CONN->fetchPairs("SELECT id, nazev
 									FROM typy_sazeb
 									ORDER BY id
 									");
@@ -123,7 +123,7 @@ class Sazba extends Model
 	{
 			$cnt=0;
 			//stavajici sazby nejprve smazeme
-			$this->connection->delete($this->table)->where('id_set_sazeb=%i', $idss)->execute();
+			$this->CONN->delete($this->table)->where('id_set_sazeb=%i', $idss)->execute();
 			for($i=1; $i<=$pocet; $i++){
 				$opdata = (array) $data[$i];
 				if($opdata){

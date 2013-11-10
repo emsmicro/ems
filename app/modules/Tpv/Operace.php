@@ -30,7 +30,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 		if($notempl){
 			$cond = " AND (o.id_sablony is null OR o.id_tpostup is null) ";
 		}
-		return dibi::query("SELECT o.*, COALESCE(o.poradi, tp.poradi) [oporadi], COALESCE(o.id_tpostup, $id_tpostup) [id_tpostup],
+		return $this->CONN->query("SELECT o.*, COALESCE(o.poradi, tp.poradi) [oporadi], COALESCE(o.id_tpostup, $id_tpostup) [id_tpostup],
 								tp.nazev, tp.poradi [tporadi], a.pocet 
 							FROM operace o 
 							LEFT JOIN typy_operaci tp ON o.id_typy_operaci=tp.id				
@@ -51,7 +51,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function find($id)
 	{
-		return dibi::dataSource("SELECT o.*, tp.nazev [typ], tp.ta_min, tp.ta_rezerva,
+		return $this->CONN->dataSource("SELECT o.*, tp.nazev [typ], tp.ta_min, tp.ta_rezerva,
 										COALESCE(sb.nazev,'') [nsablona], COALESCE(tt.nazev,'') [npostup]
 									FROM operace o
                                         LEFT JOIN typy_operaci	tp ON o.id_typy_operaci=tp.id
@@ -71,7 +71,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	{
 		if($id_produktu>0){
 			if($id_tpostup == 0 || $id_sablony == 0){
-				return dibi::query("SELECT tp.id [idto]
+				return $this->CONN->query("SELECT tp.id [idto]
 									, tp.zkratka [ztyp]
 									, tp.nazev [typ]
 									, tp.poradi [poradi]
@@ -99,7 +99,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 								ORDER BY tp.poradi			
 							")->fetchAll();
 			} else {
-				return dibi::query("SELECT tp.id [idto]
+				return $this->CONN->query("SELECT tp.id [idto]
 									, tp.zkratka [ztyp]
 									, tp.nazev [typ]
 									, tp.poradi [poradi]
@@ -145,7 +145,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 
 	public function getIdTypesOper()
 	{
-		return dibi::fetchPairs("SELECT tp.id, tp.nazev
+		return $this->CONN->fetchPairs("SELECT tp.id, tp.nazev
 									FROM typy_operaci tp 
 									LEFT JOIN druhy_operaci d ON tp.id_druhy_operaci=d.id
 									ORDER BY d.zkratka DESC
@@ -160,7 +160,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 
 	
@@ -171,7 +171,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insertSimple($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 
 	/**
@@ -185,11 +185,11 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	{
 		$p = array();
 		if($id_operace==0){
-			$ido = $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+			$ido = $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 			$p[0] = 1;
 			if($id_produkty>0){
 				$datav = array('id_vyssi' => $id_produkty, 'id_operace' => $ido);
-				$this->connection->insert('vazby', $datav)->execute();
+				$this->CONN->insert('vazby', $datav)->execute();
 			}
 		} else {
 			$ido = $id_operace;
@@ -210,11 +210,11 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	{
 		// delete one operation
 		if($id>0){
-			return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+			return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 		}
 		// delete all product operations
 		if($id==0 && $id_produkt>0){
-			return dibi::query("DELETE FROM operace 
+			return $this->CONN->query("DELETE FROM operace 
 									WHERE id IN 
 									(SELECT id_operace FROM vazby WHERE id_vyssi=$id_produkt 
 											AND id_operace is not null)
@@ -222,7 +222,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 		}
 		// delete plonk operations
 		if($id<0 && $id_produkt>0){
-			return dibi::query("DELETE FROM operace 
+			return $this->CONN->query("DELETE FROM operace 
 									WHERE id IN 
 									(SELECT id_operace FROM vazby WHERE id_vyssi=$id_produkt 
 											AND id_operace is not null)
@@ -273,7 +273,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	public function insertVazby($data = array())
 	{
 		if(!$this->findVazba($data['id_vyssi'], $data['id_operace'])){
-			$this->connection->insert('vazby', $data)->execute();
+			$this->CONN->insert('vazby', $data)->execute();
 		}
 	}
 
@@ -285,7 +285,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	private function findVazba($idv, $ido)
 	{
-		$cnt = count($this->connection->select("*")->from("vazby")->where("id_vyssi=$idv AND id_operace=$ido"));
+		$cnt = count($this->CONN->select("*")->from("vazby")->where("id_vyssi=$idv AND id_operace=$ido"));
 		return $cnt>0;
 	}
 	
@@ -297,7 +297,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function showCalcOper($id_operace, $id_produkt){
 	
-		return dibi::query("	
+		return $this->CONN->query("	
 								SELECT a.*, COALESCE(ROUND(ao.mnozstvi,2),0) [mnozstvi]
 										, ao.cas_min
 										, COALESCE(ao.id, 0) [idao]
@@ -330,7 +330,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function insertTC($data = array())
 	{
-		return $this->connection->insert('atr_operaci', $data)->execute();
+		return $this->CONN->insert('atr_operaci', $data)->execute();
 	}
 	
 
@@ -341,7 +341,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function deleteTC($id_oper)
 	{
-		return $this->connection->delete('atr_operaci')->where('id_operace=%i', $id_oper)->execute();
+		return $this->CONN->delete('atr_operaci')->where('id_operace=%i', $id_oper)->execute();
 	}
 	
 	/**
@@ -351,7 +351,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function updateTC($id, $data = array())
 	{
-		return $this->connection->update('atr_operaci', $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update('atr_operaci', $data)->where('id=%i', $id)->execute();
 	}
 
 	
@@ -359,7 +359,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	{
 		$p = array();
 		if($id_atr_oper == 0){
-			$id_atr_oper = $this->connection->insert('atr_operaci', $data)->execute(dibi::IDENTIFIER);
+			$id_atr_oper = $this->CONN->insert('atr_operaci', $data)->execute(dibi::IDENTIFIER);
 			$p[0] = 1;
 		} else {
 			$this->updateTC($id_atr_oper, $data);

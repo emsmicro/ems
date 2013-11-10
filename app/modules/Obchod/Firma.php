@@ -12,8 +12,6 @@ class Firma extends Model
 	 * @table
 	 */
 	private $table = 'firmy';
-	/** @var Nette\Database\Connection */ 
-	public $connection;
 
 
     public function __construct($arr = array())
@@ -25,7 +23,7 @@ class Firma extends Model
 	 */
 	public function show()
 	{
-		return dibi::dataSource("
+		return $this->CONN->dataSource("
 				SELECT f.*, d.zkratka [dzkratka], a.ulice, a.cp, o.nazev [obec], o.psc, k.nazev [kraj], s.nazev [stat], s.zkratka [zstat]
 				FROM firmy f
 					LEFT JOIN druhy_firem d ON f.id_druhy_firem=d.id
@@ -42,7 +40,7 @@ class Firma extends Model
 	 */
 	public function find($id)
 	{
-		return dibi::dataSource("
+		return $this->CONN->dataSource("
 				SELECT 	f.*,
 						d.zkratka [dzkratka], a.ulice [a_ulice], a.cp [a_cp], o.id [a_id_obce],
 						o.nazev [m_obec], o.psc [m_psc],
@@ -65,7 +63,7 @@ class Firma extends Model
 	 */
 	public function update($id, $data = array())
 	{
-		return $this->connection->update($this->table, $data)->where('id=%i', $id)->execute();
+		return $this->CONN->update($this->table, $data)->where('id=%i', $id)->execute();
 	}
 	/*
 	 * Inserts data to the table
@@ -74,7 +72,7 @@ class Firma extends Model
 	 */
 	public function insert($data = array())
 	{
-		return $this->connection->insert($this->table, $data)->execute(dibi::IDENTIFIER);
+		return $this->CONN->insert($this->table, $data)->execute(dibi::IDENTIFIER);
 	}
 	/*
 	 * Deletes record in the table
@@ -83,7 +81,7 @@ class Firma extends Model
 	 */
 	public function delete($id)
 	{
-		return $this->connection->delete($this->table)->where('id=%i', $id)->execute();
+		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 	}
 
 }
