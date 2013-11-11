@@ -65,12 +65,23 @@ class FirmaPresenter extends ObchodPresenter
 		$this->template->osoby = $osoba->showPeople($id);
 		
         $nab = new Nabidka;
-		$this->template->nabidky = $nab->findByCompany($id);
-    
+		
+		$rows = $nab->findByCompany($id);;
+		$cnt = count($rows);
+		// stránkování
+		$paginator = $this['vp']->getPaginator(); 
+		$paginator->itemsPerPage = 25;
+		$paginator->itemCount = $cnt;
+		$nab->limit = $paginator->getLength();
+		$nab->offset = $paginator->getOffset();
+		$rowp = $nab->findByCompany($id);;	
+		$this->template->nabidky = $rowp;
+		$this->template->cnt = $cnt;
+		
 		$prod = new Produkt;
 		$prods = $prod->getOffersCompany($id, 1);
 		$this->template->produkty = $prods;
-		dd($prods, 'ProdCeny');
+		//dd($prods, 'ProdCeny');
 		//$this->template->nump = count($prods->fetchAll());
 	}
 

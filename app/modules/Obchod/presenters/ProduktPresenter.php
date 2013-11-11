@@ -1001,7 +1001,7 @@ class ProduktPresenter extends ObchodPresenter
 				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
 			} else {
 				//calculate prices
-				$res = $kalk->kalkulPrices($id_nabidka, $id_produkt, $id_vzorec, $id_set_sazeb, $id_pocty, $id_meny);
+				$res = $kalk->kalkulPrices($item->idn, $idp, $vzorec, $item->idss, $id_pocty, $id_meny);
 				//$res = $kalk->pricesCalc($item->idn, $idp, $item->idss, $id_meny, $id_pocty, $vzorec);
 				if($res){
 					$rins = $res['r_ins'];

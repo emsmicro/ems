@@ -97,7 +97,13 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 */	
 	public function findByCompany($id_firmy)
 	{
-		return $this->CONN->query($this->full_detail_query . "	WHERE n.id_firmy=$id_firmy ORDER BY n.id DESC");
+		$sql_cmd = $this->full_detail_query . "	WHERE n.id_firmy=$id_firmy";
+		if($this->limit==0 && $this->offset==0){
+			return $this->CONN->query($sql_cmd. " ORDER BY n.id DESC");
+		} else {
+			$sql_pgs = $this->pagedSql($sql_cmd, '', 'n.id DESC');
+			return $this->CONN->query($sql_pgs);
+		}		
 	}
 	
 	/**

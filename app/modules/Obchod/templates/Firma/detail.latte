@@ -140,7 +140,7 @@
 									{$it->popis|truncate:50} | 
 									{$it->prij_datum|date:'%d.%m.%Y'} - 
 									{$it->pozad_datum|date:'%d.%m.%Y'} | 
-									<span class="mini" style="float:right;">{$it->nstav} {$it->datzmeny|date:'%d.%m.%Y'}</span>
+									<span class="mini" style="float:right;">| {$it->nstav} {$it->datzmeny|date:'%d.%m.%Y'} |</span>
 								</h3>
 								<div class="detailin">
 									<span class="tit">Přijato:</span><span class="val">{$it->prij_datum|date:'%d.%m.%Y'} | </span>
@@ -185,6 +185,11 @@
 						{var $nabs .= 'nab-'.$it->id.', '}
 					
 				{/foreach}
+				<div style="margin:0 20px 0 25px;">
+					{* paginator *}
+					{control vp}
+					<span style="float:right;"><span class="mini">Celkem záznamů: </span>{$cnt}</span>
+				</div>
 		</div>
 		<div style="clear:both"></div>
 	</div>

@@ -1,7 +1,6 @@
 	<table class="grid" style="width:98%;">
-
-	{var $naz = "xxx"}
 	{var $rws = 0}
+	{var $naz = "xxx"}
 	{foreach $cenyprod as $prod}
 		{if $prod->id_nabidky == $nabid}
 			{if $rws == 0}
@@ -37,7 +36,9 @@
 			{else}
 				
 				{if $prod->idtc == 8}
-					<td class="tcislo">{$prod->hodnota|number:2:',':' '} {$prod->mena}</td>
+					<td class="tcislo">
+					{$prod->hodnota|number:2:',':' '} {$prod->mena}
+					</td>
 				{/if}
 				</tr>
 			{/if}
