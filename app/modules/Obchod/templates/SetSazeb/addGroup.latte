@@ -4,7 +4,8 @@
 {block #content}
 
 
-<h1 n:block="title">{$titul}</h1>
+<h2 n:block="title">{$titul}</h2>
+<h1>{$subtitul}</h1>
 
 <div class="manual">
 
@@ -31,6 +32,7 @@
 	<tr class="noborder">
 		<td colspan="4" class="tdcenter">
 			<span>{$control['addGroupForm']['save']->control}</span>
+			<span>{$control['addGroupForm']['saveas']->control}</span>
 			<span>{$control['addGroupForm']['cancel']->control}</span>
 		</td>
 	</tr>

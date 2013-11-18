@@ -20,12 +20,17 @@
 	<title>{block #title|striptags|trim}{/block} | EMS nabídky</title>
     <link rel="shortcut icon" href="{$basePath}/images/favicon.ico" />
 
-	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css">
-	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css">
-	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/site.css" />
+	<link rel="stylesheet" media="screen,projection,tv" href="{$basePath}/css/screen.css" type="text/css" />
+	<link rel="stylesheet" media="print" href="{$basePath}/css/print.css" type="text/css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/base.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/site_gold.css" title="Gold" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/site_green.css" title="Green" disabled="disabled" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/site_blue.css" title="Blue" disabled="disabled" />
+	<link rel="stylesheet" type="text/css" media="screen" href="{$basePath}/css/site_gray.css" title="Gray" disabled="disabled" />
 	<script type="text/javascript" src="{$basePath}/js/jquery.min.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/autoNumeric.js"></script>
+	<script type="text/javascript" src="{$basePath}/js/jquery.cookie.js"></script>
 	{*
 	<link rel="stylesheet" href="{$basePath}/css/tipTip.css">
 	<!--[if !IE | (gt IE 8)]><!-->
@@ -38,7 +43,25 @@
 	<!--<![endif]-->	
 	*}
 	<script type="text/javascript">
-				
+		$(document).ready(init);
+
+		function init()
+		{
+		  setStyle($.cookie("style"));
+		}
+
+		function setStyle(name)
+		{
+		  if (name)
+			$.cookie("style", name, { expires: 300, path: '/' }); // 300 dni
+		  else
+			name = 'Gold';
+
+		  $('link[rel$=stylesheet][title]:not([title='+name+'])').attr('disabled', 'disabled');
+		  $('link[rel$=stylesheet][title='+name+']').removeAttr('disabled');
+		}
+	
+	
 		document.onkeydown = function (e) { 
 		  e = e || window.event;
 		  var keyCode = e.keyCode || e.which,
@@ -68,7 +91,7 @@
 
 </head>
 
-<body>
+<body>	
 	<div style="position:relative;width:100%;margin: 0 auto;">
 	<div id="topcont">
 
@@ -81,8 +104,7 @@
 				<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů">služeb a produktů</a>
 						v oblasti EMS ...
 		</div>
-
-
+		
 		{include 'mysetting.latte'}
 
 		{control navigation}
@@ -111,7 +133,16 @@
 					<a n:href="Sprava:default">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 				</span>
 		</div>
+		<div id="style-sw">
+			<ul title="Změnit schéma">
+			  <li><a href="javascript:setStyle('Gold')"	>Gold	</a></li>
+			  <li><a href="javascript:setStyle('Blue')"	>Blue	</a></li>
+			  <li><a href="javascript:setStyle('Green')">Green	</a></li>
+			  <li><a href="javascript:setStyle('Gray')"	>Gray	</a></li>
+			</ul>			
+		</div>
 
+								
 		{include #content}
 		
 	{ifset $is_filter}

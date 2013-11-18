@@ -1,18 +1,19 @@
+html {
+	font: 16px/1.5 sans-serif;
+	border-top: 12em solid;
+    border-color: #41361B;
+}
+
 body {
 	font: 16px/1.5 "Trebuchet MS", "Geneva CE", lucida, sans-serif;
 	color: #333;
-
-	background-color: #EAE1B9;
-	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#CAAB4B), to(#EAE1B9), color-stop(.5,#D3BB7C));
-	background: -moz-linear-gradient(top, #CAAB4B 0%, #D3BB7C 50%, #EAE1B9 100%);
-
 	margin: 2em;
 }
 
 h1 {
 	font-size: 1.9em;
 	color: #3484D2;
-      text-shadow: 2px 2px 2px #999999;
+    text-shadow: 2px 2px 2px #999999;
 	padding-bottom: 10px;
 }
 
@@ -27,14 +28,347 @@ h3 {
 	border-bottom: solid 1px #FFFFFF;
 	margin-top: 30px;
 	padding: 0 15px 0 15px;
-	border-top-left-radius: 4px;
-	-webkit-border-top-left-radius: 4px;
-	-moz-border-radius-topleft: 4px;
-	border-top-right-radius: 4px;
-	-webkit-border-top-right-radius: 4px;
-	-moz-border-radius-topright: 4px;
 	cursor: default;
 }
+
+#logo {
+	position: absolute;
+	width: 150px;
+	height: 8.7em;
+	top: -220px;
+	left: 20px;
+	background: url('../images/logo.png') left center no-repeat;
+}
+
+#titul {
+	position: absolute;
+	top: -160px;
+	left: 115px;
+	font-size: x-large;
+}
+
+#titul a {
+}
+
+#slogan a {
+}
+
+#titul a:hover, #slogan a:hover {
+	background: none;
+	text-decoration: underline;
+	color: #FFF;
+}
+
+
+#slogan {
+	position: absolute;
+	top: -125px;
+	left: 330px;
+}
+
+#slogan:hover {
+	color: #FFF;
+}
+
+#logged-in {
+	position: absolute;
+	float: right;
+	right: 0;
+	top: -320px;
+	font-weight: normal;
+	font-style: italic;
+}
+
+#logged-in a {
+	text-decoration: none;
+	font-weight: normal;
+}
+
+#logged-in a:hover {
+	color: #FFF;
+}
+
+#style-sw {
+	position: absolute;
+	float: right;
+	right: 40px;
+	top: -260px;
+	color: #EEF4FB;
+    font-size: x-small;
+}
+
+#style-sw a {
+	text-decoration: none;
+	font-weight: normal;
+}
+
+#style-sw a:hover {
+	color: #FFF;
+}
+
+#style-sw li {
+	float: left;
+    display: block;
+    margin: 0;
+	text-align: center;
+    top: -10px;
+}
+
+
+/* ------------------ MENU --------------------------- */
+
+#menu {
+	margin: 0;
+	padding: 0;
+	position: relative;
+	width: 971px;
+	top: -50px;
+	height: 40px;
+	list-style: none;
+	list-style-type: none;
+	color: #1A4571;
+	z-index:1;
+}
+
+#menu ul {
+  margin: auto;
+}
+
+#menu a {
+}
+
+#menu li {
+	float: left;
+    display: block;
+    margin: 0;
+	text-align: center;
+	font-weight: bold;
+}
+
+#menu li span.main {
+	float: left;
+	height: 29px;
+	margin: 0 0 0 -1px;
+	padding: 6px 20px 6px 20px;
+	border-right: solid 1px;
+	border-left: solid 1px;
+}
+
+#menu li span.nomain {
+	float: left;
+	height: 28px;
+	margin: 6px 0 1px -1px;
+	padding: 1px 10px 4px 10px;
+	font-size: small;
+	font-weight: normal;
+	border: solid 1px;
+}
+
+#menu li span.nomain:last-child {
+	border-right: solid 1px;
+}
+
+#menu li span.nomain a {
+  color: #333;
+}
+
+#menu li:first-child {
+	margin-left: 16px;
+}
+
+#menu li a {
+	text-decoration: none;
+}
+
+#menu li span a:hover {
+   color: #5F3F1F;
+   background: transparent;
+}
+
+#menu li span.nomain:hover {
+    height: 29px;
+}
+
+#menu li span.nomain a:hover {
+    text-shadow: 2px 2px 2px #AAA;
+}
+
+
+#menu li span.main:hover {
+}
+
+#menu li span.main.active {
+	border-top: solid 1px #FFF;
+	border-bottom: solid 1px #FFF;
+	border-left: solid 1px;
+	border-right: solid 1px;
+	height: 28px;
+	background-color: #FFF;
+}
+
+#menu li span.nomain.active {
+	padding-top: 2px;
+   	color: #333333;
+      text-shadow: 2px 2px 2px #AAA;
+	border-bottom: solid 1px #FFF;
+	border-top: solid 1px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+	height: 30px;
+      background-image: none;
+	background-color: #FFF;
+}
+
+#menu span.main.active a {
+  text-shadow: 2px 2px 2px #999999;
+}
+
+/*----------------- MYSETTING ----------------------*/
+
+#mysetting {
+	position: absolute;
+	top: -85px;
+	left: 20px;
+	font-size: 9pt;
+	width: 925px;
+	padding: 5px 5px 6px 5px;
+	vertical-align: middle;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+}
+
+#mysetting span {
+    font-weight: bold;
+}
+
+#mysetting a {
+	text-decoration: none;
+    text-shadow: 1px 1px 1px #AAAAAA;
+}
+
+#mysetting:hover {
+	background-color: #FFF;
+	cursor: no-drop;
+	box-shadow: none;
+	-webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+#mysetting a:hover {
+	color:#FFF;
+	cursor: pointer;
+}
+
+.serase a {
+	background: url('../images/erasem.png') center center no-repeat;
+}
+
+.serase a:hover {
+ 	background: url('../images/erasehm.png') center center no-repeat;
+}
+
+.seterase {
+	float: right;
+	background: url('../images/erase.png') center center no-repeat;
+}
+
+.seterase a {
+	background: url('../images/erase.png') center center no-repeat;
+}
+
+.seterase:hover {
+	background-color: transparent;
+	text-decoration: none;
+ 	background: url('../images/eraseh.png') center center no-repeat;
+}
+
+
+#gmenu {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	width: 940px;
+	top: 216px;
+	left: 48px;
+	height: 8px;
+	list-style: none;
+	list-style-type: none;
+	color: #1A4571;
+	z-index:2;
+	background-color: #F4F4F4;
+	border: dotted 1px #EEEEEE;
+}
+
+#gmenu ul {
+  margin: auto;
+}
+
+#gmenu li a {
+	position: relative;
+	top: -10px;
+	border: none;
+    height: 6px;
+	margin: 0;
+	color: #FF3333;
+	padding: 0 117px 0 116px;
+	font-size: 10px;
+}
+
+#gmenu li {
+	float: left;
+    display: block;
+    margin: 0;
+	text-align: center;
+	font-weight: bold;
+}
+
+#gmenu li span {
+	float: left;
+	height: 7px;
+	margin: 0 0 0 -1px;
+	padding: 0;
+}
+
+#gmenu li span.Obchod {
+	background-color: #EFF5FC;
+	border: solid 1px #C0D9F1;
+}
+#gmenu li span.Nakup {
+	background-color: #D9FFD9;
+	border: solid 1px #D9FFD9;
+}
+#gmenu li span.Tpv {
+	background-color: #FFD7D7;
+	border: solid 1px #FFD7D7;
+}
+#gmenu li span.Sprava {
+	background-color: #FFFFD7;
+	border: solid 1px #FFFFD7;
+}
+
+#gmenu li span a:hover {
+    background: transparent;
+}
+
+
+#gmenu li span.Obchod:hover {
+	background-color: #8AB9FF;
+	border: solid 1px #5197FF;
+}
+#gmenu li span.Nakup:hover {
+	background-color: #6FFF6F;
+	border: solid 1px #24FF24;
+}
+#gmenu li span.Tpv:hover {
+	background-color: #FF9393;
+	border: solid 1px #FF5959;
+}
+#gmenu li span.Sprava:hover {
+	background-color: #FFFF6C;
+	border: solid 1px #E6E600;
+}
+
 
 #messages {
 	position: relative;
@@ -42,15 +376,10 @@ h3 {
 	width: 893px;
 	margin: 20px 0 0 15px;
 	padding: 50px 20px 20px 30px;
-  	background-color: #FEFEFC;
-	border-top: solid 1px #5F3F1F;
-	border-left: solid 1px #7C6832;
-	border-right: solid 1px #7C6832;
+	border-top: solid 1px;
+	border-left: solid 1px;
+	border-right: solid 1px;
 }
-
-/*#my-content {
-    position:relative;
-}*/
 
 #topcont {
 	position: relative;
@@ -60,24 +389,14 @@ h3 {
 	position: relative;
 	top: -82px;
 	width: 893px;
-      margin: auto;
-/*	overflow: auto;*/ /*scrollbar*/
+    margin: auto;
 	height: auto;
 	min-height: 1000px;
 	margin: 0 0 0 15px;
 	padding: 0px 20px 0px 30px;
-  	background-color: #FEFEFC;
- /*	border-top: solid 1px #5F3F1F;    */
-	border-left: solid 1px #7C6832;
-	border-right: solid 1px #7C6832;
-	border-bottom: solid 1px #7C6832;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    -webkit-border-bottom-left-radius: 10px;
-    -webkit-border-bottom-right-radius: 10px;
-    -moz-border-radius-bottomleft: 10px;
-    -moz-border-radius-bottomright: 10px;
-
+	border-left: solid 1px;
+	border-right: solid 1px;
+	border-bottom: solid 1px;
 }
 
 #footer {
@@ -85,17 +404,18 @@ h3 {
 	width: 850px;
 	text-align: center;
 	font-size: x-small;
-	color: #5B4D24;
 }
 
 #footer a {
-	color: #5B4D24;
+	text-decoration: underline; 
 }
 
 #footer a:hover {
-	color: #FFFFFF;;
-	background-color: #5B4D24;
+	color: #FFF;;
 }
+
+/*=========================== KONEC SCHEMATU============================================================*/
+
 
 #contbase {
 	position: relative;
@@ -1034,11 +1354,11 @@ form.hledat input.text:focus {
 }
 
 #navi li {
-	float: left;
-    display: block;
-	font-size: small;
-    padding: 2px 4px 2px 4px;
-    margin: 0 4px;
+      float: left;
+      display: block;
+      font-size: small;
+      padding: 2px 4px 2px 4px;
+      margin: 0 4px;
 	text-align: center;
 
 	background-color: whiteSmoke;
@@ -1767,18 +2087,23 @@ form.sign tr {
 	/*right:160px;*/
 	border:3px solid #ADD4FB;
 	background:#E2F0FE;
-	margin: 0 1px 0 1px;
+	margin: 0;
+}
+
+.infosum.gray {
+	border-color: #444444;
+	background-color: #DDDDDD;
 }
 
 .infosum2 {
 	position:relative;
-	float:left;
+	float:right;
 	padding: 5px 10px 5px 10px;
 	font-size:small;
 	/*right:70px;*/
 	border:3px solid #FFF;
 	background:#FFF;
-	margin: 0 1px 0 1px;
+	margin: 0;
 }
 
 .infosum2.orange {

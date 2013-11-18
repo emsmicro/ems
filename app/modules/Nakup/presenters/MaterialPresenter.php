@@ -65,26 +65,24 @@ class MaterialPresenter extends NakupPresenter
 		$rows = $mat->show($id, $wh);
 		$cnt = count($rows);
 
+			
+		// stránkování
+		$paginator = $this['vp']->getPaginator();
+		$paginator->itemsPerPage = 30;
+		$paginator->itemCount = $cnt;
+		$mat->limit = $paginator->getLength();
+		$mat->offset = $paginator->getOffset();
+		$rowp = $mat->show($id, $wh);			
+		
 		if ($wh>=0){
-			// stránkování
-			$paginator = $this['vp']->getPaginator();
-			$paginator->itemsPerPage = 30;
-			$paginator->itemCount = $cnt;
-			$mat->limit = $paginator->getLength();
-			$mat->offset = $paginator->getOffset();
-			$start = $mat->offset+1;
-			$end = $mat->offset+$mat->limit;
-			$nav = "$start - $end / $cnt";
-			$rowp = $mat->show($id, 0);		
 
 			$this->template->items = $rowp;
 			$is_rows = count($rowp)>0;
 		} else {
-			$this->template->items = $rows;
-			$is_rows = count($rows)>0;
-			$nav = "$cnt";
+			$this->template->items = $rowp;
+			$is_rows = count($rowp)>0;
 		}
-		$this->template->nav = $nav;
+		
 		$this->template->idp=$id;
 		$this->template->koefmat = (float)$kmat['koef'];
 		$ilocked = $mat->isProductLocked($id);
@@ -141,7 +139,7 @@ class MaterialPresenter extends NakupPresenter
 		$rows = $mat->show($id, $what);
 		$paginator = $this['vp']->getPaginator(); 
 		
-		$paginator->itemsPerPage = 50;
+		$paginator->itemsPerPage = 30;
 		$paginator->itemCount = count($rows);
 
 		$mat->limit = $paginator->getLength();
@@ -153,8 +151,11 @@ class MaterialPresenter extends NakupPresenter
 		$ilocked = $mat->isProductLocked($id);
 		$this->template->unlocked = $ilocked<1;
 		$summat = $mat->sumBOM($id);
-		$this->template->sProdej = round($summat['sumProdej'],2);
-		$this->template->sProAlt = round($summat['sumProAlt'],2);
+		$sProdej = round($summat['sumProdej'],2);
+		$sProAlt = round($summat['sumProAlt'],2);
+		$this->template->sProdej = $sProdej;
+		$this->template->sProAlt = $sProAlt;
+		$this->template->noAltProdej = ($sProdej == $sProAlt or $sProAlt == 0);		
 		
 		if ($summat['sumNaklad']>0){
 			$this->template->sNaklad = round($summat['sumNaklad'],2);

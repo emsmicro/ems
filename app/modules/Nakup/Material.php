@@ -113,6 +113,9 @@ class Material extends Model
 		} else {
 			//implementace stránkování
 			$sql_pgs = $this->pagedSql($sql_cmd.$cond, '', $ordovr);
+			//dd($ordovr,'SQL ord over');
+			//var_dump($sql_pgs);
+			//exit;
 			$rslt = $this->CONN->query($sql_pgs);
 		}
 		return $rslt->fetchAll();
@@ -242,11 +245,15 @@ class Material extends Model
 			return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
 		}
 		if($id==0 && $id_produkt>0){
-			return $this->CONN->query("DELETE FROM material 
+			$ret1 = $this->CONN->query("DELETE FROM material 
 									WHERE id IN 
 									(SELECT id_material FROM vazby WHERE id_vyssi=$id_produkt 
 											AND id_material is not null)
 								");
+			$ret2 = $this->CONN->query("DELETE FROM vazby 
+									WHERE id_material is not null AND id_vyssi=$id_produkt 
+								");
+			return ($ret1 and $ret2);
 		}
 	}
 

@@ -93,6 +93,27 @@ final class HomepagePresenter extends BasePresenter
 		$this->redirect('Firma:');
 	}
 	
+	public function actionSetOffer($id)
+	{
+		$this->setIntoMySet(3, $id);
+		$this->redirect('Produkt:product',$id);
+	}
+
+	public function actionSetProduct($id)
+	{
+		$this->setIntoMySet(4, $id);
+		if(in_array('Nakup', $this->user->getRoles())){
+			$this->redirect('Material:');
+		}
+		if(in_array('Tpv', $this->user->getRoles())){
+			$this->redirect('Operace:');
+		}
+		if(in_array('Sprava', $this->user->getRoles())){
+			$this->redirect('Sprava:');
+		}
+		$this->redirect('Produkt:detail',$id);
+	}
+	
 	
 	protected function actionSetEraseSet(){
 		//$this->template = $this->template->setFile(self::APP_DIR . "/Obchod/templates/firma/default.latte"); 

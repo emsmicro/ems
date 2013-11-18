@@ -135,19 +135,88 @@ class Sazba extends Model
 		return $cnt;
 	}
 	
-	
-	public function insertSR($data = array(), $id_sazby = 0)
+	/**
+	 * Ukládá set sazeb hromadně
+	 * @param type $data	- mpole z formulare pro hromadnou zmenu
+	 * @param type $idss	- id_set_sazeb rezii
+	 * @param type $new		= 1 .. zalozit kopii setu sazeb, = 0 .. jen ulozit zmeny
+	 * @return string
+	 */
+	public function saveGroupRate($data, $idss, $new=0) 
 	{
-		$p = array();
-		if($id_sazby == 0){
-			$id_sazby = $this->insert($data);
-			$p[0] = 1;
-		} else {
-			$this->update($id_sazby, $data);
-			$p[0] = 2;
+		$ret['id']=$idss;
+		$ret['message'] = "";
+		if($new > 0){
+			// nutno zalozit kopii setu sazeb a pak ulozit data jako nova
+			$ss = new SetSazeb();
+			$rowa = $ss->find($idss)->fetch();
+			if(!$rowa){
+				$ret['message'] = "Není možné založit kopii setu sazeb, zdrojový set sazeb nebyl nalezen.";
+				return $ret;
+			}
+			$sdata['nazev'] = 'KOPIE: '.$rowa->nazev;
+			$sdata['platnost_od'] = date("Y-m-d");
+			$sdata['platnost_do'] = null;
+			$sdata['kalkulace'] = $rowa->kalkulace;
+			$idss = $ss->insert($sdata);
+			$ret['id'] = $idss;
 		}
-		$p[1] = $id_sazby;
-		return $p;
+		// zpracovani dat
+		$rows  = $data;
+		$gdata = array();
+		$idata = array();
+		$j = 0;
+		$r = 0;
+		$h = 0;
+		$p = '';
+		$h0 = 0;
+		$p0 = '';
+		$idts = 0;
+		$ids = 0;
+		foreach($rows as $k => $v ){
+			$j++;
+			switch($j){
+				case 1:
+					$h = floatval($v);
+				case 2:
+					$p = $v;
+				case 3:
+					$h0 = floatval($v);
+				case 4:
+					$p0 = $v;
+				case 5:
+					$idts = intval($v);
+				case 6:
+					$ids = intval($v);
+			}
+			var_dump($r,$h,$h0);
+			if($j == 6){
+				if ($h <> $h0 or $p<>$p0 or $new>0){
+					$r++;
+					$idata[$r]['ids']			= $new==0 ? $ids : 0;
+					$gdata[$r]['hodnota']		= ($h/100);
+					$gdata[$r]['pravidlo']		= $p;
+					$gdata[$r]['id_typy_sazeb'] = $idts;
+					$gdata[$r]['id_set_sazeb']	= (int) $idss;
+				}
+				$j = 0;
+				$h = 0;
+				$p = '';
+				$h0 = 0;
+				$p0 = '';
+				$idts = 0;
+				$ids = 0;
+			}
+		}
+		if($r > 0){
+			$pocet = $this->insUpdGroup($gdata, $idata, $idss, $r);
+			$instext = "";
+			if($pocet['i'] > 0){$instext = ", vloženo ".$pocet['i'];}
+			$ret['message'] = "Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb režií (či jejich pravidel).";
+		} else {
+			$ret = 'Hromadné uložení sazeb režií nebylo provedeno, neboť nebyly změněny žádné údaje.';
+		}
+		return $ret;
 	}
 	
 	/**
@@ -176,6 +245,19 @@ class Sazba extends Model
 		return $c;
 	}
 	
+	public function insertSR($data = array(), $id_sazby = 0)
+	{
+		$p = array();
+		if($id_sazby == 0){
+			$id_sazby = $this->insert($data);
+			$p[0] = 1;
+		} else {
+			$this->update($id_sazby, $data);
+			$p[0] = 2;
+		}
+		$p[1] = $id_sazby;
+		return $p;
+	}
 	
 	
 }

@@ -77,9 +77,15 @@ class VisualPaginator extends Control
 			sort($arr);
 			$steps = array_values(array_unique($arr));
 		}
-
+		$cnt = $paginator->getItemCount();
+		$start = $paginator->getOffset()+1;
+		$end = $start + $paginator->getItemsPerPage() - 1;
+		if($end>$cnt){$end=$cnt;}
+		$nav = "$start - $end / $cnt";
+		
 		$this->template->steps = $steps;
 		$this->template->paginator = $paginator;
+		$this->template->nav = $nav;
 		$this->template->setFile(dirname(__FILE__) . '/templatePage.latte');
 		$this->template->render();
 	}

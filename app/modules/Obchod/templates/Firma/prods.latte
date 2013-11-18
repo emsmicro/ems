@@ -7,6 +7,7 @@
 				<tr>
 					<th>ID</th>
 					<th>Název produktu</th>
+					<th>Vzorec</th>
 					<th>Dávka [ks]</th>
 					<th>≈ ks/rok</th>
 					<th>Cena/ks</th>
@@ -30,11 +31,11 @@
 							{var $naz = $prod->nazev}
 						{/if}
 					</td>
+					<td title="{$prod->kv}">{substr($prod->kv,0,3)}<span n:if="$prod->aktivni==1" title="Aktivní cena"> [A]</span></td>
 					<td class="tcislo">{$prod->vyrobni_davka|number:0:',':' '}</td>
 					<td class="tcislo">{$prod->mnozstvi|number:0:',':' '}</td>
 					<td class="tcislo">{$prod->hodnota_cm|number:2:',':' '} {$prod->mena}</td>
 			{else}
-				
 				{if $prod->idtc == 8}
 					<td class="tcislo">
 					{$prod->hodnota|number:2:',':' '} {$prod->mena}

@@ -263,51 +263,70 @@ class Import extends Material
 	 * @param type $isskip1
 	 * @return int 
 	 */
+	
+	
 	public function goImport($csv, $pairs, $id_product, $isskip1){
 		$data = $this->arrayOfCsv($csv, 0, $isskip1);
-		$this->deleteVazby($id_product);
-		//$this->deleteMaterNullMJ();
-		$cnt=0;
-		foreach($data as $key => $cols){
-			$matdata = array();
-			$kusdata = array();
-			foreach($pairs as $k => $v){
-				$dbfield = $k;
-				$i = (int) $v;
-				$i--;
-				$dbvalue = $cols[$i];
-				if($dbfield<>'mnozstvi'){
-					
-					if($dbfield=='cena_cm'){
-						$dbvalue = str_replace(',','.',$dbvalue);
-						$dbvalue = str_replace(' ','',$dbvalue);
-						$matdata[$dbfield] = (float) $dbvalue;
-					} elseif($dbfield=='zkratka') {
-//						$matdata[$dbfield] = '[' . $id_product . '] ' . $dbvalue;
-						$matdata[$dbfield] = $dbvalue;
+//		dd($data);
+//		dd($pairs);
+//		var_dump($data);
+//		exit;
+		// transakční zpracování
+		$this->CONN->begin();
+		
+		try {		
+			
+			$this->deleteVazby($id_product);
+			//$this->deleteMaterNullMJ();
+			$cnt=0;
+			foreach($data as $key => $cols){
+				$matdata = array();
+				$kusdata = array();
+				foreach($pairs as $k => $v){
+					$dbfield = $k;
+					$i = (int) $v;
+					$i--;
+					$dbvalue = $cols[$i];
+					if($dbfield<>'mnozstvi'){
+
+						if($dbfield=='cena_cm'){
+							$dbvalue = str_replace(',','.',$dbvalue);
+							$dbvalue = str_replace(' ','',$dbvalue);
+							$matdata[$dbfield] = (float) $dbvalue;
+						} elseif($dbfield=='zkratka') {
+	//						$matdata[$dbfield] = '[' . $id_product . '] ' . $dbvalue;
+							$matdata[$dbfield] = $dbvalue;
+						} else {
+							$matdata[$dbfield] = $dbvalue;
+						}
 					} else {
-						$matdata[$dbfield] = $dbvalue;
+						$kusdata[$dbfield] = $dbvalue;
 					}
-				} else {
-					$kusdata[$dbfield] = $dbvalue;
 				}
-			}
-			$matdata['zkratka'] = substr($matdata['zkratka'],0,60);   //zkrácení zkratky na 60 znaků
-			$matdata['id_meny'] = 1;			//měna je Kč
-			$matdata['id_merne_jednotky'] = 1;	//MJ je ks
-			$kusdata['id_vyssi'] = $id_product;
-			if($matdata){
-				$id_material = $this->insertMaterial($matdata);
-				if($kusdata && $id_material){
-					$kusdata['id_material'] = $id_material;
-					$this->insertVazby($kusdata);
-					$cnt++;
+				$matdata['zkratka'] = substr($matdata['zkratka'],0,60);   //zkrácení zkratky na 60 znaků
+				$matdata['id_meny'] = 1;			//měna je Kč
+				$matdata['id_merne_jednotky'] = 1;	//MJ je ks
+				$kusdata['id_vyssi'] = $id_product;
+				if($matdata){
+					$id_material = $this->insertMaterial($matdata);
+					if($kusdata && $id_material){
+						$kusdata['id_material'] = $id_material;
+						$this->insertVazby($kusdata);
+						$cnt++;
+					}
 				}
+				unset($matdata);
+				unset($kusdata);
 			}
-			unset($matdata);
-			unset($kusdata);
+			$this->CONN->commit();
+			return $cnt;
+	
+		} catch (DibiException $e) {
+			$this->CONN->rollback();
+			throw new Nette\Application\BadRequestException("Import dat BOMu se nezdařil (Rollback transaction.)");
+			return 0;
 		}
-		return $cnt;
+		
 	}
 	
 	/**

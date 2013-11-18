@@ -61,7 +61,6 @@ class ProduktPresenter extends ObchodPresenter
 		$prod->offset = $paginator->getOffset();
 		$rowp = $prod->show();			
 
-		$this->template->cnt = $cnt;
 		$this->template->items = $rowp;
         $this->template->titul = self::TITUL_DEFAULT;
 		$this->template->inabidka = $this->getIdFromMySet(3);

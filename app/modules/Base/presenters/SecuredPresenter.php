@@ -84,7 +84,7 @@ abstract class SecuredPresenter extends BasePresenter
 
 	public function actionSetCompany($id=0)
 	{
-		$this->redirect('Firma:');
+		//$this->redirect('Firma:');
 		if($id==0){
 			$this->redirect('Firma:');
 		} else {
@@ -93,16 +93,16 @@ abstract class SecuredPresenter extends BasePresenter
 		}
 	}
 
-	public function actionSetContact($id_firmy)
+	public function actionSetContact($id)
 	{
-		$this->setIntoMySet(2, $id_firmy);
-		$this->redirect('Nabidka:offer',$id_firmy);
+		$this->setIntoMySet(2, $id);
+		$this->redirect('Nabidka:offer',$id);
 	}
 	
-	public function actionSetOffer($id_firmy)
+	public function actionSetOffer($id)
 	{
-		$this->setIntoMySet(3, $id_firmy);
-		$this->redirect('Produkt:product',$id_firmy);
+		$this->setIntoMySet(3, $id);
+		$this->redirect('Produkt:product',$id);
 	}
 
 	public function actionSetProduct($id)

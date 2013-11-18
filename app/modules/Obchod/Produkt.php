@@ -304,26 +304,22 @@ class Produkt extends Model
 	 * @param type $id_produkt
 	 * @return type 
 	 */
-	public function getOffersCompany($id_firma, $id_mena, $id_produkt = 0){
+	public function getOffersCompany($id_firma, $id_produkt = 0){
 		$cond = "";
 		if($id_produkt>0){$cond = " AND c.id_produkty=$id_produkt ";}
 		return $this->CONN->query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], 
 								tt.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
 								c.id_pocty, n.mnozstvi, n.vyrobni_davka, m.zkratka [mena],
-								p.zkratka, p.nazev, tt.nazev [nceny],
-								Convert(varchar(10), c.id_nabidky) + '+'
-								+ Convert(varchar(10), c.id_produkty) + '+'
-								+ Convert(varchar(10), c.id_pocty) + '+'
-								+ Convert(varchar(10), c.id_meny) + '+'
-								+ Convert(varchar(10), c.id_typy_cen) [klic]
+								p.zkratka, p.nazev, tt.nazev [nceny], v.zkratka [kv], c.aktivni
 								FROM ceny c
 								LEFT JOIN nabidky o  ON c.id_nabidky=o.id
 								LEFT JOIN produkty p ON c.id_produkty=p.id
 								LEFT JOIN typy_cen tt ON c.id_typy_cen=tt.id
 								LEFT JOIN pocty n ON c.id_pocty=n.id
 								LEFT JOIN meny m ON c.id_meny=m.id
-							WHERE o.id_firmy=$id_firma $cond  AND c.id_typy_cen in(10,8)
-							ORDER BY c.id_produkty, c.id_meny, c.id_pocty, tt.poradi")->fetchAll();
+								LEFT JOIN kalkulace v ON c.id_vzorec = v.id
+							WHERE o.id_firmy=$id_firma $cond  AND c.id_typy_cen in(10,8) --AND c.aktivni>0
+							ORDER BY c.id_produkty, c.id_meny, c.id_vzorec, id_pocty, tt.poradi")->fetchAll();
 								//->fetchAssoc('klic');
 	}
 	

@@ -18,21 +18,21 @@
 	<table class="grid">
 
 	<tr>
-		<th>Název</th><td>{$firma->nazev}</td>
+		<th>Zkratka</th><td><b>{$firma->zkratka}</b></td>
+		<th>Název</th><td style="min-width: 200px;" colspan="3"><b>{$firma->nazev}</b></td>
 	</tr>
-	<tr>
-		<th>Zkratka</th><td>{$firma->zkratka}</td>
-	</tr>
-	<tr><th>Adresa</th><td>{$firma->a_ulice} {$firma->a_cp}<br />
+	<tr><th>Adresa</th><td colspan="5">{$firma->a_ulice} {$firma->a_cp}<br />
 						   {$firma->m_obec} {$firma->m_psc}<br />
 						   {$firma->m_stat}
-						</td></tr>
-	<tr><th>IČO</th><td>{$firma->ico}</td></tr>
-	<tr><th>DIČ</th><td>{$firma->dic}</td></tr>
-	<tr><th>Účet</th><td>{$firma->cislo_uctu}, {$firma->banka}</td></tr>
-	<tr><th>Poznámka</th><td>{$firma->poznamka}</td></tr>
+						</td>
+	</tr>
+	<tr><th>IČO</th><td>{$firma->ico}</td>
+		<th>DIČ</th><td>{$firma->dic}</td>
+		<th>Účet</th><td>{$firma->cislo_uctu} {$firma->banka}</td>
+	</tr>
+	<tr><th>Poznámka</th><td colspan="5">{$firma->poznamka}</td></tr>
 	</table>
-	<p></p>
+	
 
 <div class="kolaps">
 		
@@ -188,7 +188,6 @@
 				<div style="margin:0 20px 0 25px;">
 					{* paginator *}
 					{control vp}
-					<span style="float:right;"><span class="mini">Celkem záznamů: </span>{$cnt}</span>
 				</div>
 		</div>
 		<div style="clear:both"></div>
@@ -199,7 +198,7 @@
 
 {var $nabs = substr($nabs, 0, -2)}
 {* collapse *}
-<script type='text/javascript' src='{$basePath}/js/jquery.cookie.js'></script>
+{*<script type='text/javascript' src='{$basePath}/js/jquery.cookie.js'></script>*}
 <script type='text/javascript' src='{$basePath}/js/jquery.collapse.js'></script>
 {*
 <script type='text/javascript' src='{$basePath}/js/jquery.ui.widget.js'></script>

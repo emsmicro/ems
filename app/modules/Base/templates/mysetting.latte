@@ -7,11 +7,11 @@
 			<a n:href="setCompany"><span><i>(Zvolte aktuálního zákazníka ...)</i></span></a>
 		{else}
 			<a n:href="setCompany" title="Změnit"><i>Nastavení:</i></a>
-				<a n:href="Firma:detail, $ifirma"><span title="{$afirma} ({$ifirma})">{$afirma|truncate:25}</span></a> »
+			<a n:href="Firma:detail, $ifirma"><span title="{$afirma} ({$ifirma})">{$afirma|truncate:25}</span></a> »
 			{if $iosoba>0}
 				<a n:href="Osoba:detail, $iosoba"><span title="{$aosoba} ({$iosoba})">{$aosoba|truncate:25}</span></a> »
 			{else}
-				<a n:href="Osoba:people, $ifirma"><span><i>(kontakt nevybrán)</i></span></a> »
+				<a n:href="Osoba:people, $ifirma"><span><i>(kontakt)</i></span></a> »
 			{/if}
 			{if $inabidka>0}
 				<a n:href="Nabidka:detail, $inabidka"><i>nabídka: </i><span title="{$anabidka} ({$inabidka})">{$anabidka|truncate:28}</span></a> »

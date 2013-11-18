@@ -59,7 +59,6 @@ class NabidkaPresenter extends ObchodPresenter
 		$rowp = $nab->show();			
 		
 		$this->template->items = $rowp;
-		$this->template->cnt = $cnt;
         $this->template->titul = self::TITUL_DEFAULT;
 		$this->template->is_filter = TRUE;
 	}

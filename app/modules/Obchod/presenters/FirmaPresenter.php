@@ -76,10 +76,9 @@ class FirmaPresenter extends ObchodPresenter
 		$nab->offset = $paginator->getOffset();
 		$rowp = $nab->findByCompany($id);;	
 		$this->template->nabidky = $rowp;
-		$this->template->cnt = $cnt;
 		
 		$prod = new Produkt;
-		$prods = $prod->getOffersCompany($id, 1);
+		$prods = $prod->getOffersCompany($id);
 		$this->template->produkty = $prods;
 		//dd($prods, 'ProdCeny');
 		//$this->template->nump = count($prods->fetchAll());

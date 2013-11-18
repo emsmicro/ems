@@ -299,7 +299,11 @@ class ImportPresenter extends MaterialPresenter
 				$prod->insertProductStatus($id_produkt, self::stWAIT4PRICES, $this->user->id);
 				$this->redirect('Nabidka:detail',$id_nabidka);
 			}
-			$this->flashMessage("Import byl dokončen úspěšně, bylo vloženo $cnt_rows záznamů.");
+			if($cnt_rows>0){
+				$this->flashMessage("Import byl dokončen úspěšně, bylo vloženo $cnt_rows záznamů.");
+			} else {
+				$this->flashMessage("Import BOMu nebyl dokončen.", "exclamation");
+			}
 			unlink($file);
 		} else {
 			$this->flashMessage('Import byl stornován.','exclamation');

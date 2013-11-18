@@ -197,7 +197,8 @@ class SetSazebPresenter extends ObchodPresenter
 		if ($row){
 			$naz = $row['nazev'];
 		}
-        $this->template->titul = self::TITUL_GROUP.' '.$naz;
+        $this->template->titul = self::TITUL_GROUP;
+		$this->template->subtitul = $naz;
 		// reset default render
 		$renderer = $form->getRenderer();
 		$renderer->wrappers['controls']['container'] = NULL;
@@ -400,15 +401,15 @@ class SetSazebPresenter extends ObchodPresenter
 	{
 		$form = new Form;
 		$sazba = new Sazba;
-        $row = $sazba->find($this->getParam('sid'))->fetch();		
+        //$row = $sazba->find($this->getParam('sid'))->fetch();		
 		$form->addText('hodnota', 'Hodnota [%]:')
 				->setAttribute('class', 'cislo')
 				->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))
 					->controlPrototype->autocomplete('off')
 				->addCondition($form::FILLED)
 					->addRule($form::FLOAT, 'Hodnota musí být celé nebo reálné číslo.');
-		$tzkr = $row['zkratka'];
-		dd($tzkr,'FormVal');
+		//$tzkr = $row['zkratka'];
+		//dd($tzkr,'FormVal');
 //		if(strpos('ZasR,MatM', $tzkr)>-1){
 			$form->addTextArea('pravidlo', 'Pravidlo:', 60, 4)
 				->addRule(Form::MAX_LENGTH, 'Pravidlo je příliš dlouhé', 2000);
@@ -509,6 +510,7 @@ class SetSazebPresenter extends ObchodPresenter
 		}
 		$form->addHidden('id_set_sazeb')->setValue($id_set_sazeb);
 		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
+		$form->addSubmit('saveas', 'Uložit jako kopii');
 		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'groupsFormSubmitted');
 
@@ -522,66 +524,21 @@ class SetSazebPresenter extends ObchodPresenter
 	 */
 	public function groupsFormSubmitted(Form $form)
 	{
+		$id = $this->getParam('id');
+
 		if ($form['save']->isSubmittedBy()) {
 			$sazba = new Sazba;
-			$rows  = (array) $form['mpole']->values;
-			$gdata = array();
-			$idata = array();
-			$idss = $form['id_set_sazeb']->value;
-			$j = 0;
-			$r = 0;
-			$h = 0;
-			$p = '';
-			$h0 = 0;
-			$p0 = '';
-			$idts = 0;
-			$ids = 0;
-			foreach($rows as $k => $v ){
-				$j++;
-				switch($j){
-					case 1:
-						$h = floatval($v);
-					case 2:
-						$p = $v;
-					case 3:
-						$h0 = floatval($v);
-					case 4:
-						$p0 = $v;
-					case 5:
-						$idts = intval($v);
-					case 6:
-						$ids = intval($v);
-				}
-				if($j == 6){
-					if ($h <> $h0 or $p<>$p0){
-						$r++;
-						$idata[$r]['ids']			= $ids;
-						$gdata[$r]['hodnota']		= ($h/100);
-						$gdata[$r]['pravidlo']		= $p;
-						$gdata[$r]['id_typy_sazeb'] = $idts;
-						$gdata[$r]['id_set_sazeb']	= (int) $idss;
-					}
-					$j = 0;
-					$h = 0;
-					$p = '';
-					$h0 = 0;
-					$p0 = '';
-					$idts = 0;
-					$ids = 0;
-				}
-			}
-			if($r > 0){
-					$pocet = $sazba->insUpdGroup($gdata, $idata, $idss, $r);
-					$instext = "";
-					if($pocet['i'] > 0){$instext = ", vloženo ".$pocet['i'];}
-					$this->flashMessage("Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb režií (či jejich pravidel).");
-				
-			} else {
-					$this->flashMessage('Hromadné uložení sazeb režií nebylo provedeno, neboť nebyly změněny žádné údaje.');
-			}
+			$res = $sazba->saveGroupRate($form['mpole']->values, $form['id_set_sazeb']->value);
+			$this->flashMessage($res['message']);
+		} elseif ($form['saveas']->isSubmittedBy()) {
+			$sazba = new Sazba;
+			$res = $sazba->saveGroupRate($form['mpole']->values, $form['id_set_sazeb']->value, 1);
+			$id = $res['id'];
+			$this->flashMessage($res['message']." Editujete nový set sazeb.");
+			$this->redirect('addGroup', $id);
 		}
 
-		$this->redirect('detail', $form['id_set_sazeb']->value);
+		$this->redirect('detail', $id);
 	}	
 
 	
@@ -640,7 +597,7 @@ class SetSazebPresenter extends ObchodPresenter
 			if ($form['saveas']->isSubmittedBy()) {
 				$sets = (array) $form->values;
 				$item->insertKalk((array) $sets);
-				$this->flashMessage('Kopie byla uložena.');
+				$this->flashMessage('Kopie vzorce byla uložena.');
 			}
 		}
 		$this->redirect('default');
