@@ -213,6 +213,7 @@
 				<div style="height:30px;">
 				<ul id="navi">
 					<li n:if="$user->isAllowed('Produkt','priceUpd') && $unlocked" ><a n:href="pricesUpd, $item->id">Spočítat cenu...</a></li>
+					<li n:if="$user->isAllowed('Produkt','priceSim') && $unlocked" title="Simulace ceny s jiným setem sazeb a KV"><a n:href="pricesSim, $item->id">Simulovat cenu...</a></li>
 					<li n:if="$user->isAllowed('Produkt','changeStatus') && $unlocked"><a n:href="changeStatus, $item->id, 7"  title="Nastavit status">Produkt oceněn</a></li>
 				</ul>
 				</div>

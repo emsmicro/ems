@@ -164,7 +164,8 @@ class Produkt extends Model
 									COALESCE(k.kurz_prodejni,1) [kurz],
 									p.id [idpoc], p.vyrobni_davka [davka], p.mnozstvi, t.poradi, 
 									v.zkratka [kvzorec], v.nazev [nvzorec], v.popis [pvzorec], ltrim(rtrim(v.definice)) [definice], 
-									ltrim(rtrim(v.procedura)) [procedura], ltrim(rtrim(v.param)) [param], ltrim(rtrim(v.mater_c)) [mater_c]
+									ltrim(rtrim(v.procedura)) [procedura], ltrim(rtrim(v.param)) [param], ltrim(rtrim(v.mater_c)) [mater_c],
+									COALESCE(c.id_set_sazeb,0) [idss], COALESCE(s.nazev,'defaultní') [set_sazeb]
 									FROM ceny c
 										LEFT JOIN typy_cen	t ON c.id_typy_cen=t.id
 										LEFT JOIN meny		m ON c.id_meny=m.id
@@ -172,6 +173,7 @@ class Produkt extends Model
 										LEFT JOIN pocty		p ON c.id_pocty=p.id
 										LEFT JOIN nabidky	n ON c.id_nabidky=n.id
 										LEFT JOIN kalkulace v ON c.id_vzorec=v.id
+										LEFT JOIN set_sazeb s ON c.id_set_sazeb=s.id
 								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky AND c.id is not null
 									ORDER BY id, c.id, m.id, p.id, t.poradi
 									")->fetchAll();

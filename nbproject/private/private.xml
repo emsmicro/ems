@@ -6,7 +6,6 @@
         <group>
             <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/presenters/SetSazebPresenter.php</file>
             <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/Sazba.php</file>
-            <file>file:/C:/xampp/htdocs/ems/app/modules/Base/Model.php</file>
             <file>file:/C:/xampp/htdocs/ems/app/modules/Obchod/templates/SetSazeb/addGroup.latte</file>
         </group>
     </open-files>

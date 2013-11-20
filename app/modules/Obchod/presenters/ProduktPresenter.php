@@ -433,8 +433,34 @@ class ProduktPresenter extends ObchodPresenter
 			}
 			$this->template->titul = "Aktualizace cen produktu";
 		}
+	}
 
-
+	
+	/**
+	 * SIMULATE sales prices of current product
+	 * @param id = id_produkt
+	 * @return void
+	 * @throws BadRequestException
+	 */	
+	public function actionPricesSim($id)
+	{
+		if(!$this->isMySet(3)){
+			//nelze aktualizovat ceny, není vybrána nabídka
+			$this->flashMessage('Ceny nelze simulovat, není aktivována žádná nabídka.','exclamation');
+			$this->redirect('detail', $id);
+		}
+		
+		$form = $this['pricesSimForm'];
+		if (!$form->isSubmitted()) {
+			$item = new Produkt;
+			$prod = $item->find($id)->fetch();
+			$this->template->item = $prod;
+			$form['vzorec']->value = $prod['vzorec'];			
+			if (!$this->template->item) {
+				throw new NA\BadRequestException('Záznam nenalezen!');
+			}
+			$this->template->titul = "Aktualizace cen produktu";
+		}
 	}
 	
 	/**
@@ -1017,6 +1043,71 @@ class ProduktPresenter extends ObchodPresenter
 	}
 	
 
+	/**
+	 * Assign confirm simulate prices form component factory.
+	 * @return mixed
+	 */
+	protected function createComponentPricesSimForm()
+	{
+		$form = new Form;
+		$model = new Model;
+		$meny = $model->getCurrencyRates();
+		$sazby = $model->getSetR();
+		$davky = $model->getBatches($this->getIdFromMySet(3), $this->getParam('id'));
+		$vzorce = $model->getCalculs();
+		$form->addSelect('id_meny', 'Měna [kurz]:', $meny)
+			//        ->setPrompt('zvolte měnu')
+			        ->addRule(Form::FILLED, 'Zvolte měnu, kurz je poslední zadaný.');
+		$form->addSelect('id_pocty', 'Výrobní dávka:', $davky);
+		$form->addSelect('vzorec', 'Kalkulační vzorec:', $vzorce);
+		$form->addSelect('idss', 'Set režijních sazeb:', $sazby);
+		$form->addSubmit('pricesim', 'Vypočítat')->setAttribute('class', 'default');
+		$form->addSubmit('cancel', 'Storno');
+		$form->onSuccess[] = callback($this, 'pricesSimFormSubmitted');
+		$form->addProtection(self::MESS_PROTECT);
+		return $form;
+	}
+
+
+	/**
+	 * Submit Prices Simulate Form
+	 * @param Form $form 
+	 */
+	public function pricesSimFormSubmitted(Form $form)
+	{
+		if ($form['pricesim']->isSubmittedBy()) {
+	        $instance = new Produkt;
+			$kalk = new Kalkul;
+			$data = (array) $form->values;
+			$idp = (int) $this->getParam('id');
+			$item = $instance->find($idp)->fetch();
+			$id_meny = (int) $data['id_meny'];
+			$id_pocty = (int) $data['id_pocty'];
+			$vzorec = (int) $data['vzorec'];
+			$idss = (int) $data['idss'];
+			//recalculate costs
+			$result = $kalk->costsCalc($idp, $item->idsso);
+			if(!$result){
+				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
+			} else {
+				//calculate prices
+				$res = $kalk->kalkulPrices($item->idn, $idp, $vzorec, $idss, $id_pocty, $id_meny);
+				//$res = $kalk->pricesCalc($item->idn, $idp, $item->idss, $id_meny, $id_pocty, $vzorec);
+				if($res){
+					$rins = $res['r_ins'];
+					$rupd = $res['r_upd'];
+					//nějaký FAKE - hodnoty se vracejí obráceně - UPD namísto INS???
+					$this->flashMessage("Náklady i simulační ceny byly úspěšně aktualizovány (upd/ins = $rins/$rupd).");
+				} else {
+					$this->flashMessage("Náklady i simulační ceny zřejmě nebyly správně zaktualizovány.","exclamation");
+				}
+			}
+		}
+
+		$this->redirect('detail', $this->getParam('id'));
+	}
+	
+	
 	/**
 	 * price nab edit form component factory.
 	 * @return mixed

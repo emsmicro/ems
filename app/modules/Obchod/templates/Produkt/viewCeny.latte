@@ -40,16 +40,16 @@
 							</th>
 							{if $cen->id_vzorec == $item->vzorec}
 								{if $cen->aktivni == 1}
-									<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}"><b>{$acttitle}</b></th>
+									<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}"><b>{$acttitle}</b>&nbsp;&nbsp;&nbsp;<span class="mini">[sazby: {$cen->set_sazeb}]</span></th>
 								{else}
-									<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}"><b>Variantní cena</b>
+									<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}"><b>Variantní cena</b>&nbsp;&nbsp;&nbsp;<span class="mini">[sazby: {$cen->set_sazeb}]</span>
 										<span class="setactive" style="float:right;" title="Aktivovat tuto cenu ({$cen->id_cena})">
 											<a n:if="$user->isAllowed('Produkt','priceActivate') && $unlocked" n:href="priceActivate, $cen->id, $cen->id_cena">&nbsp;&nbsp;&nbsp;&nbsp;</a>
 										</span>
 									</th>
 								{/if}
 							{else}
-								<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}">Simulační cena</th>
+								<th class="{$actclass}" style="width:250px;" title="cena: {$cen->id_cena}"><b>Simulační cena</b>&nbsp;&nbsp;&nbsp;<span class="mini">[sazby: {$cen->set_sazeb}]</span></th>
 							{/if}
 							<th class="{$actclass}" style="min-width:80px; text-align:right;">Cena [Kč]</th>
 							{if $cen->idm <> 1}
@@ -146,7 +146,7 @@
 		</div>
 
 		<div class="subtit">
-			<span class="hlp mini"><i><span class="tooltip">&nbsp;&nbsp;&nbsp;</span>Set sazeb režií:</i> 
+			<span class="hlp mini"><i><span class="tooltip">&nbsp;&nbsp;&nbsp;</span>Defaultní set sazeb režií:</i> 
 				<a n:if="$user->isAllowed('SetSazeb','detail')" n:href="SetSazeb:detail, $item->idss">
 					{$item->sazby}.
 					<span class="def">

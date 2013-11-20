@@ -324,17 +324,18 @@ class Kalkul extends Model
 		}
 		
 		$ids = $this->CONN->fetchAll("EXECUTE getIdPrices
-									@nabidka_id = $id_nabidka,
-									@product_id = $id_produkt,
-									@id_meny	= $id_meny,
-									@id_kurzy	= $id_kurzy,
-									@id_pocty	= $id_pocty,
-									@id_vzorec	= $id_vzorec");
+									@nabidka_id		= $id_nabidka,
+									@product_id		= $id_produkt,
+									@id_meny		= $id_meny,
+									@id_kurzy		= $id_kurzy,
+									@id_pocty		= $id_pocty,
+									@id_vzorec		= $id_vzorec,
+									@id_setsazeb	= $id_set_sazeb");
 
 		//$ret['IDs'] = $ids;
 		if($ceny){
 			// doplnime hodnoty do pole a upravime pole
-			$tceny = $this->addPriceData($tceny, $ceny, $kurz, $ids);
+			$tceny = $this->addPriceData($tceny, $ceny, $kurz, $ids, $id_set_sazeb);
 			$ret['CENY'] = $ceny;
 			// save data into db
 			//dd($ret,'PRED');
@@ -507,7 +508,7 @@ class Kalkul extends Model
 	 * @param type $ids
 	 * @return type array
 	 */
-	private function addPriceData($data_into, $data_from, $kurz, $ids){
+	private function addPriceData($data_into, $data_from, $kurz, $ids, $id_set_sazeb){
 		// doplnime hodnoty do pole
 		if($data_into){
 			for($i = 0; $i < count($data_into); ++$i) {
@@ -518,6 +519,7 @@ class Kalkul extends Model
 					}
 					$data_into[$i]['id'] = $ids[0]['id'];
 					$data_into[$i]['aktivni'] = $ids[0]['aktivni'];
+					$data_into[$i]['id_set_sazeb'] = $id_set_sazeb;
 				}
 			}
 			// vyradime pole key = cena
