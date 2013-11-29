@@ -104,7 +104,26 @@ class Sazba extends Model
 								");
 		 
 	}
-
+	
+	/**
+	 * Vrací hodnotu sazby dle zkratky typu pro danou nabídku
+	 * @param type $id_nabidky
+	 * @param type $zkr_sazby
+	 * @return type
+	 */
+	public function getRateByType($id_nabidky, $zkr_sazby)
+	{
+		return $this->CONN->query("
+				SELECT sa.hodnota [sazba]
+				FROM nabidky na
+				LEFT JOIN set_sazeb ss ON na.id_set_sazeb = ss.id
+				LEFT JOIN sazby sa ON ss.id = sa.id_set_sazeb
+				LEFT JOIN typy_sazeb st ON sa.id_typy_sazeb = st.id
+				WHERE na.id = $id_nabidky AND st.zkratka = '$zkr_sazby' 
+								")->fetchSingle();
+		 
+	}	
+	
 	public function getIdTypeRates()
 	{
 		return $this->CONN->fetchPairs("SELECT id, nazev
@@ -189,7 +208,6 @@ class Sazba extends Model
 				case 6:
 					$ids = intval($v);
 			}
-			var_dump($r,$h,$h0);
 			if($j == 6){
 				if ($h <> $h0 or $p<>$p0 or $new>0){
 					$r++;

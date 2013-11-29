@@ -31,24 +31,15 @@
 	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/autoNumeric.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/jquery.cookie.js"></script>
-	{*
-	<link rel="stylesheet" href="{$basePath}/css/tipTip.css">
-	<!--[if !IE | (gt IE 8)]><!-->
-	<script src="{$basePath}/js/jquery.tipTip.js"></script>
-	<script>
-		$(function() {
-			$(".tt").tipTip();
-		});
-	</script>
-	<!--<![endif]-->	
-	*}
+
 	<script type="text/javascript">
 		$(document).ready(init);
 
 		function init()
 		{
-		  setStyle($.cookie("style"));
+			setStyle($.cookie("style"));
 		}
+
 
 		function setStyle(name)
 		{
@@ -84,8 +75,9 @@
 				history.back()
 			} 
 		  }
-		};				
+		};	
 	</script>
+	
 		
 	{ifset $is_addon}{include #addon}{/ifset}
 
@@ -104,9 +96,8 @@
 				<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů">služeb a produktů</a>
 						v oblasti EMS ...
 		</div>
-		
-		{include 'mysetting.latte'}
 
+		{include 'mysetting.latte'}
 		{control navigation}
 
 		<div id="breadcrumbs">
@@ -120,6 +111,10 @@
 			</span>
 		</div>
 		<div id="messages">
+			{ifset $is_filter}
+				{if $is_filter} {control uFilter} {/if}
+			{/ifset}
+
 			<div n:foreach="$flashes as $flash" class="flash {$flash->type}">{$flash->message}</div>
 		</div>
 	</div>
@@ -144,11 +139,7 @@
 
 								
 		{include #content}
-		
-	{ifset $is_filter}
-		{if $is_filter} {control uFilter} {/if}
-	{/ifset}
-		
+				
 		<div style="height:30px;"></div>
 		
 		<div style="clear:both;"></div>	

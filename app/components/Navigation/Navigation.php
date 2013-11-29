@@ -166,7 +166,7 @@ class Navigation extends Control
 		}
 
 		$template = $this->createTemplate()
-			->setFile(dirname(__FILE__) . "/breadcrumbs.phtml");
+			->setFile(dirname(__FILE__) . "/breadcrumbs.latte");
 		
 		$template->items = $items;
 		$template->render();

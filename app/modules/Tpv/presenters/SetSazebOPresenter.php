@@ -177,7 +177,15 @@ class SetSazebOPresenter extends TpvPresenter
 	{
 		$oper = new SazbaO;
 		$data = $oper->getTypesOper($id)->fetchAll();
+		$ssazb = new SetSazebO;
+		$row = $ssazb->find($id)->fetch();
+		$naz = "";
+		if ($row){
+			$naz = $row['nazev'];
+		}
         $this->template->titul = self::TITUL_GROUP;
+		$this->template->subtitul = $naz;
+		
 		$form = $this['addGroupForm'];
 		// reset default render
 		$renderer = $form->getRenderer();
@@ -365,9 +373,13 @@ class SetSazebOPresenter extends TpvPresenter
 		$this->redirect('detail',$this->getParam('idss'));
 	}
 
+	/**
+	 * AddGroup - rate of operation
+	 * @return \Nette\Application\UI\Form
+	 */
 	protected function createComponentAddGroupForm()
 	{
-		$form = new Nette\Application\UI\Form;
+		$form = new Form;
 		$oper = new SazbaO;
 		$id_set_sazeb_o = $this->getParam('id');
 		$data = $oper->getTypesOper($id_set_sazeb_o)->fetchAll();
@@ -388,6 +400,7 @@ class SetSazebOPresenter extends TpvPresenter
 		}
 		$form->addHidden('id_set_sazeb_o')->setValue($id_set_sazeb_o);
 		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
+		$form->addSubmit('saveas', 'Uložit jako kopii');
 		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'groupoFormSubmitted');
 
@@ -397,57 +410,21 @@ class SetSazebOPresenter extends TpvPresenter
 
 	public function groupoFormSubmitted(Form $form)
 	{
+		$id = $this->getParam('id');
+
 		if ($form['save']->isSubmittedBy()) {
-			$oper = new SazbaO;
-			$rows = (array) $form['mpole']->values;
-			$gdata = array();
-			$idata = array();
-			$idss = $form['id_set_sazeb_o']->value;
-			$j = 0;
-			$r = 0;
-			$h = 0;
-			$h0 = 0;
-			$idto = 0;
-			$idso = 0;
-			foreach($rows as $k => $v ){
-				$j++;
-				switch($j){
-					case 1:
-						$h = floatval($v);
-					case 2:
-						$h0 = floatval($v);
-					case 3:
-						$idto = intval($v);
-					case 4:
-						$idso = intval($v);
-				}
-				if($j == 4) {
-					if ($h <> $h0){
-						$r++;
-						$idata[$r]['idso'] = $idso;
-						$gdata[$r]['hodnota'] = $h;
-						$gdata[$r]['id_typy_operaci'] = $idto;
-						$gdata[$r]['id_set_sazeb_o'] = (int) $idss;
-					}
-					$j = 0;
-					$h = 0;
-					$h0 = 0;
-					$idto = 0;
-					$idso = 0;
-				}
-			}
-			if($r > 0){
-					$pocet = $oper->insUpdGroupo($gdata, $idata, $idss, $r);
-					$instext = "";
-					if($pocet['i'] > 0){$instext = ", vloženo ".$pocet['i'];}
-					$this->flashMessage("Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb typových operací.");
-				
-			} else {
-					$this->flashMessage('Hromadné uložení operací nebylo provedeno, neboť nebyly změněny žádné údaje.');
-			}
+			$sazba = new SazbaO;
+			$res = $sazba->saveGroupRate($form['mpole']->values, $form['id_set_sazeb_o']->value);
+			$this->flashMessage($res['message']);
+		} elseif ($form['saveas']->isSubmittedBy()) {
+			$sazba = new SazbaO;
+			$res = $sazba->saveGroupRate($form['mpole']->values, $form['id_set_sazeb_o']->value, 1);
+			$id = $res['id'];
+			$this->flashMessage($res['message']." Editujete nový set sazeb operací.");
+			$this->redirect('addGroup', $id);
 		}
 
-		$this->redirect('detail', $form['id_set_sazeb_o']->value);
-	}
+		$this->redirect('detail', $id);
+	}	
 	
 }

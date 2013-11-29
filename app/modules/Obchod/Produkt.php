@@ -30,8 +30,8 @@ class Produkt extends Model
 									f.id [idf], 
 									f.nazev [firma], 
 									f.zkratka [zfirma], 
-									n.id_set_sazeb [idss], 
-									n.id_set_sazeb_o [idsso],
+									COALESCE(n.id_set_sazeb,0) [idss], 
+									COALESCE(n.id_set_sazeb_o,0) [idsso],
 									ss.nazev [sazby], 
 									ss.kalkulace [vzorec],
 									so.nazev [sazby_o],
@@ -40,10 +40,10 @@ class Produkt extends Model
 									FROM produkty p 
 										LEFT JOIN firmy f ON p.id_firmy=f.id
 										LEFT JOIN (SELECT DISTINCT id_produkty, id_nabidky FROM ceny) c ON p.id = c.id_produkty 
-											LEFT JOIN nabidky n ON c.id_nabidky = n.id 
-											LEFT JOIN set_sazeb ss ON n.id_set_sazeb=ss.id
-											LEFT JOIN kalkulace ka ON ss.kalkulace=ka.id
-											LEFT JOIN set_sazeb_o so ON n.id_set_sazeb_o=so.id
+										LEFT JOIN nabidky n ON c.id_nabidky = n.id 
+										LEFT JOIN set_sazeb ss ON n.id_set_sazeb=ss.id
+										LEFT JOIN kalkulace ka ON ss.kalkulace=ka.id
+										LEFT JOIN set_sazeb_o so ON n.id_set_sazeb_o=so.id
 										LEFT JOIN (SELECT id_nabidky, id_produkty, vyrobni_davka, mnozstvi,
 											ROW_NUMBER() OVER (PARTITION BY id_nabidky, id_produkty ORDER BY mnozstvi DESC) AS rd
 											FROM pocty
@@ -71,7 +71,7 @@ class Produkt extends Model
 	public function show()
 	{
 		if($this->filter<>''){
-			$sql_cmd = $this->full_detail_query . "	WHERE CAST(n.popis as varchar)+p.zkratka+p.nazev+f.nazev LIKE '%$this->filter%'";
+			$sql_cmd = $this->full_detail_query . "	WHERE Convert(varchar, COALESCE(n.popis,'Přiřadit k nabídce'))+p.zkratka+p.nazev+f.nazev LIKE '%$this->filter%'";
 			
 		} else {
 			$sql_cmd = $this->full_detail_query;
@@ -175,7 +175,7 @@ class Produkt extends Model
 										LEFT JOIN kalkulace v ON c.id_vzorec=v.id
 										LEFT JOIN set_sazeb s ON c.id_set_sazeb=s.id
 								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky AND c.id is not null
-									ORDER BY id, c.id, m.id, p.id, t.poradi
+									ORDER BY c.id_produkty, c.aktivni DESC, c.id, m.id, p.id, t.poradi
 									")->fetchAll();
 		}else{
 			return null;
@@ -238,12 +238,15 @@ class Produkt extends Model
 	 */
 	public function delete($id)
 	{
-		// výmaz kusovníků produktu
+		// výmaz cen, tpostupů, kusovníků a operací produktu
+		$rdel = $this->CONN->delete('ceny')->where('id_produkty=%i', $id)->execute();
 		$mat = new Material;
-		$rmat = $mat->delete(0, $id);
+		$rdel = $mat->delete(0, $id);
 		$ope = new Operace;
-		$rope = $ope->delete(0, $id);
+		$rdel = $ope->delete(0, $id);
+		$rdel = $this->CONN->delete('tpostupy')->where('id_produkty=%i', $id)->execute();
 		$rdel = $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
+//		$rdel = $this->CONN->query("DELETE FROM produkty WHERE id=$id");
 		return $rdel;
 	}
 
@@ -288,13 +291,14 @@ class Produkt extends Model
 		if($aktivni>0)		{$cond2 = " AND c.aktivni=$aktivni ";}
 		return $this->CONN->query("SELECT c.id_nabidky, c.id_produkty, c.id_typy_cen [idtc], t.zkratka, c.hodnota, c.hodnota_cm, c.id_meny, 
 								c.id_pocty, n.mnozstvi, n.vyrobni_davka, m.zkratka [mena],
-								p.zkratka, p.nazev, t.nazev [nceny], c.aktivni
+								p.zkratka, p.nazev, t.nazev [nceny], c.aktivni, c.id,
+								CASE WHEN c.id_typy_cen=8 THEN c.hodnota*c.aktivni ELSE (c.hodnota*n.mnozstvi)*c.aktivni END [objem]
 								FROM ceny c
 								LEFT JOIN produkty p ON c.id_produkty=p.id
 								LEFT JOIN typy_cen t ON c.id_typy_cen=t.id
 								LEFT JOIN pocty n ON c.id_pocty=n.id
 								LEFT JOIN meny m ON c.id_meny=m.id
-							WHERE c.id_nabidky=$id_nabidka $cond1 $cond2 AND c.id_typy_cen>6
+							WHERE c.id_nabidky=$id_nabidka $cond1 $cond2 AND c.id_typy_cen in (8,10)
 							ORDER BY c.id_produkty, c.id, t.poradi, c.aktivni DESC")->fetchAll();
 	}
 
@@ -568,8 +572,15 @@ class Produkt extends Model
 		}
 
 	}
-		
 	
+	/**
+	 * Vrací počet vazev materiálu a operací k produktu
+	 * @param type $id
+	 * @return type
+	 */
+	public function countProdVazby($id) {
+		return $this->CONN->query("SELECT count(id_material) [bom], count(id_operace) [tpv] FROM vazby WHERE id_vyssi=$id")->fetch();
+	}
 }
 
 

@@ -212,15 +212,21 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	 * @param type $id
 	 * @return type 
 	 */
-	public function sumVolume($id){
-		return $this->CONN->dataSource("SELECT TOP 1 c.id_nabidky, 
+	public function sumVolume($id, $typ = 0){
+		$sql_cmd = "SELECT c.id_nabidky, 
 									SUM(CASE WHEN c.id_typy_cen=8 THEN hodnota ELSE (hodnota * p.mnozstvi) END) [objem],
-									p.mnozstvi [pocty],
-									COUNT(c.id_produkty) [pprod]
+									p.mnozstvi [pocty]
+									--,COUNT(c.id_produkty) [pprod]
 									FROM ceny c
 										LEFT JOIN pocty p ON c.id_pocty=p.id
-									WHERE c.id_typy_cen>6 AND c.id_nabidky = $id
-									GROUP BY c.id_nabidky, p.mnozstvi, c.id_meny");
+									WHERE c.id_typy_cen in (8,10) AND c.id_nabidky = $id AND c.aktivni=1
+									GROUP BY c.id_nabidky, p.mnozstvi, c.id_meny";
+		if($typ==0){
+			$sql_cmd = "SELECT id_nabidky, SUM(objem) [objem], SUM(pocty) [pocty] FROM (" 
+						. $sql_cmd
+						. ") a GROUP BY a.id_nabidky";
+		}
+		return $this->CONN->dataSource($sql_cmd);
 			
 	}
 	
@@ -235,9 +241,9 @@ class Nabidka extends Model // DibiRow obstará korektní načtení dat
 	{
 		if($id>0 && $id_user>0){
 			$res = $this->CONN->query("
-								DECLARE @id_nab int
-								EXECUTE copyOffer $id, $id_user, @id_nab OUTPUT
-								SELECT @id_nab [nid]
+								DECLARE @id_nab int;
+								EXECUTE copyOffer $id, $id_user, @id_nab OUTPUT;
+								SELECT @id_nab [nid];
 								")->fetch();
 			return $res->nid;
 		} else {

@@ -40,6 +40,8 @@ abstract class BasePresenter extends Presenter
 		}
 		
 		$session = $context->session;
+		if(!$session->isStarted()){$session->start();}
+		
         if(!$session->hasSection('mySetting'))
         {
 			$section = $session->getSection('mySetting');
@@ -58,6 +60,32 @@ abstract class BasePresenter extends Presenter
 		        );
         $this->navigace = $menu;
 	}
+	
+	/**
+	 * Set variable into Session
+	 * @param type $name - variable name
+	 * @param type $value - variable value
+	 */
+	public function setSess($name,$value)
+    {
+        $container = $this->context;
+        $session = $container->session;
+        $section = $session->getSection('All');
+        $section->$name = $value;
+    }
+
+	/**
+	 * Get variable from Session
+	 * @param type $name
+	 * @return type (value of variable)
+	 */
+    public function getSess($name)
+    {
+        $container = $this->context;
+        $session = $container->session;
+        $section = $session->getSection('All');
+        return $section->$name;
+    }	
 	
 	/*
 	 * @return void
@@ -155,6 +183,8 @@ abstract class BasePresenter extends Presenter
 				$section->nabidka = '<nevybrána>';
 				$section->id_produkt = 0;
 				$section->produkt='<nevybrán>';
+				$section->id_osoba = 0;
+				$section->osoba = '<nevybrána>';
 			}
 			break;
 		case 2: 
@@ -166,6 +196,13 @@ abstract class BasePresenter extends Presenter
 			if($osoba->id_firmy<>$section->id_firma){
 				$this->setIntoMySet(1, $osoba->id_firmy, 1);
 			}
+			if($setonly==0){
+				$section->id_nabidka = 0;
+				$section->nabidka = '<nevybrána>';
+				$section->id_produkt = 0;
+				$section->produkt='<nevybrán>';
+			}
+			break;
 		case 3: 
 			$instance = new Nabidka;
 			$item = $instance->find($id)->fetch();
@@ -198,8 +235,11 @@ abstract class BasePresenter extends Presenter
 		case 4: 
 			$instance = new Produkt;
 			$item = $instance->find($id)->fetch();
+			$vazby = $instance->countProdVazby($id);
 			$section->produkt = $item->nazev;
 			$section->id_produkt = $item->id;
+			$section->countBOM = $vazby->bom;
+			$section->countTPV = $vazby->tpv;
 			if($item->id_firmy<>$section->id_firma){
 				$this->setIntoMySet(1, $item->id_firmy, 1);
 			}
@@ -223,6 +263,10 @@ abstract class BasePresenter extends Presenter
 			$this->template->iosoba = $section->id_osoba;
 			$this->template->inabidka = $section->id_nabidka;
 			$this->template->iprodukt = $section->id_produkt;
+			$this->template->cntBOM = $section->countBOM>0 ? " ($section->countBOM)": "";
+			$this->template->cntTPV = $section->countTPV>0 ? " ($section->countTPV)": "";
+			$this->template->titBOM = $section->countBOM>0 ? " ($section->countBOM mat. položek)": " (žádný materiál)";
+			$this->template->titTPV = $section->countTPV>0 ? " ($section->countTPV operací)": " (žádné operace)";
 			$this->template->ishome = $this->name == 'Homepage';
 			$this->template->islogin = !$this->getUser()->isLoggedIn();
 	}

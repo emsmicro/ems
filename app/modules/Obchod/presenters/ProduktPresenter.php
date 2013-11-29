@@ -90,9 +90,13 @@ class ProduktPresenter extends ObchodPresenter
 	{
         $instance = new Produkt;
 		$item = $instance->find($id)->fetch();
+		$vazby = $instance->countProdVazby($id);
 		if(!$item){$this->redirect('default');}
 		$this->setIntoMySet(4, $id);
 
+		$this->template->countBOM = $vazby->bom;
+		$this->template->countTPV = $vazby->tpv;		
+		
 		$this->template->item = $item;
 	   	$this->template->titul = $item->nazev;
 		$this->template->idp = $item->id;
@@ -116,6 +120,7 @@ class ProduktPresenter extends ObchodPresenter
         $this->template->prices = $prices;
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddedValue($id, $this->idn);
+		//dd($aval, 'AVAL');
 		$this->template->aval = $aval;
 		$hist = $instance->getProductHistory($id);
 		$this->template->history = $hist;
@@ -469,12 +474,20 @@ class ProduktPresenter extends ObchodPresenter
 	 * @throws Nette\Application\BadRequestException
 	 */
 	
-	public function actionPriceRefresh($id)
+	public function actionPriceRefresh($id, $go_where='P')
 	{
 		if(!$this->isMySet(3)){
 			//nelze aktualizovat ceny, není vybrána nabídka
 			$this->flashMessage('Ceny nelze aktualizovat, není aktivována žádná nabídka.','exclamation');
 			$this->redirect('Nabidky:default');
+		}
+		
+		if($go_where=='N'){
+			$pres = 'Nabidka:';
+			$idret = $this->getIdFromMySet(3);
+		} else {
+			$pres='Produkt:';
+			$idret = $this->getIdFromMySet(4);
 		}
 		
 		$item = new Produkt;
@@ -488,6 +501,15 @@ class ProduktPresenter extends ObchodPresenter
 			$id_pocty = (int) $data['id_pocty'];
 			$id_vzorec = (int) $data['id_vzorec'];
 			$id_set_sazeb_o = (int) $data['id_set_sazeb_o'];
+			if($go_where=='P'){
+				$idret = $id_produkt;
+			}
+			//recalculate BOMs
+			$result = $kalk->calcMatPrices($id_produkt, $id_nabidka);
+			if(!$result){
+				$this->flashMessage('BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.','warning');
+				$this->redirect($pres."detail", $idret);
+			}
 			//recalculate costs
 			$result = $kalk->costsCalc($id_produkt, $id_set_sazeb_o);
 			if(!$result){
@@ -505,11 +527,11 @@ class ProduktPresenter extends ObchodPresenter
 					$this->flashMessage("Náklady i ceny zřejmě nebyly správně zaktualizovány, pokuste se akci zopakovat.","exclamation");
 				}
 			}
-			$this->redirect('detail', $id_produkt);
+			$this->redirect($pres."detail", $idret);
 		} else {
 			$this->flashMessage("Náklady i ceny nebyly zaktualizovány, nepodařilo se získat data.","exclamation");
 		}
-		$this->redirect('detail', $this->getIdFromMySet(4));
+		$this->redirect($pres."detail", $idret);
 	}
 
 	/**
@@ -1020,6 +1042,12 @@ class ProduktPresenter extends ObchodPresenter
 			$id_meny = (int) $data['id_meny'];
 			$id_pocty = (int) $data['id_pocty'];
 			$vzorec = (int) $data['vzorec'];
+			//recalculate BOMs
+			$result = $kalk->calcMatPrices($idp, $item->idn);
+			if(!$result){
+				$this->flashMessage('BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.','warning');
+				$this->redirect('detail', $idp);
+			}
 			//recalculate costs
 			$result = $kalk->costsCalc($idp, $item->idsso);
 			if(!$result){
@@ -1085,6 +1113,12 @@ class ProduktPresenter extends ObchodPresenter
 			$id_pocty = (int) $data['id_pocty'];
 			$vzorec = (int) $data['vzorec'];
 			$idss = (int) $data['idss'];
+			//recalculate BOMs
+			$result = $kalk->calcMatPrices($idp, $item->idn);
+			if(!$result){
+				$this->flashMessage('BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.','warning');
+				$this->redirect('detail', $idp);
+			}
 			//recalculate costs
 			$result = $kalk->costsCalc($idp, $item->idsso);
 			if(!$result){

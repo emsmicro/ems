@@ -211,7 +211,9 @@ class PravaPresenter extends SpravaPresenter
 		$form = new Nette\Application\UI\Form;
 		$pra = new Prava;
 		$id = $this->getParam('id');
-		$data = $pra->getRights($id)->orderBy('id');
+		$data = $pra->getRights($id)->orderBy('id')->fetchAll();
+		dd($data,'DATA');
+		//exit;
 		$container = $form->addContainer('mpole');
 		$i=0;
 		foreach($data as $row => $v){

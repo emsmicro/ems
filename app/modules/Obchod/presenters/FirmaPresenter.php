@@ -34,6 +34,11 @@ class FirmaPresenter extends ObchodPresenter
 	 * @return void
 	 */
         $instance = new Firma;
+		// User filter
+		$ufilter = $this['uFilter'];
+		$instance->filter = $ufilter->getFilter();
+		$this->template->is_filter = TRUE;
+		
 		$data = $instance->show()->orderBy('nazev')->fetchAll();
 		$this->template->firmy = $data;
 		//dumpBar($data, 'Data');

@@ -1,3 +1,4 @@
+
 	var chart;
 			$(document).ready(function() {
 				chart = new Highcharts.Chart({
@@ -15,7 +16,7 @@
 					title: {
 						text: '',
 						style: {
-							color: '#999'
+							//color: '#999'
 						},
 					},
                     credits: {
@@ -30,13 +31,13 @@
 						pie: {
 							allowPointSelect: true,
 							cursor: 'pointer',
-							size: 210,
+							size: {$size},
 							animation: false,
 							dataLabels: {
 								enabled: true,
-								color: '#000',
+								//color: '#000',
 								connectorWidth: 0,
-								connectorColor: '#999',
+								//connectorColor: '#999',
 								distance: 5,
 								formatter: function() {
 									return this.point.name +': '+ Math.round(this.percentage*10)/10 +' %';
@@ -55,3 +56,4 @@
 					}]
 				});
 			});
+			

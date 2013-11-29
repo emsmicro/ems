@@ -113,20 +113,84 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	}
 	
 
-	public function insertSO($data = array(), $id_sazby_o = 0)
+	/**
+	 * Ukládá set sazeb operaci hromadně
+	 * @param type $data	- mpole z formulare pro hromadnou zmenu
+	 * @param type $idss	- id_set_sazeb rezii
+	 * @param type $new		= 1 .. zalozit kopii setu sazeb, = 0 .. jen ulozit zmeny
+	 * @return string
+	 */
+	public function saveGroupRate($data, $idss, $new=0) 
 	{
-		$p = array();
-		if($id_sazby_o == 0){
-			$id_sazby_o = $this->insert($data);
-			$p[0] = 1;
-		} else {
-			$this->update($id_sazby_o, $data);
-			$p[0] = 2;
+		$ret['id']=$idss;
+		$ret['message'] = "";
+		if($new > 0){
+			// nutno zalozit kopii setu sazeb a pak ulozit data jako nova
+			$ss = new SetSazebO();
+			$rowa = $ss->find($idss)->fetch();
+			if(!$rowa){
+				$ret['message'] = "Není možné založit kopii setu sazeb, zdrojový set sazeb nebyl nalezen.";
+				return $ret;
+			}
+			$sdata['nazev'] = 'KOPIE: '.$rowa->nazev;
+			$sdata['platnost_od'] = date("Y-m-d");
+			$sdata['platnost_do'] = null;
+			$idss = $ss->insert($sdata);
+			$ret['id'] = $idss;
 		}
-		$p[1] = $id_sazby_o;
-		return $p;
 		
+		// zpracovani dat
+		$oper = new SazbaO;
+		$rows = $data;
+		$gdata = array();
+		$idata = array();
+		$j = 0;
+		$r = 0;
+		$h = 0;
+		$h0 = 0;
+		$idto = 0;
+		$idso = 0;
+		foreach($rows as $k => $v ){
+			$j++;
+			switch($j){
+				case 1:
+					$h = floatval($v);
+				case 2:
+					$h0 = floatval($v);
+				case 3:
+					$idto = intval($v);
+				case 4:
+					$idso = intval($v);
+			}
+			if($j == 4) {
+				if ($h <> $h0 or $new>0){
+					$r++;
+					$idata[$r]['idso'] = $new==0 ? $idso : 0;
+					$gdata[$r]['hodnota'] = $h;
+					$gdata[$r]['id_typy_operaci'] = $idto;
+					$gdata[$r]['id_set_sazeb_o'] = (int) $idss;
+				}
+				$j = 0;
+				$h = 0;
+				$h0 = 0;
+				$idto = 0;
+				$idso = 0;
+			}
+		}
+		if($r > 0){
+			$pocet = $this->insUpdGroupo($gdata, $idata, $idss, $r);
+			$instext = "";
+			if($pocet['i'] > 0){$instext = ", vloženo ".$pocet['i'];}
+			$ret['message'] = "Bylo aktualizováno ".$pocet['u'].$instext." záznamů sazeb typových operací.";
+		} else {
+			$ret = 'Hromadné uložení sazeb typových operací nebylo provedeno, neboť nebyly změněny žádné údaje.';
+		}
+		return $ret;
 	}
+	
+	
+	
+
 	
 	/**
 	 * Inserts data to the table
@@ -151,14 +215,23 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 				unset($adata);
 			}
 		}
-		/*
-		dumpBar($idata,'Idata');
-		exit;
-		 * 
-		 */
 		return $c;
 	}
-	
+
+	public function insertSO($data = array(), $id_sazby_o = 0)
+	{
+		$p = array();
+		if($id_sazby_o == 0){
+			$id_sazby_o = $this->insert($data);
+			$p[0] = 1;
+		} else {
+			$this->update($id_sazby_o, $data);
+			$p[0] = 2;
+		}
+		$p[1] = $id_sazby_o;
+		return $p;
+		
+	}	
 	
 	/**
 	 * Inserts data to the table

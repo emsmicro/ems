@@ -23,7 +23,7 @@ class Firma extends Model
 	 */
 	public function show()
 	{
-		return $this->CONN->dataSource("
+		$sql_cmd = "
 				SELECT f.*, d.zkratka [dzkratka], a.ulice, a.cp, o.nazev [obec], o.psc, k.nazev [kraj], s.nazev [stat], s.zkratka [zstat]
 				FROM firmy f
 					LEFT JOIN druhy_firem d ON f.id_druhy_firem=d.id
@@ -31,8 +31,13 @@ class Firma extends Model
 					LEFT JOIN obce o 		ON a.id_obce=o.id
 					LEFT JOIN kraje k 		ON a.id_kraje=k.id
 					LEFT JOIN staty s 		ON a.id_staty=s.id
-				");
+				";
+		if($this->filter<>''){
+			$sql_cmd = $sql_cmd . "	WHERE f.zkratka + f.nazev + a.ulice + o.nazev + s.zkratka + s.nazev LIKE '%$this->filter%'";
+		}
+		return $this->CONN->dataSource($sql_cmd);
 	}
+	
 	/*
 	 * Vrací data pro konkrétní záznam
 	 * @param int

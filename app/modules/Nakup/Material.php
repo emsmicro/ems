@@ -224,15 +224,6 @@ class Material extends Model
 		return $ret;
 	}
 
-	/**
-	 * Deletes record in the table
-	 * @param int
-	 * @return mixed
-	 */
-//	public function delete($id)
-//	{
-//		return $this->CONN->delete($this->table)->where('id=%i', $id)->execute();
-//	}
 
 	/**
 	 * Deletes 1 record [or each assignet to product in table vazby] in the table

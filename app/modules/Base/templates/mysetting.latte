@@ -14,11 +14,13 @@
 				<a n:href="Osoba:people, $ifirma"><span><i>(kontakt)</i></span></a> »
 			{/if}
 			{if $inabidka>0}
-				<a n:href="Nabidka:detail, $inabidka"><i>nabídka: </i><span title="{$anabidka} ({$inabidka})">{$anabidka|truncate:28}</span></a> »
+				<a n:if="$user->isAllowed('Nabidka','default')" n:href="Nabidka:default" title="Seznam nebídek"><i>nabídka:</i></a>
+				<a n:href="Nabidka:detail, $inabidka"><span title="{$anabidka} ({$inabidka})">{$anabidka|truncate:40}</span></a> »
 				{if $iprodukt>0}
-					<a n:href="Produkt:detail, $iprodukt"><i>produkt: </i><span title="{$aprodukt} ({$iprodukt})">{$aprodukt|truncate:28}</span></a> »
-					<a n:href="Material:default"><span title="Materiálový kusovník">BOM</span></a> »
-					<a n:href="Postup:default"><span title="Technologický postup">TPV</span></a>
+					<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů"><i>produkt:</i></a>
+					<a n:href="Produkt:detail, $iprodukt"><span title="{$aprodukt} ({$iprodukt})">{$aprodukt|truncate:45}</span></a> »
+					<a n:href="Material:default"><span title="Materiálový kusovník{$titBOM}">BOM{$cntBOM}</span></a> »
+					<a n:href="Operace:default"><span title="Technologický postup{$titTPV}">TPV{$cntTPV}</span></a>
 				{else}
 					<a n:href="setProduct, $ifirma"><span><i>(produkt nevybrán)</i></span></a>
 				{/if}
@@ -36,9 +38,9 @@
 				<span><i>(kontakt nevybrán)</i></span> »
 			{/if}
 			{if $inabidka>0}
-				<i>nabídka: </i><span title="{$anabidka} ({$inabidka})">{$anabidka|truncate:35} » </span>
+				<i>nabídka: </i><span title="{$anabidka} ({$inabidka})">{$anabidka|truncate:50} » </span>
 				{if $iprodukt>0}
-					<i>produkt: </i><span title="{$aprodukt} ({$iprodukt})">{$aprodukt|truncate:35}</span>
+					<i>produkt: </i><span title="{$aprodukt} ({$iprodukt})">{$aprodukt|truncate:50}</span>
 				{else}
 					<span><i>(produkt nevybrán)</i></span>
 				{/if}

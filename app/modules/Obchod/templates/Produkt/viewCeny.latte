@@ -114,7 +114,7 @@
 					</td>
 					<td class="tcislo cena {$actclass}">{$cen->hodnota|number:2:',':' '}</td>
 					{if $cen->idm <> 1}
-						<td class="tcislo cena {$actclass}">{$cen->hodnota_cm|number:2:',':' '}</td>
+						<td class="tcislo cena {$actclass}">{$cen->hodnota_cm|number:3:',':' '}</td>
 					{/if}
 				{elseif $cen->zkratka=="CenaNab"} {* zvýraznění ceny nabidkove *}
 					<td class="cenanab mini {$actclass}">{$cen->poradi}</td>
@@ -127,14 +127,14 @@
 					</td>
 					<td class="tcislo cenanab {$actclass}">{$cen->hodnota|number:2:',':' '}</td>
 					{if $cen->idm <> 1}
-						<td class="tcislo cenanab {$actclass}">{$cen->hodnota_cm|number:2:',':' '}</td>
+						<td class="tcislo cenanab {$actclass}">{$cen->hodnota_cm|number:3:',':' '}</td>
 					{/if}
 				{else}
 					<td class="mini {$actclass}">{$cen->poradi}</td>
 					<td class="{$actclass}">{$cen->nazev}</td>
 					<td class="tcislo {$actclass}">{$cen->hodnota|number:2:',':' '}</td>
 					{if $cen->idm <> 1}
-						<td class="tcislo {$actclass}">{$cen->hodnota_cm|number:2:',':' '}</td>
+						<td class="tcislo {$actclass}">{$cen->hodnota_cm|number:3:',':' '}</td>
 					{/if}
 				{/if}
 			</tr>

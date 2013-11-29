@@ -75,6 +75,31 @@ class Kalkul extends Model
 	}
 	
 	/**
+	 * Kalkuluje cenu materiálu pro zadaný produkt v nabídce v BOMu
+	 * @param type $id_produktu a id_nabidky
+	 * @return type array
+	 * 	$ret['pravidlo1'], $ret['pravidlo2']
+	 *	$ret['meze1'], $ret['meze2']
+	 *	$ret['koef']
+	 */
+	public function calcMatPrices($id_produktu, $id_nabidky){
+		$kmat = $this->getMatCoef($id_nabidky);
+		$pravidlo1 = $kmat['przr'];	// zásobovací režie
+		$meze1 = $this->parsePravidlo($pravidlo1);
+		$this->recalMatPrices($id_produktu, $kmat['koef'], $meze1, FALSE);
+		$pravidlo2 = $kmat['prmm']; // materiálová marže
+		$meze2 = $this->parsePravidlo($pravidlo2);
+		$this->recalMatPrices($id_produktu, $kmat['koef'], $meze2, TRUE);
+		$ret = array();
+		$ret['pravidlo1']=$pravidlo1;
+		$ret['pravidlo2']=$pravidlo2;
+		$ret['meze1']=$meze1;
+		$ret['meze2']=$meze2;
+		$ret['koef']=$kmat['koef'];
+		return $ret;
+	}
+	
+	/**
 	 * Recaclutate prices of material BOM of product
 	 * @param type $idproduktu
 	 * @param type $koeficient
@@ -85,7 +110,7 @@ class Kalkul extends Model
 	public function recalMatPrices($idproduktu, $koeficient, $meze=FALSE, $nacenu=FALSE)
 	{
 		if($meze & $meze<>''){
-			// alternativní cena
+			// bude vypočtena alternativní cena
 			$sql_cmd = "UPDATE $this->t_mater  
 						SET cena_kc2 = cena_kc * $koeficient
 						FROM $this->t_mater m
@@ -181,7 +206,11 @@ class Kalkul extends Model
 		$vzorec = str_replace("MaterialN", "1", $vzor);
 		$vzorec = str_replace("ZasR", (string)$zasr, $vzorec);
 		$vzorec = str_replace("MatM", (string)$matm, $vzorec);
-		eval("\$koef = $vzorec;");	//vyhodnotí string výraz jako php kód
+		if(trim($vzorec)<>''){
+			eval("\$koef = $vzorec;");	//vyhodnotí string výraz jako php kód
+		} else {
+			$koef = 1.50;				// defaultní velká přirážka na materiál, aby to trklo
+		}
 		$ret['zasr'] = $zasr;
 		$ret['matm'] = $matm;
 		$ret['vzor'] = $vzorec;
@@ -609,15 +638,38 @@ class Kalkul extends Model
 				")->fetch();
 	}
 	
+	/**
+	 * Kalkulace absolutních, jednicových a relativních parametrů cen včšech produktů nabídky
+	 * @param type $id_nabidka
+	 * @return array or boolean
+	 */
+	public function calcAddValNab($id_nabidka)
+	{
+		$prods = $this->CONN->query("SELECT DISTINCT id_produkty [id] FROM ceny WHERE id_nabidky = $id_nabidka")->fetchAll();
+		if ($prods) {
+			$sazba = new Sazba();
+			$zasr_fix = $sazba->getRateByType($id_nabidka, "ZasR");
+			$vyrr_fix = $sazba->getRateByType($id_nabidka, "VyrR");
+			$data = array();
+			foreach ($prods as $prod) {
+				$data[$prod->id]=$this->calcAddedValue($prod->id, $id_nabidka, $id_cena = 0, $zasr_fix, $vyrr_fix);
+			}
+			return $data;
+		} else {
+			return false;
+		}
+	}	
 	
 	/**
 	 * Calculate abolute and relative parameters of price
 	 * @param type $id_produkt
 	 * @param type $id_nabidka
 	 * @param type $id_cena
+	 * @param type $zasr_fix = 3% minimální fixní zásobovací režie - NUTNO DOIMPLEMENTOVAT !!!
+	 * @param type $vyrr_fix = 32% minimální fixní zásobovací režie - NUTNO DOIMPLEMENTOVAT !!!
 	 * @return type
 	 */
-	public function calcAddedValue($id_produkt, $id_nabidka, $id_cena = 0)
+	public function calcAddedValue($id_produkt, $id_nabidka, $id_cena = 0, $zasr_fix = 0, $vyrr_fix = 0)
 	{
 		$des_mist = 2;
 		$naklady = $this->getProductCosts($id_produkt);
@@ -638,28 +690,28 @@ class Kalkul extends Model
 			$k = trim($naklad->zkratka);
 			switch(true){
 				case ($k == 'MaterialN'):
-					$matn = round((float) $naklad->hodnota, $des_mist);
+					$matn = round((float) $naklad->hodnota, $des_mist)*(1+$zasr_fix);
 					break;
 				case ($k == 'MaterialC'):
 					$matc = round((float) $naklad->hodnota, $des_mist);
 					break;
 				case ($k == 'OperRucPN'):
-					$rucp = round((float) $naklad->hodnota, $des_mist);
+					$rucp = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OperRucDN'):
-					$rucd = round((float) $naklad->hodnota, $des_mist);
+					$rucd = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OperMontPN'):
-					$monp = round((float) $naklad->hodnota, $des_mist);
+					$monp = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OperMontDN'):
-					$mond = round((float) $naklad->hodnota, $des_mist);
+					$mond = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OperStrPN'):
-					$strp = round((float) $naklad->hodnota, $des_mist);
+					$strp = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OperStrDN'):
-					$strd = round((float) $naklad->hodnota, $des_mist);
+					$strd = round((float) $naklad->hodnota, $des_mist)*(1+$vyrr_fix);
 					break;
 				case ($k == 'OstatniPN'):
 					$ostp = round((float) $naklad->hodnota, $des_mist);
@@ -694,6 +746,30 @@ class Kalkul extends Model
 				$aval[$ic] = array();
 				$aval[$ic]['mnozstvi']	= $mnoz;
 				$aval[$ic]['davka']		= $davk;
+				// na kus
+				$aval[$ic]['mater_ks']	= $matn;
+				$aval[$ic]['rucni_ks']	= ($rucp + $rucd/$davk);
+				$aval[$ic]['monta_ks']	= ($monp + $mond/$davk);
+				$aval[$ic]['stroj_ks']	= ($strp + $strd/$davk);
+				$aval[$ic]['ostat_ks']	= $ostp;
+				$aval[$ic]['vyrob_ks']	= $cvyr;
+				$aval[$ic]['vyrez_ks']	= $cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp);
+				$aval[$ic]['sluzb_ks']	= ($cvyr-$matn);
+				$aval[$ic]['trzba_ks']	= $cnab;
+				$aval[$ic]['trmat_ks']	= $cmat;
+				$aval[$ic]['jedno_ks']	= $cjed/$davk;
+				$aval[$ic]['zisk_ks']	= $czsk;
+				$aval[$ic]['sprav_ks']	= $crsp;
+				$aval[$ic]['avalk_ks']	= $aval[$ic]['trzba_ks'] - $aval[$ic]['vyrob_ks'] + ($aval[$ic]['trmat_ks'] - $aval[$ic]['mater_ks']);
+				$aval[$ic]['avalc_ks']	= $aval[$ic]['trzba_ks'] + $aval[$ic]['jedno_ks'] 
+											- $aval[$ic]['mater_ks'] 
+											- $aval[$ic]['stroj_ks'] 
+											- $aval[$ic]['rucni_ks']
+											- $aval[$ic]['monta_ks']
+											- $aval[$ic]['ostat_ks']
+											- $aval[$ic]['jedno_ks'];
+
+				// celkem
 				$aval[$ic]['maternak']	= $mnoz * $matn;
 				$aval[$ic]['rucninak']	= $mnoz * ($rucp + $rucd/$davk);
 				$aval[$ic]['montanak']	= $mnoz * ($monp + $mond/$davk);
@@ -701,6 +777,7 @@ class Kalkul extends Model
 				$aval[$ic]['ostatnak']	= $mnoz * $ostp;
 				$aval[$ic]['jednonak']	= $jedn;
 				$aval[$ic]['vyrobnak']	= $mnoz * $cvyr;
+				$aval[$ic]['vyreznak']	= $mnoz * ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp));
 				$aval[$ic]['sluzbnak']	= $mnoz * ($cvyr-$matn);
 				$aval[$ic]['trzba']		= $mnoz * $cnab;
 				$aval[$ic]['trzbamat']	= $mnoz * $cmat;
@@ -717,11 +794,13 @@ class Kalkul extends Model
 											- $aval[$ic]['jednonak'];
 				$matnproc = $matn/$cnab * 100;
 				$sluzproc = ($cvyr-$matn)/$cnab * 100;
+				$vyreproc = ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp))/$cnab * 100;
 				$sprvproc = $crsp/$cnab * 100;
 				$ziskproc = $czsk/$cnab * 100;
 				$aval[$ic]['matnproc']	= $matnproc;
 				$aval[$ic]['matcproc']	= ($cmat/$matn - 1) * 100;
 				$aval[$ic]['sluzproc']	= $sluzproc;
+				$aval[$ic]['vyreproc']	= $vyreproc;
 				$aval[$ic]['sprvproc']	= $sprvproc;
 				$aval[$ic]['ziskproc']	= $ziskproc;
 				$aval[$ic]['avalproc']	= $aval[$ic]['avalcist']/$aval[$ic]['trzba']*100;
@@ -796,6 +875,31 @@ class Kalkul extends Model
 			$aval[$ic] = array();
 			$aval[$ic]['mnozstvi']	= $mnoz;
 			$aval[$ic]['davka']		= $davk;
+			
+			// na kus
+			$aval[$ic]['mater_ks']	= $matn;
+			$aval[$ic]['rucni_ks']	= ($rucp + $rucd/$davk);
+			$aval[$ic]['monta_ks']	= ($monp + $mond/$davk);
+			$aval[$ic]['stroj_ks']	= ($strp + $strd/$davk);
+			$aval[$ic]['ostat_ks']	= $ostp;
+			$aval[$ic]['vyrob_ks']	= $cvyr;
+			$aval[$ic]['vyrez_ks']	= $cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp);
+			$aval[$ic]['sluzb_ks']	= ($cvyr-$matn);
+			$aval[$ic]['trzba_ks']	= $cnab;
+			$aval[$ic]['trmat_ks']	= $cmat;
+			$aval[$ic]['jedno_ks']	= $cjed/$davk;
+			$aval[$ic]['zisk_ks']	= $czsk;
+			$aval[$ic]['sprav_ks']	= $crsp;
+			$aval[$ic]['avalk_ks']	= $aval[$ic]['trzba_ks'] - $aval[$ic]['vyrob_ks'] + ($aval[$ic]['trmat_ks'] - $aval[$ic]['mater_ks']);
+			$aval[$ic]['avalc_ks']	= $aval[$ic]['trzba_ks'] + $aval[$ic]['jedno_ks'] 
+										- $aval[$ic]['mater_ks'] 
+										- $aval[$ic]['stroj_ks'] 
+										- $aval[$ic]['rucni_ks']
+										- $aval[$ic]['monta_ks']
+										- $aval[$ic]['ostat_ks']
+										- $aval[$ic]['jedno_ks'];
+			
+			// celkem
 			$aval[$ic]['maternak']	= $mnoz * $matn;
 			$aval[$ic]['rucninak']	= $mnoz * ($rucp + $rucd/$davk);
 			$aval[$ic]['montanak']	= $mnoz * ($monp + $mond/$davk);
@@ -803,6 +907,7 @@ class Kalkul extends Model
 			$aval[$ic]['ostatnak']	= $mnoz * $ostp;
 			$aval[$ic]['jednonak']	= $jedn;
 			$aval[$ic]['vyrobnak']	= $mnoz * $cvyr;
+			$aval[$ic]['vyreznak']	= $mnoz * ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp));
 			$aval[$ic]['sluzbnak']	= $mnoz * ($cvyr-$matn);
 			$aval[$ic]['trzba']		= $mnoz * $cnab;
 			$aval[$ic]['trzbamat']	= $mnoz * $cmat;
@@ -819,11 +924,13 @@ class Kalkul extends Model
 										- $aval[$ic]['jednonak'];
 			$matnproc = $matn/$cnab * 100;
 			$sluzproc = ($cvyr-$matn)/$cnab * 100;
+			$vyreproc = ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp))/$cnab * 100;
 			$sprvproc = $crsp/$cnab * 100;
 			$ziskproc = $czsk/$cnab * 100;
 			$aval[$ic]['matnproc']	= $matnproc;
 			$aval[$ic]['matcproc']	= ($cmat/$matn - 1) * 100;
 			$aval[$ic]['sluzproc']	= $sluzproc;
+			$aval[$ic]['vyreproc']	= $vyreproc;
 			$aval[$ic]['sprvproc']	= $sprvproc;
 			$aval[$ic]['ziskproc']	= $ziskproc;
 			$aval[$ic]['avalproc']	= $aval[$ic]['avalcist']/$aval[$ic]['trzba']*100;

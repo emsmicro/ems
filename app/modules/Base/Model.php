@@ -45,7 +45,7 @@ class Model extends DibiRow
 
 	public function insertCis($table, $data = array())
 	{
-		return $this->CONN->insert($table, $data)->execute($this->CONN->IDENTIFIER);
+		return $this->CONN->insert($table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
 	public function getPrefixedFormFields($hashData, $prefix = '_', $prefpos = 1){

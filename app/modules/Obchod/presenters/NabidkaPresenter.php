@@ -35,10 +35,6 @@ class NabidkaPresenter extends ObchodPresenter
 
 	/********************* view default *********************/
 
-
-	/*
-	 * @return void
-	 */
 	public function renderDefault()
 	{
 			
@@ -47,7 +43,8 @@ class NabidkaPresenter extends ObchodPresenter
 		// User filter
 		$ufilter = $this['uFilter'];
 		$nab->filter = $ufilter->getFilter();
-
+		$this->template->is_filter = TRUE;
+		
 		$rows = $nab->show();
 		$cnt = count($rows);
 		// stránkování
@@ -60,7 +57,7 @@ class NabidkaPresenter extends ObchodPresenter
 		
 		$this->template->items = $rowp;
         $this->template->titul = self::TITUL_DEFAULT;
-		$this->template->is_filter = TRUE;
+		
 	}
 	/*
 	 * @param int
@@ -86,13 +83,17 @@ class NabidkaPresenter extends ObchodPresenter
         $nabidka = new Nabidka;
 		$item = $nabidka->find($id)->fetch();
 		$hist = $nabidka->getOfferHistory($id);
-		$volume = $nabidka->sumVolume($id)->fetchAll();
+		$volume = $nabidka->sumVolume($id)->fetch();
 
 		$this->setIntoMySet(3, $id, 1);
 		
 		$produkt = new Produkt;
 		$prods = $produkt->showProduct(0,$id);
 		$prices = $produkt->getOfferPrices($id, 0);
+		$kalk = new Kalkul;
+		$aval = $kalk->calcAddValNab($id);
+		//dd($aval, 'AVAL');
+		$this->template->aval = $aval;
 		$this->template->isPDF = false;
 		$this->template->item = $item;
 		$this->template->history = $hist;
@@ -149,7 +150,7 @@ class NabidkaPresenter extends ObchodPresenter
 
 		$mail = new Nette\Mail\Message();
 		$mail->setFrom('emsmicro@gmail.com')
-			 ->addTo('emsmicro@gmail.com')
+			 ->addTo('v.mracko@mikroelektronika.cz')
 			 ->setSubject('Test PDF nabídka')
 //			 ->addAttachment('nab.pdf', $this->sendResponse($pdf), 'application/pdf')
 			 ->setBody("Dobrý den,\nposíláme vám naši nabídku.");
@@ -333,6 +334,18 @@ class NabidkaPresenter extends ObchodPresenter
 
 	}
 	
+	public function actionCopyNabidka($id) {
+		$instance = new Nabidka;
+		$result = $instance->copyNabidka($id, $this->user->id);
+		if(!$result or $result==0){
+			$this->flashMessage('Zkopírování nabídky bylo neúspěšné. Přiřaďte produkt nabídce.','warning');
+			$this->redirect('detail', $id);
+		} else {
+			$this->flashMessage("Nabídka byla zkopírována pod novým číslem $result. Aktualizujte náklady a ceny všech nových produktů.");
+			$this->redirect('detail', $result);
+		}		
+	}
+	
 	
 	/**
 	 * Copy offer
@@ -340,12 +353,17 @@ class NabidkaPresenter extends ObchodPresenter
 	 * @return void
 	 * @throws BadRequestException
 	 */	
-	public function actionCopyNabidka($id)
+	public function actionCopyNabidka2($id)
 	{
-		$item = new Nabidka;
-		$this->template->item = $item->find($id)->fetch();
-		if (!$this->template->item) {
-			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+		$form = $this['copyNabidkaForm'];
+		if (!$form->isSubmitted()) {
+			$item = new Nabidka;
+			$this->template->item = $item->find($id)->fetch();
+			if (!$this->template->item) {
+				throw new Nette\Application\BadRequestException('Záznam nenalezen!');
+			}
+		} else {
+			
 		}
 		$this->template->titul = "Kopie nabídky";
 
@@ -483,11 +501,11 @@ class NabidkaPresenter extends ObchodPresenter
 	 * Confirm copy offer
 	 * @return mixed
 	 */
-	protected function createComponentCopyNabidkaForm()
+	protected function createComponentCopyNabidka2Form()
 	{
 		$form = new Form;
 		$form->addSubmit('copynab', 'Ano')->setAttribute('class', 'default');
-		$form->addSubmit('cancel', 'Ne');
+		$form->addSubmit('cancel', 'Ne')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'copyNabFormSubmitted');
 		$form->addProtection(self::MESS_PROTECT);
 		return $form;
@@ -500,10 +518,9 @@ class NabidkaPresenter extends ObchodPresenter
 	 */
 	public function copyNabFormSubmitted(Form $form)
 	{
+		$id = $this->getParam('id');
 		if ($form['copynab']->isSubmittedBy()) {
 	        $instance = new Nabidka;
-			$id = $this->getParam('id');
-			$item = $instance->find($id)->fetch();
 			$result = $instance->copyNabidka($id, $this->user->id);
 			if(!$result || $result==0){
 				$this->flashMessage('Zkopírování nabídky bylo neúspěšné. Přiřaďte produkt nabídce.','warning');

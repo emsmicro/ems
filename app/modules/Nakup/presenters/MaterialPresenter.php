@@ -330,18 +330,13 @@ class MaterialPresenter extends NakupPresenter
 	 */
 	public function actionMatPrice($id)
 	{
+		
 		$kalk = new Kalkul;
-		$kmat = $kalk->getMatCoef($this->getIdFromMySet(3));
-		$pravidlo1 = $kmat['przr'];	// zásobovací režie
-		$meze1 = $kalk->parsePravidlo($pravidlo1);
-		$kalk->recalMatPrices($id, $kmat['koef'], $meze1, FALSE);
-		$pravidlo2 = $kmat['prmm']; // materiálová marže
-		$meze2 = $kalk->parsePravidlo($pravidlo2);
-		$kalk->recalMatPrices($id, $kmat['koef'], $meze2, TRUE);
-		if($meze1 || $meze2){
-			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny dle pravidel: zásobovací režie: ".$pravidlo1. " marže: ". $pravidlo2.".");
+		$ret = $kalk->calcMatPrices($id, $this->getIdFromMySet(3));
+		if($ret['meze1'] or $ret['meze2']){
+			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny dle pravidel: zásobovací režie: ".$ret['pravidlo1']. " marže: ".$ret['pravidlo2'].".");
 		} else {
-			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny koeficientem ".str_replace(".", ",", $kmat['koef']).".");
+			$this->flashMessage("Prodejní ceny materiálových položek byly přepočteny koeficientem ".str_replace(".", ",", $ret['koef']).".");
 		}
 		$this->goBack();
 
@@ -354,7 +349,7 @@ class MaterialPresenter extends NakupPresenter
 	public function actionMatPriceErase($id)
 	{
         $kalk = new Kalkul;
-		$mat->recalMatPrices($id, 0);
+		$kalk->recalMatPrices($id, 0);
 		$this->flashMessage("Prodejní ceny materiálových položek byly vynulovány",'exclamation');
 		$this->goBack();
 

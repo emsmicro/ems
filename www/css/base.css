@@ -115,14 +115,61 @@ h3 {
 }
 
 
+#messages {
+	position: relative;
+	top: -100px;
+	min-width: 893px;
+	max-width: 1200px;	
+	margin: 20px 0 0 15px;
+	padding: 50px 20px 20px 30px;
+	border-top: solid 1px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+}
+
+#topcont {
+	position: relative;
+}
+
+#content {
+	position: relative;
+	top: -112px;
+	min-width: 893px;
+	max-width: 1200px;
+    margin: auto;
+	height: auto;
+	min-height: 1000px;
+	margin: 0 0 0 15px;
+	padding: 0px 20px 0px 30px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+	border-bottom: solid 1px;
+}
+
+#footer {
+	position: relative;
+	width: 850px;
+	text-align: center;
+	font-size: x-small;
+}
+
+#footer a {
+	text-decoration: underline; 
+}
+
+#footer a:hover {
+	color: #FFF;;
+}
+
 /* ------------------ MENU --------------------------- */
 
 #menu {
 	margin: 0;
 	padding: 0;
 	position: relative;
-	width: 971px;
-	top: -50px;
+	min-width: 945px;
+	max-width: 1250px;	
+	top: -80px;
 	height: 40px;
 	list-style: none;
 	list-style-type: none;
@@ -226,16 +273,18 @@ h3 {
 /*----------------- MYSETTING ----------------------*/
 
 #mysetting {
-	position: absolute;
+	position: relative;
 	top: -85px;
 	left: 20px;
 	font-size: 9pt;
-	width: 925px;
+	min-width: 873px;
+	max-width: 1230px;
 	padding: 5px 5px 6px 5px;
 	vertical-align: middle;
     border-radius: 4px;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
+	z-index: 10;
 }
 
 #mysetting span {
@@ -370,49 +419,6 @@ h3 {
 }
 
 
-#messages {
-	position: relative;
-	top: -70px;
-	width: 893px;
-	margin: 20px 0 0 15px;
-	padding: 50px 20px 20px 30px;
-	border-top: solid 1px;
-	border-left: solid 1px;
-	border-right: solid 1px;
-}
-
-#topcont {
-	position: relative;
-}
-
-#content {
-	position: relative;
-	top: -82px;
-	width: 893px;
-    margin: auto;
-	height: auto;
-	min-height: 1000px;
-	margin: 0 0 0 15px;
-	padding: 0px 20px 0px 30px;
-	border-left: solid 1px;
-	border-right: solid 1px;
-	border-bottom: solid 1px;
-}
-
-#footer {
-	position: relative;
-	width: 850px;
-	text-align: center;
-	font-size: x-small;
-}
-
-#footer a {
-	text-decoration: underline; 
-}
-
-#footer a:hover {
-	color: #FFF;;
-}
 
 /*=========================== KONEC SCHEMATU============================================================*/
 
@@ -604,6 +610,7 @@ table.grid th {
 	font-weight: normal;
 	border: 1px solid #ADD4FB;
 	padding: 3px 6px 3px 6px;
+	cursor: default; 
 }
 
 table.grid th.cislo {
@@ -952,6 +959,21 @@ table.grid td.tselgreen {
 
 table.grid td.tselorange {
 	background-color: #FFD06F;
+}
+
+table.grid .tsepright {
+	border-right: 4px solid #ADD4FB;
+}
+
+table.grid .tsepleft {
+	border-left: 4px solid #ADD4FB;
+}
+
+table.grid .tseptop {
+	border-top: 4px solid #ADD4FB;
+}
+table.grid .tsepbot {
+	border-bottom: 4px solid #ADD4FB;
 }
 
 

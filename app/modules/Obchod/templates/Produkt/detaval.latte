@@ -5,14 +5,14 @@
 	{var $aclass = "best"}
 	{var $bestit = "Nejlepší přidaná hodnota"}
 {/if}
-<div class="daval">
+<div class="daval" style="text-align: center; font-size: small;">{$bestit}
 	<table class="grid aval {$aclass}">
 		<tbody>
 		<tr title="Cena: {$item['id_cena']}" style="border-bottom:1px solid #BBB;">
 			<th>Množ./dávka</th><td class="cislo" style="font-size:x-small;">{$item['mnozstvi']|number:0:',':' '} / {$item['davka']|number:0:',':' '} ks</td>
 		</tr>
 		<tr><th>Tržba</th>		<td class="cislo">{$item['trzba']|number:2:',':' '} Kč</td></tr>
-		<tr title="Čistá PH = Tržba - Nákady (mat., mzdy, stroje - bez režií)"><th>Čistá PH</th>	<td class="cislo">{$item['avalcist']|number:2:',':' '} Kč</td></tr>
+		<tr title="Hrubá PH = Tržba - Nákady (přímé: mat., mzdy, stroje - bez režií)"><th>Hrubá PH</th>	<td class="cislo">{$item['avalcist']|number:2:',':' '} Kč</td></tr>
 		<tr title="Real. PH = Tržba - Výr. nákady + Mater. přirážka"><th>Real. PH</th>	<td class="cislo">{$item['avalkalk']|number:2:',':' '} Kč</td></tr>
 		<tr><th>Zisk</th>		<td class="cislo">{$item['kalkzisk']|number:2:',':' '} Kč</td></tr>
 		<tr><th>PH/Tržba</th>	<td class="cislo light" title="{$bestit}">{$item['avalproc']|number:2:',':' '} %</td></tr>
@@ -33,12 +33,24 @@
 					  <span class="value">{$item['sluzbnak']|number:0:',':' '} Kč [{$item['sluzproc']|number:1:',':' '} %]</span>
 					</div>
 					<div style="border-bottom: dotted 1px #BBB;">
+					  <span class="label">Výrobní režie</span>
+					  <span class="value">{$item['vyreznak']|number:0:',':' '} Kč [{$item['vyreproc']|number:1:',':' '} %]</span>
+					</div>
+					<div style="border-bottom: dotted 1px #BBB;">
 					  <span class="label">Správní režie</span>
 					  <span class="value">{$item['spravrez']|number:0:',':' '} Kč [{$item['sprvproc']|number:1:',':' '} %]</span>
 					</div>
 				</div>
-				<div id="dgraph_{$item['id_cena']}" class="popgr"><b><u>VYSKYTLA SE CHYBA - graf nelze vykreslit</u></b> 
-					<div style="display:block;width:100%;text-align:left;"> id_cena = {$item['id_cena']}<br /> data = {$item['datagraf']}</div>
+				<div id="dgraph_{$item['id_cena']}" class="popgr">
+					<p style="color:darkred; font-size: large;"><b>VYSKYTLA SE CHYBA - graf nelze vykreslit</b></p>
+					<div style="display:block;width:100%;text-align:left;"> 
+						id_cena = {$item['id_cena']} 
+						<br /> 
+						data = {$item['datagraf']}
+					
+						{*{dump $item};*}
+						
+					</div>
 				</div>
 		</td></tr>
 
@@ -47,7 +59,8 @@
 </div>
 
 <script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
+<script type='text/javascript' src='{$basePath}/js/themes/mypie.js'></script>
 <script type='text/javascript'>
-	{include 'graval.latte', idg => $item['id_cena'], gr_data => $item['datagraf']}
+	{include 'graval.latte', idg => $item['id_cena'], gr_data => $item['datagraf'], size => 220}
 </script>
 

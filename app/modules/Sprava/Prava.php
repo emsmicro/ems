@@ -27,7 +27,8 @@ class Prava extends Model
 	public function show()
 	{
 		return $this->CONN->dataSource("
-						SELECT	r.id [idr]
+						SELECT	DISTINCT
+								r.id [idr]
 								, r.nazev [role]
 								, r.popis [prole]
 								, p.id [idp]
@@ -119,7 +120,7 @@ class Prava extends Model
 	 */
 	public function getRights($idr, $modul='')
 	{
-		$qry = "SELECT p.*, case when a.id_role is null then 'false' else 'true' end [yes], r.id [idr], r.nazev [role], r.popis [prole], cp.cntp
+		$qry = "SELECT DISTINCT p.*, case when a.id_role is null then 'false' else 'true' end [yes], r.id [idr], r.nazev [role], r.popis [prole], cp.cntp
 				FROM permission p 
 				LEFT JOIN prava a ON p.id=a.id_permission AND a.id_role=$idr 
 				LEFT JOIN role r ON a.id_role=r.id

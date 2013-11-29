@@ -10,7 +10,7 @@
 {* $cond .. pokud jsou práva na add/edit/delete zobrazí se záhlaví. Testujeme pak: n:if="$cond"*}
 {var $cond = $user->isAllowed('Firma','add') || $user->isAllowed('Firma','edit')}
 
-<table class="grid">
+<table class="grid" style="width:100%;">
 <tr>
 	<th><img src="{$basePath}/images/select.png" title="Zvolit jako aktuální"/></th>
 	<th>Název</th>
