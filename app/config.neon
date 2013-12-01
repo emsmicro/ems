@@ -18,6 +18,12 @@ common:
 		zip: 566 01
 		country: Czech republic
 
+	mypar:
+		fond_rucni: 222
+		fond_strojni: 250
+		rucni_smena: 7.5
+		smennost_strojni: 2.5
+
 	services:
 		robotLoader:
 			#option:

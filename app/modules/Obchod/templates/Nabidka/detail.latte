@@ -61,6 +61,8 @@
 </tr>
 </table>
 
+<div class="kolaps">
+
 <div class="statusbig">
 			{if $it->id_stav == 1}
 				<img src="{$basePath}/images/stav0.png"  title="{$it->nstav}"/>
@@ -98,8 +100,6 @@
 				</span>			
 			{/if}
 </div>
-
-<div class="kolaps">
 
 {if $history}
 <div class="history">
@@ -163,7 +163,7 @@
 						{if $ip->nabidka <> '.. nepřiřazen ..'}
 							<span class="disconn">
 								<a n:href="Produkt:eraseOffer, $ip->id, $ip->idn" title="Zrušit přiřazení">
-									&nbsp;&nbsp;
+									&nbsp;&nbsp;&nbsp;
 								</a>
 							</span>
 						{/if}
@@ -216,11 +216,24 @@
 				<h3>Ceny, objem a PH produktů</h3>
 			{/if}
 			<div>
+				<span class="midi" style="float: right; margin:0 20px 10px 0;">
+					{if $isAct}
+						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail, $item->id, 0" >Zobrazit také neaktivní ceny</a>
+					{else}
+						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail, $item->id, 1" >Zobrazit jen aktivní ceny</a>
+					{/if}
+				</span>
 				{include 'prices.latte'}
 			</div>
 		</div>
 	</div>
 
+{/if}
+
+{if !$isPDF && $iscap}
+	<div class="clear">
+		{include 'capacity.latte'}
+	</div>
 {/if}
 
 </div>
@@ -239,66 +252,10 @@
 	clip.glue( 'd_clip' );
 </script>
 
-{*
-
-
-
-<script language="text/javascript">
-	function CopyToClipboard(txt) 
-	{ 
-		//var control = document.getElementById(controlId);
-		//if (control == null)
-		//{
-		//	alert('ERROR – control not found – ' + controlId); 
-		//}
-		//else
-		//{ 
-			//determine the value of the control
-			//var controlValue = control.value;
-			//copy to clipboard
-			alert('Clipboard : ' + txt);  
-			//window.clipboardData.setData('Text', txt);
-			
-		//}
-	}
-</script>
-*}
-
-{*
-<script language="JavaScript">
-                var clip = null;
-
-                function init() {
-                        // setup single ZeroClipboard object for all our elements
-						ZeroClipboard.setMoviePath('/ems/www/js/ZeroClipboard.swf');
-                        clip = new ZeroClipboard.Client();
-                        clip.setHandCursor( true );
-
-                        // assign a common mouseover function for all elements using jQuery
-                        $('span.d_clip').mouseover( function() {
-                                // set the clip text to our innerHTML
-                                clip.setText( {$it->folder} );
-
-                                // reposition the movie over our element
-                                // or create it if this is the first time
-                                if (clip.span) {
-                                        clip.receiveEvent('mouseout', null);
-                                        clip.reposition(this);
-                                }
-                                else clip.glue(this);
-
-                                // gotta force these events due to the Flash movie
-                                // moving all around.  This insures the CSS effects
-                                // are properly updated.
-                                clip.receiveEvent('mouseover', null);
-                        } );
-                }
-</script>
-*}
 
 <script type='text/javascript'>
 
-            $(".kol-1, .kol-2, .kol-h").collapse({ show: function(){ 
+            $(".kol-1, .kol-2, .kol-h, .kol-c").collapse({ show: function(){ 
                     this.animate({ 
                         opacity: 'toggle',
                         height: 'toggle'

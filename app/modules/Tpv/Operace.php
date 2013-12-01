@@ -31,9 +31,10 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 			$cond = " AND (o.id_sablony is null OR o.id_tpostup is null) ";
 		}
 		return $this->CONN->query("SELECT o.*, COALESCE(o.poradi, tp.poradi) [oporadi], COALESCE(o.id_tpostup, $id_tpostup) [id_tpostup],
-								tp.nazev, tp.poradi [tporadi], a.pocet 
+								tp.nazev, tp.poradi [tporadi], a.pocet, dr.zkratka [druh] 
 							FROM operace o 
-							LEFT JOIN typy_operaci tp ON o.id_typy_operaci=tp.id				
+							LEFT JOIN typy_operaci tp ON o.id_typy_operaci=tp.id
+							LEFT JOIN druhy_operaci dr ON tp.id_druhy_operaci=dr.id
 							LEFT JOIN vazby v ON o.id=v.id_operace 
 							LEFT JOIN 
 								(SELECT id_typy_operaci, COUNT(id) [pocet] FROM atr_typy_oper
@@ -43,6 +44,133 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 							WHERE v.id_vyssi = $id_produktu $cond 
 							ORDER BY oporadi");
 	}
+	
+	/**
+	 * Sumarizace kapacit dle druhu a typu operace
+	 * @param type $id_produktu
+	 * @param type $id_nabidky
+	 * @return type
+	 */
+	public function sumKapacitaDruh($id_produktu, $id_nabidky)
+	{
+//		$ks = $this->CONN->query("SELECT vyrobni_davka [davka], mnozstvi FROM pocty 
+//									WHERE id_produkty = $id_produktu AND id_nabidky = $id_nabidky")->fetch();
+//		if($ks){
+//			$davka = $ks->davka;
+//			$pocet = $ks->mnozstvi;
+//		} else {
+//			$davka = 1;
+//			$pocet = 0;
+//		}
+		return $this->CONN->query("
+					SELECT	
+							v.id_vyssi [idp], 
+							d.poradi [poradi],
+						--	d.id [idd], 
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.zkratka ELSE d.zkratka END [druh],
+						--	d.zkratka [druh],
+						--	p.zkratka [typ],
+						--	a.id,
+							a.davka,
+							a.pocet,
+							SUM(o.ta_cas) [TA], 
+							SUM(o.tp_cas) [TP], 
+							SUM(o.naklad) [NA],
+							SUM((o.ta_cas * a.pocet + o.tp_cas * a.pocet/a.davka)/60) [TC] 
+						FROM operace o 
+						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
+						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
+						LEFT JOIN vazby v ON o.id=v.id_operace 
+						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
+									FROM pocty
+									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
+								) a ON v.id_vyssi = a.id_produkty
+						WHERE	v.id_vyssi = $id_produktu AND a.id_nabidky = $id_nabidky
+								AND (o.ta_cas+o.tp_cas)*100>0
+						GROUP BY 
+							v.id_vyssi, 
+							d.poradi,
+						--	d.id, 
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.zkratka ELSE d.zkratka END,
+						--	d.zkratka,
+						--	p.zkratka,
+						--	p.poradi,
+						--	a.id
+							a.davka,
+							a.pocet
+						ORDER BY d.poradi --, p.poradi
+				")->fetchAll();
+	}
+	
+	/**
+	 * Sumarizuje potřebu kapacit za celou nabídku
+	 * @param type $id_nabidky
+	 * @return type
+	 */
+	public function sumKapacitaNabOld($id_nabidky)
+	{
+		return $this->CONN->query("	
+					SELECT	
+							d.poradi [poradi],
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.nazev ELSE d.zkratka END [druh],
+							SUM(o.ta_cas) [TA], 
+							SUM(o.tp_cas) [TP], 
+							SUM(o.naklad) [NA],
+							SUM((o.ta_cas * a.pocet + o.tp_cas * a.pocet/a.davka)/60) [TC] 
+						FROM operace o 
+						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
+						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
+						LEFT JOIN vazby v ON o.id=v.id_operace 
+						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
+									FROM pocty
+									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
+								) a ON v.id_vyssi = a.id_produkty
+						WHERE	a.id_nabidky = $id_nabidky
+								AND (o.ta_cas+o.tp_cas)*100>0
+						GROUP BY 
+							d.poradi,
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.nazev ELSE d.zkratka END
+						ORDER BY d.poradi
+				")->fetchAll();
+	}
+	
+	/**
+	 * Sumarizuje potřebu kapacit za celou nabídku
+	 * @param type $id_nabidky
+	 * @return type
+	 */
+	public function sumKapacitaNab($id_nabidky)
+	{
+		return $this->CONN->query("	
+					SELECT	
+							d.poradi [poradi],
+							d.id [idd], 
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.nazev ELSE d.nazev END [druh],
+							SUM(o.ta_cas) [TA], 
+							SUM(o.tp_cas) [TP], 
+							SUM(o.naklad) [NA],
+							SUM((o.ta_cas * COALESCE(h.mnozstvi,a.pocet) + o.tp_cas * COALESCE(h.mnozstvi,a.pocet)/COALESCE(h.vyrobni_davka,a.davka,1))/60) [TC] 
+						FROM operace o 
+						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
+						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
+						LEFT JOIN vazby v ON o.id=v.id_operace 
+						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
+									FROM pocty
+									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
+								) a ON v.id_vyssi = a.id_produkty
+						LEFT JOIN ceny c ON v.id_vyssi = c.id_produkty AND c.aktivni = 1 AND c.id_typy_cen=7
+						LEFT JOIN pocty h ON c.id_pocty = h.id
+						WHERE	a.id_nabidky = $id_nabidky AND c.id_nabidky = $id_nabidky
+								AND (o.ta_cas+o.tp_cas)*100>0
+						GROUP BY 
+							d.poradi,
+							d.id, 
+							CASE WHEN d.zkratka = 'Strojní' THEN d.zkratka + ' - ' + p.nazev ELSE d.nazev END,
+							LEFT(d.zkratka,1)
+						ORDER BY LEFT(d.zkratka,1), d.poradi
+				")->fetchAll();
+	}	
+	
 	
 	/**
 	 * Vrací data pro konkrétní záznam

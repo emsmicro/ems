@@ -71,11 +71,13 @@ class NabidkaPresenter extends ObchodPresenter
         $this->template->titul = "Nabídky - ".$section->firma;
 	}
 	/********************* view detail *********************/
-	/*
-	 * @param int
-	 * @return void
+
+	/**
+	 * Zobrazi detail nabidky
+	 * @param type $id .. id_nabidky
+	 * @param type $act 1 .. aktivni, 0 .. neaktivno ceny
 	 */
-	public function renderDetail($id = 0)
+	public function renderDetail($id = 0, $act=1)
 	{
 		if($id==0){
 			$this->redirect('default');
@@ -89,10 +91,18 @@ class NabidkaPresenter extends ObchodPresenter
 		
 		$produkt = new Produkt;
 		$prods = $produkt->showProduct(0,$id);
-		$prices = $produkt->getOfferPrices($id, 0);
+		$prices = $produkt->getOfferPrices($id, $act);
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddValNab($id);
 		//dd($aval, 'AVAL');
+		$oper = new Operace;
+		$acap = $oper->sumKapacitaNab($id);
+		$this->template->capac = $acap;
+		$this->template->iscap = count($acap);
+		$this->template->mypar = $this->mypar;
+		//dd($this->mypar,"MY params");
+		//dd($acap, 'ACAP');
+		$this->template->isAct = $act;
 		$this->template->aval = $aval;
 		$this->template->isPDF = false;
 		$this->template->item = $item;

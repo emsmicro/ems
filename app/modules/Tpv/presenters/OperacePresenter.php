@@ -26,7 +26,7 @@ class OperacePresenter extends TpvPresenter
 	{
 		parent::startup();
 		if(!$this->isMySet(4)){
-			//lze importovat, jen když je aktivován v MySetting nabídka/produkt
+			//lze pracovat, jen když je aktivován v MySetting nabídka/produkt
 			$this->flashMessage('S modulem OPERACE nelze pracovat. Nebyl aktivován žádný produkt v rámci nabídky.','exclamation');
 			$this->redirect('Produkt:default');
 		}
@@ -55,8 +55,6 @@ class OperacePresenter extends TpvPresenter
 		$idp = $this->idproduct;;
 		$operace = $instance->show($idp)->fetchAll();
 		$isoper = count($operace);
-//		dumpBar($operace);
-//		dumpBar($isoper,'pocet op.');
 		$this->template->isoper = $isoper;
 		$this->template->items = $operace;
         $this->template->titul = self::TITUL_DEFAULT;

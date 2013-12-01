@@ -155,9 +155,11 @@ class Produkt extends Model
 	 * @param int
 	 * @return record set
 	 */		
-	public function prices($id, $id_nabidky)
+	public function prices($id, $id_nabidky, $active_only = TRUE)
 	{
 		if($id>0 && $id_nabidky>0){
+			$activCond = "";
+			if ($active_only){$activCond = " AND c.aktivni=1";}
 			return $this->CONN->query("SELECT c.id_produkty [id], c.id_nabidky [idn], n.popis [nabidka], c.aktivni, c.id_vzorec, c.id [id_cena],
 									t.zkratka, RTRIM(t.zkratka2) [zkratka2], t.id [idt], t.nazev, c.hodnota, c.hodnota_cm, 
 									m.zkratka [mena], m.nazev [n_mena], m.id [idm], 
@@ -174,7 +176,7 @@ class Produkt extends Model
 										LEFT JOIN nabidky	n ON c.id_nabidky=n.id
 										LEFT JOIN kalkulace v ON c.id_vzorec=v.id
 										LEFT JOIN set_sazeb s ON c.id_set_sazeb=s.id
-								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky AND c.id is not null
+								 WHERE c.hodnota>0 AND c.id_produkty=$id AND c.id_nabidky=$id_nabidky AND c.id is not null $activCond
 									ORDER BY c.id_produkty, c.aktivni DESC, c.id, m.id, p.id, t.poradi
 									")->fetchAll();
 		}else{
@@ -276,7 +278,7 @@ class Produkt extends Model
 	{
 		$this->CONN->delete("ceny")->where("id_nabidky=$idn AND id_produkty=$idp")->execute();
 	}
-	
+		
 	/**
 	 * Produkty a ceny nabídky
 	 * @param type $id_nabidka

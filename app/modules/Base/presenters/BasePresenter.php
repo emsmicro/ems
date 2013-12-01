@@ -12,6 +12,8 @@ abstract class BasePresenter extends Presenter
 	public  $user;
 	public  $is_todo;
 	public	$company;
+	/** Moje parametry - fond, smennost, delka smeny*/
+	public	$mypar;		
 	/** @var Nette\DI\Container */ 
 	public  $context;
 	public  $is_filter = false;
@@ -38,7 +40,9 @@ abstract class BasePresenter extends Presenter
 		if(isset($context->params['company'])){
 			$this->company = $context->params['company'];
 		}
-		
+		if(isset($context->params['mypar'])){
+			$this->mypar = $context->params['mypar'];
+		}		
 		$session = $context->session;
 		if(!$session->isStarted()){$session->start();}
 		
@@ -59,6 +63,7 @@ abstract class BasePresenter extends Presenter
 	            'Správa' 	=> 'Sprava',
 		        );
         $this->navigace = $menu;
+		
 	}
 	
 	/**

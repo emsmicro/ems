@@ -114,6 +114,10 @@ class ProduktPresenter extends ObchodPresenter
         $this->template->isnaklady = $isnaklady;
 		$this->template->costs = $costs;
 
+		$oper = new Operace;
+		$capac = $oper->sumKapacitaDruh($id, $this->getIdFromMySet(3));
+        $this->template->capac = $capac;
+		//dd($capac,'CAPACITY');
 		$prices = $instance->prices($id, $this->idn);
 		$isceny = count($prices)>0;
         $this->template->isceny = $isceny;

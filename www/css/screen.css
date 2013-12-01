@@ -358,11 +358,11 @@ img {
 }
 
 span.disconn a {
-  background: url('../images/disconnectbwm.png') left center no-repeat;
+  background: url('../images/disconnectbw.png') left center no-repeat;
 }
 
 span.disconn a:hover {
-  	background: url('../images/disconnectm.png') left center no-repeat;
+  	background: url('../images/disconnect.png') left center no-repeat;
 }
 
 span.change_status a {

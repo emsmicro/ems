@@ -66,6 +66,7 @@
 		<th>#</th>
 		<th>Operace</th>
 		<th>Popis</th>
+		<th>Druh</th>
 		<th title="Výrobní čas">Ta [min]</th>
 		<th title="Přípravný/dávkový čas">Tp [min]</th>
 		<th>Náklad [Kč]</th>
@@ -84,6 +85,7 @@
 		<td>{$it->oporadi}</td>
 		<td>{$it->nazev}</td>
 		<td><a n:href="detail, $it->id">{$it->popis}</a></td>
+		<td>{$it->druh}</td>
 		<td class="tcislo">{$it->ta_cas|number:2:',':' '}</td>
 		<td class="tcislo">{$it->tp_cas|number:2:',':' '}</td>
 		<td class="tcislo">{$it->naklad|number:2:',':' '}</td>

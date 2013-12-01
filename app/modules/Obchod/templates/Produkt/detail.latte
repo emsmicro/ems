@@ -146,8 +146,8 @@
 	
 {* NAKLADY *}
 <div class="kol-1">
-	<h3>Náklady</h3>
-	<div>
+	<h3>Náklady / kapacita</h3>
+	<div class="gridseparator">
 		<ul id="navi">
 		{if !$isnaklady}
 			<li n:if="$user->isAllowed('Produkt','costsUpd') && $unlocked"><a n:href="costsUpd,$item->id">Spočítat náklady...</a></li>
@@ -191,6 +191,7 @@
 					</tr>
 					{/foreach}
 				</table>
+				{include 'capacity.latte'}
 				<div class="subtit">
 					<span class="mini"><i>Set sazeb operací:</i> 
 						<a n:if="$user->isAllowed('SetSazebO','detail')" n:href="SetSazebO:detail, $item->idsso">{$item->sazby_o}</a>
@@ -199,6 +200,7 @@
 			{/if}
 
 		</div>
+		
 	</div>
 </div>
 
@@ -292,7 +294,7 @@
 <script type='text/javascript' src='{$basePath}/js/jquery.collapse.js'></script>
 <script type='text/javascript'>
 
-            $(".kol-0, .kol-1, .kol-2, .kol-h, .kol-g").collapse({ show: function(){ 
+            $(".kol-0, .kol-1, .kol-2, .kol-h, .kol-g, .kol-c").collapse({ show: function(){ 
                     this.animate({ 
                         opacity: 'toggle',
                         height: 'toggle'

@@ -637,6 +637,27 @@ class Kalkul extends Model
 						WHERE c.id=$id
 				")->fetch();
 	}
+
+	
+	/**
+	 * Kalkulace absolutních, jednicových a relativních parametrů operací včšech produktů nabídky
+	 * @param type $id_nabidka
+	 * @return array or boolean
+	 */
+	public function calcCapacNab($id_nabidka)
+	{
+		$prods = $this->CONN->query("SELECT DISTINCT id_produkty [id] FROM ceny WHERE id_nabidky = $id_nabidka")->fetchAll();
+		if ($prods) {
+			$oper = new Operace();
+			$data = array();
+			foreach ($prods as $prod) {
+				$data[$prod->id]=$oper->sumKapacitaDruh($prod->id, $id_nabidka);
+			}
+			return $data;
+		} else {
+			return false;
+		}
+	}	
 	
 	/**
 	 * Kalkulace absolutních, jednicových a relativních parametrů cen včšech produktů nabídky
