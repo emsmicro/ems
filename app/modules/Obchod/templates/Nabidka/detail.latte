@@ -223,7 +223,7 @@
 						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail, $item->id, 1" >Zobrazit jen aktivní ceny</a>
 					{/if}
 				</span>
-				{include 'prices.latte'}
+				{include 'prices.latte',  unlocked => $unlocked}
 			</div>
 		</div>
 	</div>

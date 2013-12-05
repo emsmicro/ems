@@ -159,10 +159,18 @@
 		<li n:if="$user->isAllowed('Operace','default')" title="Výrobní operace"><a n:href="Operace:">TPV</a></li>
 		
 		{if $isnaklady}
-			<li n:if="$user->isAllowed('Material','changeStatus') && $unlocked" title="Nastavit status">
-				<a n:href="Material:changeStatus, $item->id, 6"  title="Nastavit status">Materiál oceněn</a></li>
-			<li n:if="$user->isAllowed('Operace','changeStatus') && $unlocked" title="Nastavit status">
-				<a n:href="Operace:changeStatus, $item->id, 5"  title="Nastavit status">TPV dokončeno</a></li>
+				{if isset($stav[6])}
+					<li class="set" title="Ocenění materiálu bylo provedeno.">Materiál oceněn</li>
+				{else}
+					<li n:if="$user->isAllowed('Material','changeStatus') && $unlocked" title="Nastavit status">
+					<a n:href="Material:changeStatus, $item->id, 6"  title="Nastavit status">Materiál oceněn</a></li>
+				{/if}
+				{if isset($stav[5])}
+					<li class="set" title="Technologické operace byly dokončeny.">TPV dokončeno</li>
+				{else}
+					<li n:if="$user->isAllowed('Operace','changeStatus') && $unlocked" title="Nastavit status">
+					<a n:href="Operace:changeStatus, $item->id, 5"  title="Nastavit status">TPV dokončeno</a></li>
+				{/if}
 		{/if}
 		</ul>
 
@@ -290,11 +298,10 @@
 </div>
 
 {* collapse *}
-{*<script type='text/javascript' src='{$basePath}/js/jquery.cookie.js'></script>*}
 <script type='text/javascript' src='{$basePath}/js/jquery.collapse.js'></script>
 <script type='text/javascript'>
 
-            $(".kol-0, .kol-1, .kol-2, .kol-h, .kol-g, .kol-c").collapse({ show: function(){ 
+            $(".kol-0, .kol-1, .kol-2, .kol-h, .kol-g").collapse({ show: function(){ 
                     this.animate({ 
                         opacity: 'toggle',
                         height: 'toggle'
@@ -306,4 +313,6 @@
              });
 
 </script>
-
+{* Highcharts *}
+<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
+<script type='text/javascript' src='{$basePath}/js/themes/mypie.js'></script>

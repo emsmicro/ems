@@ -297,7 +297,7 @@ class ImportPresenter extends MaterialPresenter
 				$nab->insertStatus($id_nabidka, self::stWAIT4PRICES, $this->user->id);
 				$prod = new Produkt();
 				$prod->insertProductStatus($id_produkt, self::stWAIT4PRICES, $this->user->id);
-				$this->redirect('Nabidka:detail',$id_nabidka);
+				$this->redirect('Material:default');
 			}
 			if($cnt_rows>0){
 				$this->flashMessage("Import byl dokončen úspěšně, bylo vloženo $cnt_rows záznamů.");
@@ -308,7 +308,7 @@ class ImportPresenter extends MaterialPresenter
 		} else {
 			$this->flashMessage('Import byl stornován.','exclamation');
 		}
-		$this->redirect('Material:list');
+		$this->redirect('Material:default');
 	}
 
 	

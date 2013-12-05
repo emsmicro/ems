@@ -195,7 +195,7 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	
 	
-	public function getTypesOper($id_produktu, $id_tpostup=0, $id_sablony=0)
+	public function getTypesOper($id_produktu, $id_tpostup=0, $id_sablony=0, $desmist = 4)
 	{
 		if($id_produktu>0){
 			if($id_tpostup == 0 || $id_sablony == 0){
@@ -206,9 +206,9 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 									, do.zkratka [zkratka]
 									, COALESCE(op.id, 0) [ido]
 									, COALESCE(op.popis, tp.nazev) [popis]
-									, COALESCE(ROUND(op.ta_cas,2), 0) [ta_cas]
-									, COALESCE(ROUND(op.tp_cas,2), 0) [tp_cas]
-									, COALESCE(ROUND(op.naklad,2), 0) [naklad]
+									, COALESCE(ROUND(op.ta_cas,2), $desmist) [ta_cas]
+									, COALESCE(ROUND(op.tp_cas,2), $desmist) [tp_cas]
+									, COALESCE(ROUND(op.naklad,2), $desmist) [naklad]
 									, ao.atr_ks
 									, op.id_sablony
 									, op.id_tpostup
@@ -234,9 +234,9 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 									, do.zkratka [zkratka]
 									, COALESCE(op.id, 0) [ido]
 									, COALESCE(op.popis, tp.nazev) [popis]
-									, COALESCE(ROUND(op.ta_cas,2), 0) [ta_cas]
-									, COALESCE(ROUND(op.tp_cas,2), 0) [tp_cas]
-									, COALESCE(ROUND(op.naklad,2), 0) [naklad]
+									, COALESCE(ROUND(op.ta_cas,$desmist), 0) [ta_cas]
+									, COALESCE(ROUND(op.tp_cas,$desmist), 0) [tp_cas]
+									, COALESCE(ROUND(op.naklad,$desmist), 0) [naklad]
 									, ao.atr_ks
 									, op.id_sablony
 									, op.id_tpostup

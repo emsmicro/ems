@@ -251,7 +251,6 @@ class Kalkul extends Model
 	 * @return boolean or array
 	 */
 	public function kalkulPrices($id_nabidka, $id_produkt, $id_vzorec = 0, $id_set_sazeb = 0, $id_pocty = 0, $id_meny = 1)
-	// old version:	pricesCalc($id_nabidka, $id_produkt, $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec);
 
 	{
 		if($id_nabidka==0 or $id_produkt==0){
@@ -612,7 +611,105 @@ class Kalkul extends Model
 		}
 
 	}
+	
+	/**
+	 * Aktualizuje ceny produktu v rámci nabídky
+	 * @param type $id = id_cena
+	 * @param type $go_where
+	 * @return type
+	 *		$ret['ok']=TRUE/FALSE;
+	 *		$ret['message'] = "Text of message"
+	 *		$ret['type'] = 'warning','', 'exclamation'
+	 *		$ret['redirect'] = PRESENTER:render
+	 *		$ret['param'] = $id_nabidky / id_produktu;
+	 */
+	public function refreshProductPrices($id, $go_where='P')
+	{
+		$ret = array();		
+		
+		$data = $this->findPrice($id);
+		if ($data){
+			$id_nabidka = (int) $data['id_nabidky'];
+			$id_produkt = (int) $data['id_produkty'];
+			$id_set_sazeb = (int) $data['id_set_sazeb'];
+			$id_meny = (int) $data['id_meny'];
+			$id_pocty = (int) $data['id_pocty'];
+			$id_vzorec = (int) $data['id_vzorec'];
+			$id_set_sazeb_o = (int) $data['id_set_sazeb_o'];
+			if($go_where=='P'){
+				$id_ret = $id_produkt;
+			}
+			// test existence produktu a nabidky
 
+			if($go_where=='N'){
+				$pres = 'Nabidka:';
+				$id_ret = $id_nabidka;
+				$posret = "";
+			} else {
+				$pres='Produkt:';
+				$id_ret = $id_produkt;
+				$posret = "#tceny$id";
+			}
+
+			if($id_nabidka==0 or $id_produkt==0){
+	//			throw new Nette\Application\BadRequestException("CHYBA: Výpočet nelze provést, není definován produkt a/nebo nabídka.");
+				$ret['ok']=FALSE;
+				$ret['message'] = "CHYBA: Výpočet nelze provést, není definován produkt a/nebo nabídka.";
+				$ret['type'] = 'warning';
+				$ret['redirect'] = $pres . "detail";
+				$ret['param'] = $id_ret;
+				return $ret;
+			}	
+						
+			//recalculate BOMs
+			$result = $this->calcMatPrices($id_produkt, $id_nabidka);
+			if(!$result){
+				$ret['ok']=FALSE;
+				$ret['message'] = "CHYBA: BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.";
+				$ret['type'] = 'warning';
+				$ret['redirect'] = $pres . "detail";
+				$ret['param'] = $id_ret;
+				return $ret;
+			}
+			
+			//recalculate costs
+			$result = $this->costsCalc($id_produkt, $id_set_sazeb_o);
+			if(!$result){
+				$ret['ok']=FALSE;
+				$ret['message'] = "CHYBA: Náklady nebyly aktualizovány. Přiřaďte produkt nabídce či prověřte další vstupní data.";
+				$ret['type'] = 'warning';
+				$ret['redirect'] = $pres . "detail";
+				$ret['param'] = $id_ret;
+				return $ret;
+			} else {
+				//calculate prices
+				$res = $this->kalkulPrices($id_nabidka, $id_produkt, $id_vzorec, $id_set_sazeb, $id_pocty, $id_meny);
+				if($res){
+					$rins = $res['r_ins'];
+					$rupd = $res['r_upd'];
+					//nějaký FAKE - hodnoty se z uložené procedury vracejí obráceně - UPD namísto INS???
+					$ret['ok']=TRUE;
+					$ret['message'] = "Náklady i ceny byly úspěšně aktualizovány (ins/upd = $rins/$rupd).";
+					$ret['type'] = '';
+				} else {
+					$ret['ok']=FALSE;
+					$ret['message'] = "Náklady i ceny zřejmě nebyly správně zaktualizovány, pokuste se akci zopakovat.";
+					$ret['type'] = 'exclamation';
+				}
+			}
+			$ret['redirect'] = $pres . "detail";
+			$ret['param'] = $id_ret;
+			return $ret;
+		} else {
+			$ret['ok']=FALSE;
+			$ret['message'] = "Náklady i ceny nebyly zaktualizovány, nepodařilo se získat data o ceně, prodktu, nabídce.";
+			$ret['type'] = 'exclamation';
+		}
+		$ret['redirect'] = $pres . "detail";
+		$ret['param'] = $id_ret;
+		return $ret;
+}
+	
 	/**
 	 * 
 	 * Vrací detailní data o cene dle id ceny
@@ -638,6 +735,16 @@ class Kalkul extends Model
 				")->fetch();
 	}
 
+	/**
+	 * Return all ids offer prices - type = 10
+	 * @param type $id = id_nabidky
+	 * @return type
+	 */
+	public function findOfferPrices($id) {
+		return $this->CONN->query("SELECT DISTINCT id, id_nabidky, id_produkty, aktivni FROM ceny
+										WHERE id_nabidky=$id and id_typy_cen = 10
+										ORDER BY id, id_produkty")->fetchAll();
+	}
 	
 	/**
 	 * Kalkulace absolutních, jednicových a relativních parametrů operací včšech produktů nabídky

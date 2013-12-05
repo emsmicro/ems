@@ -211,7 +211,7 @@ class Material extends Model
 	
 	public function sumBOM($idprodukt)
 	{
-		$data = $this->CONN->query("SELECT sum(m.cena_kc) [skc], sum(m.cena_kc2) [skc2], sum(m.cena_kc3) [skc3]
+		$data = $this->CONN->query("SELECT sum(m.cena_kc*v.mnozstvi) [skc], sum(m.cena_kc2*v.mnozstvi) [skc2], sum(m.cena_kc3*v.mnozstvi) [skc3]
 						FROM material m
 							LEFT JOIN vazby v ON m.id=v.id_material 
 							LEFT JOIN meny me ON m.id_meny=me.id

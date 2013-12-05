@@ -19,7 +19,7 @@
 		<tr><td colspan="2" class="mini" style="text-align:right;cursor:default;background-color:#FFF;padding:3px 5px 0 0;">
 				<span class="tooltip2">&nbsp;&nbsp;&nbsp;</span>
 				Další údaje...
-				<div class="popup" style="min-width:110%;right:-10px;top:3px;">
+				<div class="popup" style="min-width:90%;right:-10px;top:3px;">
 					<div style="border-bottom: dotted 1px #BBB;">
 					  <span class="label">Mater. tržba</span>
 					  <span class="value">{$item['trzbamat']|number:0:',':' '} Kč [{$item['matcproc']|number:1:',':' '} %]</span>
@@ -58,8 +58,6 @@
 	</table>
 </div>
 
-<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
-<script type='text/javascript' src='{$basePath}/js/themes/mypie.js'></script>
 <script type='text/javascript'>
 	{include 'graval.latte', idg => $item['id_cena'], gr_data => $item['datagraf'], size => 220}
 </script>

@@ -11,7 +11,13 @@
 		<th title="Jednorázové náklady">JN</th>
 		{if !$isPDF}
 			<th title="Status">Stav</th>
-			<th class="tsepright" style="text-align:center;" title="Přepočet ceny"> ! </th>
+			<th class="tsepright" style="text-align:center;" title="Přepočet ceny">
+				<span class="refresh" title="Přepočítat ceny všech produktů" style="padding:0;">
+					<a n:if="$user->isAllowed('Nabidka','refreshOfferPrices') && $unlocked" n:href="refreshOfferPrices, $item->id">
+						&nbsp;&nbsp;&nbsp;
+					</a>
+				</span>
+			</th>
 			<th>Objem [Kč]</th>
 			<th title="Materiálové náklady (vč. min. zás. režie)">Mat. N [Kč]</th>
 			<th title="Výrobní náklady (vč. výr. režie)">VN [Kč]</th>
@@ -20,8 +26,10 @@
 		{/if}
 	</tr>
 	{var $naz = "xxx"}
+	{var $mena = $prices[0]->mena}
 	{var $obj = 0}
 	{var $sumobj = 0}
+	{var $sumCM = 0}	{*objem v cizí měně*}
 	{var $sumVN = 0}
 	{var $sumPHH = 0}
 	{var $sumPHR = 0}
@@ -52,6 +60,11 @@
 				<td class="tcislo" style="{!$stylN}">{$cena->vyrobni_davka|number:0:',':' '}</td>
 				<td class="tcislo" style="{!$stylN}">{$cena->mnozstvi|number:0:',':' '}</td>
 				<td class="tcislo" style="{!$stylN}"title="{$cena->hodnota|number:2:',':' '} Kč">{$cena->hodnota_cm|number:3:',':' '} {$cena->mena}</td>
+				{if $cena->mena == $mena}
+					{var $sumCM += $cena->hodnota_cm * $cena->mnozstvi}
+				{else}
+					{var $mena = ""}
+				{/if}
 		{else}
 			{if $cena->idtc == 8}
 				{var $obj = $obj + $cena->objem*$cena->mnozstvi/$cena->vyrobni_davka}
@@ -66,11 +79,11 @@
 					{var $PHH = 0}
 					{var $PHR = 0}
 				{/if}
-				{var $sumobj = $sumobj + $obj}
-				{var $sumMAT = $sumMAT + $MAT}
-				{var $sumVN = $sumVN + $VN}
-				{var $sumPHH = $sumPHH + $PHH}
-				{var $sumPHR = $sumPHR + $PHR}
+				{var $sumobj += $obj}
+				{var $sumMAT += $MAT}
+				{var $sumVN  += $VN}
+				{var $sumPHH += $PHH}
+				{var $sumPHR += $PHR}
 				<td class="tcislo" style="{!$stylN}" title="{$cena->hodnota|number:2:',':' '} Kč">{$cena->hodnota_cm|number:2:',':' '} {$cena->mena}</td>
 				{if !$isPDF}
 					{if $cena->aktivni == 1}
@@ -79,8 +92,8 @@
 						<td title="Neaktivní cena ({$cena->id})">N
 					{/if}
 					<td class="tsepright" style="text-align:center;">
-						<span class="refresh" title="Přepočítat" style="padding:0;">
-							<a n:if="$user->isAllowed('Produkt','priceRefresh')" n:href="Produkt:priceRefresh, $cena->id, 'N'">
+						<span class="refresh" title="Přepočítat cenu ({$cena->id})" style="padding:0;">
+							<a n:if="$user->isAllowed('Produkt','priceRefresh') && $unlocked" n:href="Produkt:priceRefresh, $cena->id, 'N'">
 							&nbsp;&nbsp;&nbsp;
 							</a>
 						</span>					
@@ -91,13 +104,20 @@
 					<td class="tcislo" style="{!$stylN}">{$PHH|number:0:',':' '}</td>
 					<td class="tcislo" style="{!$stylN}">{$PHR|number:0:',':' '}</td>
 				{/if}
+				{if $cena->mena == $mena}
+					{var $sumCM += $cena->hodnota_cm}
+				{else}
+					{var $mena = ""}
+				{/if}
 			{/if}
 			</tr>
 		{/if}
 	{/foreach}
 	{if !$isPDF}
+		{var $cs = 5}
 		<tr class="tseptop">
-			<th colspan="5"><b>CELKEM očekávaný objem tržeb</b></th>
+			<th colspan="3"><b>CELKEM očekávaný objem tržeb</b></th>
+			<th colspan="2" style="text-align:right;"><b n:if="$mena<>''">{$sumCM|number:2:',':' '} {$mena}</b></th>
 			<th colspan="2" class="tsepright" style="text-align:center;">CZK</th>
 			<th style="text-align: right;"><b>{$sumobj|number:0:',':' '}</b></th>
 			<th style="text-align: right;"><b>{$sumMAT|number:0:',':' '}</b></th>

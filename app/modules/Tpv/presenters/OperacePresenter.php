@@ -473,7 +473,7 @@ class OperacePresenter extends TpvPresenter
 			$container->addHidden('idto'.$i)->setValue($v['idto']);
 			$container->addHidden('ido'.$i)->setValue($v['ido']);
 		}
-		$form->addSubmit('save', 'Uložit')->setAttribute('class', 'default');
+		$form->addSubmit('save', 'Uložit'); //->setAttribute('class', 'default');
 		$form->addSubmit('cancel', 'Storno')->setValidationScope(NULL);
 		$form->onSuccess[] = callback($this, 'groupoFormSubmitted');
 

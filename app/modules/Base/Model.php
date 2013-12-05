@@ -254,6 +254,19 @@ class Model extends DibiRow
 		return $stavs;
 	}	
 
+	public function getStavProduct($id_produkt) {
+		return $this->CONN->query("SELECT * FROM stav_produkt sp
+									LEFT JOIN stav st ON sp.id_stav = st.id
+									WHERE id_produkty = $id_produkt
+									ORDER BY st.id");
+	}
+	
+	public function getStavOffer($id_nabidka) {
+		return $this->CONN->query("SELECT * FROM stav_nabidka sn
+									LEFT JOIN stav st ON sn.id_stav = st.id
+									WHERE id_nabidky = $id_nabidka
+									ORDER BY st.id");
+	}
 	
 	/** @return recordset
 	 *  @param int int id_product, type = 0..all history, <>0..last by id_stav

@@ -93,7 +93,9 @@ class ProduktPresenter extends ObchodPresenter
 		$vazby = $instance->countProdVazby($id);
 		if(!$item){$this->redirect('default');}
 		$this->setIntoMySet(4, $id);
-
+		$stavy = $instance->getStavProduct($id)->fetchAssoc('id');
+		//dd($stavy,"STAVY");
+		$this->template->stav = $stavy;
 		$this->template->countBOM = $vazby->bom;
 		$this->template->countTPV = $vazby->tpv;		
 		
@@ -218,11 +220,8 @@ class ProduktPresenter extends ObchodPresenter
 		$idp = $this->getIdFromMySet(4);
 		$idn = $this->getIdFromMySet(3);
 		$kalk = new Kalkul;
-		$ret = $kalk->kalkulPrices($idn, $idp, 4);  // přidat dávku do parametrů
-		$this->flashMessage('Defaultní ceny produktu byly spočteny.');
-		//dd($ret, "DATA");
-//		var_dump($ret['vzor']);
-		//exit();
+		$ret = $kalk->kalkulPrices($idn, $idp);  // přidat dávku do parametrů
+		$this->flashMessage('Defaultní cena produktu byla spočtena.');
 		$this->goBack();
 	}
 
@@ -473,69 +472,17 @@ class ProduktPresenter extends ObchodPresenter
 	}
 	
 	/**
-	 * 
+	 * Recalculate price id_cena a redirect
 	 * @param type $id = id_cena
-	 * @throws Nette\Application\BadRequestException
+	 * @param type $go_where = P .. product detail, N .. offer detail
 	 */
-	
 	public function actionPriceRefresh($id, $go_where='P')
 	{
-		if(!$this->isMySet(3)){
-			//nelze aktualizovat ceny, není vybrána nabídka
-			$this->flashMessage('Ceny nelze aktualizovat, není aktivována žádná nabídka.','exclamation');
-			$this->redirect('Nabidky:default');
-		}
 		
-		if($go_where=='N'){
-			$pres = 'Nabidka:';
-			$idret = $this->getIdFromMySet(3);
-		} else {
-			$pres='Produkt:';
-			$idret = $this->getIdFromMySet(4);
-		}
-		
-		$item = new Produkt;
 		$kalk = new Kalkul;
-		$data = $kalk->findPrice($id);
-		if ($data){
-			$id_nabidka = (int) $data['id_nabidky'];
-			$id_produkt = (int) $data['id_produkty'];
-			$id_set_sazeb = (int) $data['id_set_sazeb'];
-			$id_meny = (int) $data['id_meny'];
-			$id_pocty = (int) $data['id_pocty'];
-			$id_vzorec = (int) $data['id_vzorec'];
-			$id_set_sazeb_o = (int) $data['id_set_sazeb_o'];
-			if($go_where=='P'){
-				$idret = $id_produkt;
-			}
-			//recalculate BOMs
-			$result = $kalk->calcMatPrices($id_produkt, $id_nabidka);
-			if(!$result){
-				$this->flashMessage('BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.','warning');
-				$this->redirect($pres."detail", $idret);
-			}
-			//recalculate costs
-			$result = $kalk->costsCalc($id_produkt, $id_set_sazeb_o);
-			if(!$result){
-				$this->flashMessage('Náklady nebyly aktualizovány. Přiřaďte produkt nabídce.','warning');
-			} else {
-				//calculate prices
-				$res = $kalk->kalkulPrices($id_nabidka, $id_produkt, $id_vzorec, $id_set_sazeb, $id_pocty, $id_meny);
-				//$res = $kalk->pricesCalc($id_nabidka, $id_produkt, $id_set_sazeb, $id_meny, $id_pocty, $id_vzorec);
-				if($res){
-					$rins = $res['r_ins'];
-					$rupd = $res['r_upd'];
-					//nějaký FAKE - hodnoty se z uložené procedury vracejí obráceně - UPD namísto INS???
-					$this->flashMessage("Náklady i ceny byly úspěšně aktualizovány (upd/ins = $rins/$rupd).");
-				} else {
-					$this->flashMessage("Náklady i ceny zřejmě nebyly správně zaktualizovány, pokuste se akci zopakovat.","exclamation");
-				}
-			}
-			$this->redirect($pres."detail", $idret);
-		} else {
-			$this->flashMessage("Náklady i ceny nebyly zaktualizovány, nepodařilo se získat data.","exclamation");
-		}
-		$this->redirect($pres."detail", $idret);
+		$res = $kalk->refreshProductPrices($id, $go_where);
+		$this->flashMessage($res['message'],$res['type']);
+		$this->redirect($res['redirect'], $res['param']);
 	}
 
 	/**

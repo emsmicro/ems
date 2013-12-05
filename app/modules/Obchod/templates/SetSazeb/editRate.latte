@@ -5,6 +5,6 @@
 <h1 n:block="title">{$titul}</h1>
 
 {control rateForm}
-{include '../../../Base/templates/js_number.latte'}
+{include '../../../Base/templates/js_number.latte', mDec => 2}
 
 {if isset($control['rateForm']['pravidlo'])}{include 'helpRate.latte'}{/if}

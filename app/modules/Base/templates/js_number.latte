@@ -1,7 +1,7 @@
 <script type='text/javascript'>
 
 	//formát čísel, desetinná čárka mezera mezi tisíci
-	$('input[type=text].cislo').autoNumeric({ aSep: ' ', aDec: ',' }); 
+	$('input[type=text].cislo').autoNumeric({ aSep: ' ', aDec: ',', mDec: '{$mDec}' }); 
 
 	//výmaz editačního pole, pokud je hodnota nulová
 	$("input:text").each(function ()

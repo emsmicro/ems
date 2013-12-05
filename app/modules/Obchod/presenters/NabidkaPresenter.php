@@ -94,14 +94,11 @@ class NabidkaPresenter extends ObchodPresenter
 		$prices = $produkt->getOfferPrices($id, $act);
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddValNab($id);
-		//dd($aval, 'AVAL');
 		$oper = new Operace;
 		$acap = $oper->sumKapacitaNab($id);
 		$this->template->capac = $acap;
 		$this->template->iscap = count($acap);
 		$this->template->mypar = $this->mypar;
-		//dd($this->mypar,"MY params");
-		//dd($acap, 'ACAP');
 		$this->template->isAct = $act;
 		$this->template->aval = $aval;
 		$this->template->isPDF = false;
@@ -115,9 +112,42 @@ class NabidkaPresenter extends ObchodPresenter
 		$this->template->iscen = $iscen;
 		$this->template->vol = $volume;
 	   	$this->template->titul = $item->popis;
+		dd($aval, 'AVAL');
+		dd($prices, 'PRICES');
+		//dd($this->mypar,"MY params");
+		//dd($acap, 'ACAP');
 	}
 
+	/**
+	 * Refresh all priceso of offer
+	 * @param type $id = id_nabidky
+	 */
+	function actionRefreshOfferPrices($id) {
+		$kalk = new Kalkul;
+		$prices = $kalk->findOfferPrices($id);
+		$res = array();
+		$i=0;
+		$ok=0;
+		foreach ($prices as $price) {
+			$i++;
+			$res[$price->id] = $kalk->refreshProductPrices($price->id, 'N');
+			if($res[$price->id]['ok']){$ok++;}
+		}
+		if($ok == $i){
+			$this->flashMessage("Bylo úspěšně zaktualizováno $ok cen.");
+		} elseif ($ok>0) {
+			$ne = $i-$ok;
+			$this->flashMessage("Bylo úspěšně zaktualizováno $ok cen, $ne cen se nepodařilo zaktualizovat","exclamation");
+		} else {
+			$this->flashMessage("Ani jednu z $i cen se nepodařilo zaktualizovat","warning");
+		}
+		$this->redirect('detail', $id);
+	}
 	
+	/**
+	 * Send offer by mail
+	 * @param type $id
+	 */
 	function actionToMail($id = 0) {
 
         $template = $this->createTemplate()->setFile(APP_DIR."/modules/Obchod/templates/Nabidka/toPdf.latte");
@@ -126,7 +156,7 @@ class NabidkaPresenter extends ObchodPresenter
 		$volume = $nabidka->sumVolume($id)->fetchAll();
 		
 		$produkt = new Produkt;
-		$prods = $produkt->showProduct(0,$item->id);
+		$prods = $produkt->showProduct(0, $item->id);
 		$prices = $produkt->getOfferPrices($id);
 		$template->item = $item;
 		$template->products = $prods;
