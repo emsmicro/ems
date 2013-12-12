@@ -52,8 +52,10 @@ class OperacePresenter extends TpvPresenter
 			$this->setIntoMySet(4, $id);
 			$this->idproduct = $this->getIdFromMySet(4);
 		}
-		$idp = $this->idproduct;;
-		$operace = $instance->show($idp)->fetchAll();
+		$idp = $this->idproduct;
+		$idn = $this->getIdFromMySet(3);
+		$operace = $instance->showNaklady($idp,$idn)->fetchAll();
+		//$operace = $instance->show($idp)->fetchAll();
 		$isoper = count($operace);
 		$this->template->isoper = $isoper;
 		$this->template->items = $operace;
@@ -122,7 +124,7 @@ class OperacePresenter extends TpvPresenter
 	}
 
 	/**
-	 * 
+	 * Hromadné zadání operací
 	 * @param type $src = id_tpostup
 	 */
 	public function renderAddGroup($src = 0)
@@ -213,7 +215,21 @@ class OperacePresenter extends TpvPresenter
 	}	
 	
 	
+	public function actionDeleteOne($id)
+	{
+		if($id>0){
+			$oper = new Operace;
+			$oper->delete($id);
+			$this->flashMessage("Operace $id byla odstraněna.");
+		}
+		$this->goBack();		
+	}
 	
+	/**
+	 * Zmena statusu produktu
+	 * @param type $id
+	 * @param type $status
+	 */
 	public function actionChangeStatus($id, $status)
 	{
 		$prod = new Produkt;
@@ -446,6 +462,7 @@ class OperacePresenter extends TpvPresenter
 			if ($na==0){$na = '';}
 
 			$container->addText('popis'.$i,  'Popis:',300)->setValue($v['popis']);
+			$container->addText('druh'.$i,  'Druh:',30)->setValue($v['zkratka']);
 			$container->addText('ta_cas'.$i, 'Ta [min]:')->setValue($ta)
 				->setAttribute('class', 'cislo')
 				->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))

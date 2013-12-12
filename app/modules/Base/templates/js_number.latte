@@ -2,12 +2,15 @@
 
 	//formát čísel, desetinná čárka mezera mezi tisíci
 	$('input[type=text].cislo').autoNumeric({ aSep: ' ', aDec: ',', mDec: '{$mDec}' }); 
-
+	$('input[type=text].cisloLong').autoNumeric({ aSep: ' ', aDec: ',', mDec: '0' }); 
+	$('input[type=text].tcislo').autoNumeric({ aSep: ' ', aDec: ',', mDec: '0' }); 
+	
 	//výmaz editačního pole, pokud je hodnota nulová
 	$("input:text").each(function ()
 		{
 			// store default value
 			var v = this.value;
+			
 			/*
 			var textLength = this.value.length;
 			if(textLength > 8)

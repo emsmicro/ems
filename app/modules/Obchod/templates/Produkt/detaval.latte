@@ -37,6 +37,10 @@
 					  <span class="value">{$item['vyreznak']|number:0:',':' '} Kč [{$item['vyreproc']|number:1:',':' '} %]</span>
 					</div>
 					<div style="border-bottom: dotted 1px #BBB;">
+					  <span class="label">&nbsp;&nbsp;&nbsp;(na odpisy strojů)</span>
+					  <span class="value">{$item['odpisnak']|number:0:',':' '} Kč [{$item['odpiproc']|number:1:',':' '} %]</span>
+					</div>
+					<div style="border-bottom: dotted 1px #BBB;">
 					  <span class="label">Správní režie</span>
 					  <span class="value">{$item['spravrez']|number:0:',':' '} Kč [{$item['sprvproc']|number:1:',':' '} %]</span>
 					</div>
@@ -58,7 +62,7 @@
 	</table>
 </div>
 
-<script type='text/javascript'>
-	{include 'graval.latte', idg => $item['id_cena'], gr_data => $item['datagraf'], size => 220}
-</script>
+
+{include 'graval.latte', idg => $item['id_cena'], gr_data => $item['datagraf'], size => 220}
+
 

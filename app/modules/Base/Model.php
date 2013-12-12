@@ -48,26 +48,44 @@ class Model extends DibiRow
 		return $this->CONN->insert($table, $data)->execute(dibi::IDENTIFIER);
 	}
 	
+	/**
+	 * Vrací seznam parametrů z aktuální sady tarifů
+	 * @return type
+	 */
+	public function getActualTarifParam(){
+		$params = $this->CONN->query("SELECT TOP 1 * FROM set_tarifu
+										WHERE platnost_od <= GETDATE()
+										ORDER BY platnost_od DESC")->fetch();
+		if($params){
+			$data = array();
+			foreach($params as $k => $v){
+				$data[$k]=$v;
+			}
+			return $data;
+		}
+		return $params;
+	}
+	
 	public function getPrefixedFormFields($hashData, $prefix = '_', $prefpos = 1){
-				$pole = (array) $hashData;
-				$dlprefix = strlen($prefix);
-				$return = array();
-				if ($dlprefix>1){
-					$prefpos = 0;
-					foreach($pole as $a => $v) {
-						if(substr($a,$prefpos,$dlprefix)==$prefix){
-							$b = str_replace($prefix,'',$a);
-							$return[$b] = $v ;
-						};
-					}
-				} else {
-					foreach($pole as $a => $v) {
-						if(substr($a,$prefpos,$dlprefix)<>$prefix){
-							$return[$a] = $v;
-						};
-					}
-				}
-				return $return;
+		$pole = (array) $hashData;
+		$dlprefix = strlen($prefix);
+		$return = array();
+		if ($dlprefix>1){
+			$prefpos = 0;
+			foreach($pole as $a => $v) {
+				if(substr($a,$prefpos,$dlprefix)==$prefix){
+					$b = str_replace($prefix,'',$a);
+					$return[$b] = $v ;
+				};
+			}
+		} else {
+			foreach($pole as $a => $v) {
+				if(substr($a,$prefpos,$dlprefix)<>$prefix){
+					$return[$a] = $v;
+				};
+			}
+		}
+		return $return;
 	 }
 
 
@@ -197,7 +215,7 @@ class Model extends DibiRow
 		return $units;
 	}
 	public function getSablony() {
-		$units = $this->CONN->fetchPairs("SELECT id, nazev from tp_sablony");
+		$units = $this->CONN->fetchPairs("SELECT id, nazev FROM tp_sablony");
 		return $units;
 	}
 	public function getProduktSablony($id_produkty = 0) {
@@ -210,6 +228,16 @@ class Model extends DibiRow
 										$cond ORDER BY sa.id"
 		);
 		return $units;
+	}
+	
+	public function getStroje() {
+		$items = $this->CONN->fetchPairs("SELECT id, zkratka + ': ' + nazev [stroj] FROM stroje");
+		return $items;
+	}
+
+	public function getTypTarifu() {
+		$items = $this->CONN->fetchPairs("SELECT id, zkratka + ': ' + nazev [nazev] FROM typy_tarifu");
+		return $items;
 	}
 	
 	/**
@@ -290,15 +318,61 @@ class Model extends DibiRow
 	}	
 	
 	/**
-	 *
+	 * Prepare JSON data for graph
 	 * @param type $data pairs of data name - value
 	 * @param type $like_percent 0..no, 1..yes
 	 * @param type $like_type 0..list of data, 1..array name_data, 2..categ+data, ...
 	 * @param type $round number of decimal
 	 * @return type 
 	 */
+	public function dataPairsForGraph($data, $like_percent = 0, $like_type = 0, $round = 1, $desc = 1){
+		if(!$data){return "";}
+		$ret = array();
+		$sum = 0;
+		foreach($data as $k=>$v){
+			$sum += $v['value'];
+			$ret[$v['name']] = (string) $v['value'];
+		}
+		$retstr='';
+		$catstr='';
+		$i=0;
+		$cnt = count($ret);
+		foreach($ret as $k => $v){
+			$j = $cnt - $i;
+			if($like_percent==1){
+				$ret[$k] = (string) round($v/$sum * 100,$round);
+			} else {
+				$ret[$k] = (string) round($v,$round);
+			}
+			if($like_type==0){
+				//simple list
+				$retstr .=  "['$k', $ret[$k]],";
+			}
+			if($like_type==1){
+				//array: name, data
+				if($desc==1){
+					$retstr .=  "{name: '$k', data: [$ret[$k]], legendIndex: $j}, ";
+				} else {
+					$retstr .=  "{name: '$k', data: [$ret[$k]], legendIndex: $j}, ";
+				}
+			}
+			if($like_type==2){
+				//array: category + data string
+				$i++;
+				$retstr .=  "{name: '$k', y: $ret[$k]}, ";
+				$catstr .=  "'$i', ";
+			}
+			$i++;
+		}
+		if($like_type==2){
+			return '[' . substr($catstr,0,strlen($catstr)-1) . '][' . substr($retstr,0,strlen($retstr)-1) . ']';		
+		} else {
+			return '[' . substr($retstr,0,strlen($retstr)-1) . ']';		
+		}
+	}
+
 	
-	public function dataPairsForGraph($data, $like_percent = 0, $like_type = 0, $round = 1){
+	public function dataPairsForGraphOLD($data, $like_percent = 0, $like_type = 0, $round = 1){
 		if(!$data){return "";}
 		$ret = array();
 		$sum = 0;

@@ -48,7 +48,7 @@ class Kalkul extends Model
 		$cond1 = "";
 		if($id_cena>0)	{$cond1 = " AND ce.id = $id_cena ";}
 		return $this->CONN->query("
-								SELECT	ce.id, ce.id_nabidky, ce.id_produkty, ce.id_typy_cen, tc.zkratka, 
+								SELECT	ce.id, ce.id_nabidky, ce.id_produkty, ce.id_typy_cen, tc.zkratka, ce.aktivni,
 										ce.hodnota, ce.hodnota_cm, po.mnozstvi, po.vyrobni_davka, tc.poradi
 									FROM $this->t_ceny ce
 									LEFT JOIN typy_cen tc ON ce.id_typy_cen = tc.id
@@ -617,6 +617,7 @@ class Kalkul extends Model
 	 * @param type $id = id_cena
 	 * @param type $go_where
 	 * @return type
+	 * 
 	 *		$ret['ok']=TRUE/FALSE;
 	 *		$ret['message'] = "Text of message"
 	 *		$ret['type'] = 'warning','', 'exclamation'
@@ -656,7 +657,7 @@ class Kalkul extends Model
 				$ret['ok']=FALSE;
 				$ret['message'] = "CHYBA: Výpočet nelze provést, není definován produkt a/nebo nabídka.";
 				$ret['type'] = 'warning';
-				$ret['redirect'] = $pres . "detail";
+				$ret['redirect'] = $pres . "detail" . $posret;
 				$ret['param'] = $id_ret;
 				return $ret;
 			}	
@@ -667,7 +668,7 @@ class Kalkul extends Model
 				$ret['ok']=FALSE;
 				$ret['message'] = "CHYBA: BOM se nepodařilo zrekalkulovat. Ověřte správnost dat BOMu.";
 				$ret['type'] = 'warning';
-				$ret['redirect'] = $pres . "detail";
+				$ret['redirect'] = $pres . "detail" . $posret;
 				$ret['param'] = $id_ret;
 				return $ret;
 			}
@@ -678,7 +679,7 @@ class Kalkul extends Model
 				$ret['ok']=FALSE;
 				$ret['message'] = "CHYBA: Náklady nebyly aktualizovány. Přiřaďte produkt nabídce či prověřte další vstupní data.";
 				$ret['type'] = 'warning';
-				$ret['redirect'] = $pres . "detail";
+				$ret['redirect'] = $pres . "detail" . $posret;
 				$ret['param'] = $id_ret;
 				return $ret;
 			} else {
@@ -697,8 +698,8 @@ class Kalkul extends Model
 					$ret['type'] = 'exclamation';
 				}
 			}
-			$ret['redirect'] = $pres . "detail";
-			$ret['param'] = $id_ret;
+			$ret['redirect'] = $pres . "detail" . $posret;
+			$ret['param'] = $id_ret ;
 			return $ret;
 		} else {
 			$ret['ok']=FALSE;
@@ -802,6 +803,7 @@ class Kalkul extends Model
 		$des_mist = 2;
 		$naklady = $this->getProductCosts($id_produkt);
 		$ceny = $this->getProductPrices($id_produkt, $id_nabidka, $id_cena);
+		$odps = $this->getOdpisStrojeByProduct($id_produkt, $id_cena);
 		$aval = array();
 		//náklady do proměnných
 		$matn = 0;
@@ -851,6 +853,7 @@ class Kalkul extends Model
 		// ceny do promennych
 		$i=0;
 		$ic = 0;
+		$cakt = 0;
 		$cmat = 0;
 		$cruc = 0;
 		$cstr = 0;
@@ -866,12 +869,16 @@ class Kalkul extends Model
 		$best = 0;
 		$proc = 0;
 		foreach ($ceny as $cena) {
-			if($ic == 0){$ic = $cena->id;}
+			if($ic == 0){
+				$ic = $cena->id;
+				$cakt = $cena->aktivni;
+			}
 			//zapsani AVAL do pole
 			if($cena->id <> $ic && $davk>0 && $cnab>0) 
 			{
 				$i++;
 				$aval[$ic] = array();
+				$aval[$ic]['aktivni']	= $cakt;
 				$aval[$ic]['mnozstvi']	= $mnoz;
 				$aval[$ic]['davka']		= $davk;
 				// na kus
@@ -920,17 +927,22 @@ class Kalkul extends Model
 											- $aval[$ic]['montanak']
 											- $aval[$ic]['ostatnak']
 											- $aval[$ic]['jednonak'];
+				$aval[$ic]['odpisnak']	= $odps['odpis'];
+				$aval[$ic]['stronnak']	= $odps['naklad'];
+				$aval[$ic]['strojcas']	= $odps['cas'];
 				$matnproc = $matn/$cnab * 100;
 				$sluzproc = ($cvyr-$matn)/$cnab * 100;
 				$vyreproc = ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp))/$cnab * 100;
 				$sprvproc = $crsp/$cnab * 100;
 				$ziskproc = $czsk/$cnab * 100;
+				$odpiproc = $odps['odpis']/($mnoz * $cnab) * 100;
 				$aval[$ic]['matnproc']	= $matnproc;
 				$aval[$ic]['matcproc']	= ($cmat/$matn - 1) * 100;
 				$aval[$ic]['sluzproc']	= $sluzproc;
 				$aval[$ic]['vyreproc']	= $vyreproc;
 				$aval[$ic]['sprvproc']	= $sprvproc;
 				$aval[$ic]['ziskproc']	= $ziskproc;
+				$aval[$ic]['odpiproc']	= $odpiproc;
 				$aval[$ic]['avalproc']	= $aval[$ic]['avalcist']/$aval[$ic]['trzba']*100;
 				$aval[$ic]['avalbest']	= false;
 				$aval[$ic]['id_cena']	= $ic;
@@ -943,6 +955,7 @@ class Kalkul extends Model
 				}
 				
 				$ic = $cena->id;
+				$cakt = $cena->aktivni;
 				$cmat = 0;
 				$cruc = 0;
 				$cmon = 0;
@@ -1001,6 +1014,7 @@ class Kalkul extends Model
 		if($ic > 0 && $davk>0 && $cnab>0) {
 			$i++;
 			$aval[$ic] = array();
+			$aval[$ic]['aktivni']	= $cakt;
 			$aval[$ic]['mnozstvi']	= $mnoz;
 			$aval[$ic]['davka']		= $davk;
 			
@@ -1050,17 +1064,22 @@ class Kalkul extends Model
 										- $aval[$ic]['montanak']
 										- $aval[$ic]['ostatnak']
 										- $aval[$ic]['jednonak'];
+			$aval[$ic]['odpisnak']	= $odps['odpis'];
+			$aval[$ic]['stronnak']	= $odps['naklad'];
+			$aval[$ic]['strojcas']	= $odps['cas'];
 			$matnproc = $matn/$cnab * 100;
 			$sluzproc = ($cvyr-$matn)/$cnab * 100;
 			$vyreproc = ($cvyr - ($matn + $rucp + $rucd/$davk + $monp + $mond/$davk + $strp + $strd/$davk + $ostp))/$cnab * 100;
 			$sprvproc = $crsp/$cnab * 100;
 			$ziskproc = $czsk/$cnab * 100;
+			$odpiproc = $odps['odpis']/($mnoz * $cnab) * 100;
 			$aval[$ic]['matnproc']	= $matnproc;
 			$aval[$ic]['matcproc']	= ($cmat/$matn - 1) * 100;
 			$aval[$ic]['sluzproc']	= $sluzproc;
 			$aval[$ic]['vyreproc']	= $vyreproc;
 			$aval[$ic]['sprvproc']	= $sprvproc;
 			$aval[$ic]['ziskproc']	= $ziskproc;
+			$aval[$ic]['odpiproc']	= $odpiproc;
 			$aval[$ic]['avalproc']	= $aval[$ic]['avalcist']/$aval[$ic]['trzba']*100;
 			$aval[$ic]['avalbest']	= false;
 			$aval[$ic]['id_cena']	= $ic;
@@ -1078,7 +1097,204 @@ class Kalkul extends Model
 		return $aval;
 	}
 	
+	
+	public function sumAddValActiveNab($addv) {
+		$data = array();
+		$data['maternak'] = 0;
+		$data['rucninak'] = 0;
+		$data['montanak'] = 0;
+		$data['strojnak'] = 0;
+		$data['ostatnak'] = 0;
+		$data['jednonak'] = 0;
+		$data['vyrobnak'] = 0;
+		$data['vyreznak'] = 0;
+		$data['sluzbnak'] = 0;
+		$data['trzba']	  = 0;
+		$data['trzbamat'] = 0;
+		$data['trzbajed'] = 0;
+		$data['kalkzisk'] = 0;
+		$data['spravrez'] = 0;
+		$data['avalkalk'] = 0;
+		$data['avalcist'] = 0;
+		$data['odpisnak'] = 0;
+		$data['stronnak'] = 0;
+		$data['strojcas'] = 0;
+		
+		foreach($addv as $dk => $dv){
+			foreach($dv as $k => $v){
+				if($v['aktivni'] == 1){
+					$data['maternak'] += $v['maternak'];
+					$data['rucninak'] += $v['rucninak'];
+					$data['montanak'] += $v['montanak'];
+					$data['strojnak'] += $v['strojnak'];
+					$data['ostatnak'] += $v['ostatnak'];
+					$data['jednonak'] += $v['jednonak'];
+					$data['vyrobnak'] += $v['vyrobnak'];
+					$data['vyreznak'] += $v['vyreznak'];
+					$data['sluzbnak'] += $v['sluzbnak'];
+					$data['trzba']	  += $v['trzba'];
+					$data['trzbamat'] += $v['trzbamat'];
+					$data['trzbajed'] += $v['trzbajed'];
+					$data['kalkzisk'] += $v['kalkzisk'];
+					$data['spravrez'] += $v['spravrez'];
+					$data['avalkalk'] += $v['avalkalk'];
+					$data['avalcist'] += $v['avalcist'];
+					$data['odpisnak'] += $v['odpisnak'];
+					$data['stronnak'] += $v['stronnak'];
+					$data['strojcas'] += $v['strojcas'];
+				}
+			}
+		}
+		$data['vyrobnin'] = $data['strojnak'] + $data['rucninak'] + $data['montanak'] + $data['ostatnak'];
+		$data['rucnicna'] = $data['rucninak'] + $data['montanak'] + $data['ostatnak'];
+		$data['zisk_svr'] = $data['kalkzisk'] + $data['spravrez'] + $data['vyreznak'];
+		$data['mater_zr'] = $data['trzbamat'];
+		$data['zasobrez'] = $data['trzbamat']-$data['maternak'];
+		
+		$Nmater = round($data['maternak'],2);
+		$Nstroj = round($data['strojnak'],2);
+		$Nrucni = round($data['rucninak'],2);
+		$Nmonta = round($data['montanak'],2);
+		$Nostat = round($data['ostatnak'],2);
+		$Nruccn = round($data['rucnicna'],2);
+		$Nsluzb = round($data['sluzbnak'],2);
+		$Nvyrob = round($data['vyrobnin'],2);
+		$Nvyrez = round($data['vyreznak'],2);
+		$Nzarez = round($data['zasobrez'],2);
+		$Nsprez = round($data['spravrez'],2);
+		$Nkzisk = round($data['kalkzisk'],2);
+		$Nzisvr = round($data['zisk_svr'],2);
+		$Ntrmat = round($data['trzbamat'],2);
+		$Ntrzba = round($data['trzba'],2);
+		$Nodpis = round($data['odpisnak'],2);
+		
+		$data['cenagraf']	=  "
+								[
+								 {name: 'Zisk', data: [$Nkzisk], legendIndex: 3, color: colors[8]},
+								 {name: 'Spr. režie', data: [$Nsprez], legendIndex: 2, color: colors[7]},
+								 {name: 'Výr. služby', data: [$Nsluzb], legendIndex: 1, color: colors[0]},
+								 {name: 'Materiál + ZR', data: [$Ntrmat], legendIndex: 0, color: colors[6]},
+								]
+								" ;
+		$data['naklgraf']	=  "
+								[
+								 {name: 'Zisk', data: [$Nkzisk], legendIndex: 6, color: colors[8]},
+								 {name: 'Spr. režie', data: [$Nsprez], legendIndex: 5, color: colors[7]},
+								 {name: 'Výr. režie', data: [$Nvyrez], legendIndex: 4, color: colors[1]},
+								 {name: 'Strojní N.', data: [$Nstroj], legendIndex: 2, color: colors[0]},
+								 {name: 'Celk. ruční N.', data: [$Nruccn], legendIndex: 1, color: colors[5]},
+								 {name: 'Zásob. režie', data: [$Nzarez], legendIndex: 3, color: colors[10]},
+								 {name: 'Materiál', data: [$Nmater], legendIndex: 0, color: colors[6]},
+								]
+								" ;
+		$data['naklpie']	=  "
+								[
+								 {name: 'Zisk', y: $Nkzisk, color: colors[8]},
+								 {name: 'Spr. režie', y: $Nsprez, color: colors[7]},
+								 {name: 'Výr. režie', y: $Nvyrez, color: colors[1]},
+								 {name: 'Strojní N.', y: $Nstroj, color: colors[0]},
+								 {name: 'Celk. ruční N.', y: $Nruccn, color: colors[5]},
+								 {name: 'Zásob. režie', y: $Nzarez, color: colors[10]},
+								 {name: 'Materiál', y: $Nmater, color: colors[6]},
+								]
+								" ;
+		$data['naklcatg']	=  "['Materiál', 'Výrobní služby', 'Zisk a přidaná hodnota']";
+		$data['nakldata']	=  "[{
+                    y: $Ntrmat,
+                    color: colors[6],
+                    drilldown: {
+                        name: 'Materiál',
+                        categories: ['Materiálové náklady', 'Zásobovací režie'],
+                        data: [$Nmater, $Nzarez],
+                        color: colors[6]
+                    }
+                }, {
+                    y: $Nvyrob,
+                    color: colors[0],
+                    drilldown: {
+                        name: 'Výrobní služby',
+                        categories: ['Strojní náklady', '- z toho odpisy', 'Ruční náklady', 'Montážní náklady', 'Ostatní náklady'],
+                        data: [$Nstroj, $Nodpis, $Nrucni, $Nmonta, $Nostat],
+                        color: colors[0]
+                    }
+                }, {
+                    y: $Nzisvr,
+                    color: colors[8],
+                    drilldown: {
+                        name: 'Celková přidaná hodnota',
+                        categories: ['Kalkul. zisk', 'Správní režie', 'Výrobní režie'],
+                        data: [$Nkzisk, $Nsprez, $Nvyrez],
+                        color: colors[8]
+                    }
+                }];";
+		
+		return $data;
+	}
 
-}
+	/**
+	 * Vrací hodnotu odpisů strojů, nákladů na stroje a strojní čas na produktu u aktivní ceny
+	 * s ohledem na mmnožství a dávky u aktivní/zadané ceny
+	 * @param type $id_product
+	 * @param type $id_cena = 0, pak aktivní, jinak zadaná
+	 * @return type
+	 */
+	public function getOdpisStrojeByProduct($id_product, $id_cena = 0) {
+		if($id_cena>0){
+			$cond = "c.id = $id_cena";
+		} else {
+			$cond = "c.aktivni = 1";
+		}
+		return $this->CONN->query("
+			SELECT SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60*s.odpisy_hod) [odpis]
+				, SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60*s.hodinova_cena) [naklad]
+				, SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60) [cas]
+				, p.id, p.zkratka
+			FROM produkty p
+				LEFT JOIN ceny c ON p.id = c.id_produkty AND c.id_typy_cen = 7 AND $cond
+				LEFT JOIN pocty m ON c.id_pocty = m.id
+				LEFT JOIN vazby v ON p.id = v.id_vyssi and v.id_operace is not null
+				LEFT JOIN operace o ON v.id_operace = o.id
+				LEFT JOIN typy_operaci y ON o.id_typy_operaci = y.id
+				LEFT JOIN stroje s ON y.id_stroje = s.id
+			WHERE p.id = $id_product
+			GROUP BY 
+				p.id, p.zkratka
+			")->fetch();
+	}
+	
+	/**
+	 * Vrací hodnotu odpisů strojů, nákladů na stroje a strojní čas na nabídce u aktivní ceny
+	 * s ohledem na mmnožství a dávky aktivní ceny
+	 * @param type $id_nabidka
+	 * @return type
+	 */
+	public function getOdpisStrojeByOffer($id_nabidka) {
+		return $this->CONN->query("
+			SELECT SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60*s.odpisy_hod) [odpis]
+				, SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60*s.hodinova_cena) [naklad]
+				, SUM((o.ta_cas + o.tp_cas/m.vyrobni_davka)*m.mnozstvi/60) [cas]
+				, p.id, p.zkratka
+				, n.id, Convert(varchar, n.popis) [popis]
+			FROM nabidky n 
+				LEFT JOIN ceny c ON n.id = c.id_nabidky AND c.id_typy_cen = 7 AND c.aktivni = 1
+				LEFT JOIN produkty p ON c.id_produkty = p.id
+				LEFT JOIN pocty m ON c.id_pocty = m.id
+				LEFT JOIN vazby v ON p.id = v.id_vyssi and v.id_operace is not null
+				LEFT JOIN operace o ON v.id_operace = o.id
+				LEFT JOIN typy_operaci y ON o.id_typy_operaci = y.id
+				LEFT JOIN stroje s ON y.id_stroje = s.id
+			WHERE n.id = 63
+			GROUP BY 
+				n.id, Convert(varchar, n.popis)
+			")->fetch();
+	}
+
+	
+	
+	
+	
+	
+	
+	}
 
 

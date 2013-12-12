@@ -82,40 +82,56 @@ class NabidkaPresenter extends ObchodPresenter
 		if($id==0){
 			$this->redirect('default');
 		}
+		
         $nabidka = new Nabidka;
 		$item = $nabidka->find($id)->fetch();
 		$hist = $nabidka->getOfferHistory($id);
 		$volume = $nabidka->sumVolume($id)->fetch();
+		$isvol = count($volume)>0;
 
 		$this->setIntoMySet(3, $id, 1);
 		
 		$produkt = new Produkt;
 		$prods = $produkt->showProduct(0,$id);
 		$prices = $produkt->getOfferPrices($id, $act);
+		$iscen = count($prices)>0;
+		
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddValNab($id);
+		$sval = $kalk->sumAddValActiveNab($aval);
+				
 		$oper = new Operace;
 		$acap = $oper->sumKapacitaNab($id);
 		$this->template->capac = $acap;
 		$this->template->iscap = count($acap);
-		$this->template->mypar = $this->mypar;
+		$this->template->mypar = $this->mpars;
 		$this->template->isAct = $act;
 		$this->template->aval = $aval;
-		$this->template->isPDF = false;
+		$this->template->sval = $sval;
+		
+		$this->template->cena_bar = $sval['cenagraf'];
+		$this->template->nakl_bar = $sval['naklgraf'];
+		$this->template->nakl_pie = $sval['naklpie'];
+		$this->template->catg_bar = $sval['naklcatg'];
+		$this->template->data_bar = $sval['nakldata'];
+		
 		$this->template->item = $item;
 		$this->template->history = $hist;
 		$this->template->products = $prods;
 		$this->template->prices = $prices;
-		$isvol = count($volume)>0;
-		$iscen = count($prices)>0;
 		$this->template->isvol = $isvol;
 		$this->template->iscen = $iscen;
 		$this->template->vol = $volume;
 	   	$this->template->titul = $item->popis;
-		dd($aval, 'AVAL');
-		dd($prices, 'PRICES');
-		//dd($this->mypar,"MY params");
-		//dd($acap, 'ACAP');
+
+		$this->template->isPDF = false;
+		
+//		dd($aval, 'AVAL');
+//		dd($prices, 'PRICES');
+//		dd($this->mypar,"MY params");
+//		dd($acap, 'ACAP');
+//		dd($sval, 'SVAL');
+		
 	}
 
 	/**
@@ -141,7 +157,7 @@ class NabidkaPresenter extends ObchodPresenter
 		} else {
 			$this->flashMessage("Ani jednu z $i cen se nepodařilo zaktualizovat","warning");
 		}
-		$this->redirect('detail', $id);
+		$this->redirect('detail#ceny', $id);
 	}
 	
 	/**

@@ -499,8 +499,8 @@ class Produkt extends Model
 	 * @return type 
 	 */
 
-	public function getProdPrice4PieGraph($id, $id_meny=1, $id_pocty=1, $round = 2){
-		$data = $this->getProductPriceDetail($id, $id_meny, $id_pocty, $round);
+	public function getProdPrice4PieGraph($id, $round = 2){
+		$data = $this->getProductPriceDetail($id, $round);
 		return $this->dataPairsForGraph($data, 1);
 	}
 
@@ -512,37 +512,23 @@ class Produkt extends Model
 	 * @param type $round
 	 * @return type 
 	 */
-	public function getProdPrice4BarGraph($id, $id_meny=1, $id_pocty=1, $round = 2){
-		$data = $this->getProductPriceDetail($id, $id_meny, $id_pocty, $round, 1);
+	public function getProdPrice4BarGraph($id, $round = 2){
+		$data = $this->getProductPriceDetail($id, $round, 1);
 		return $this->dataPairsForGraph($data, 0, 1, $round);
 	}
 	
 	
 	/**
-	 *
+	 *	Get prices data from ceny for active price of product
 	 * @param type $id
-	 * @param type $id_meny
-	 * @param type $id_pocty
 	 * @param type $round
 	 * @return type pair data name, value
 	 */
 	
-	public function getProductPriceDetail($id, $id_meny=1, $id_pocty=1, $round = 2, $desc_order = 0){
+	public function getProductPriceDetail($id, $round = 2, $desc_order = 0){
 		$order = "";
 		if($desc_order==1){$order = " ORDER BY tc.id DESC";}
-		/*
-		$data = $this->CONN->query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
-								FROM ceny c
-								LEFT JOIN typy_cen tc ON c.id_typy_cen = tc.id
-								WHERE 
-									c.id_pocty = (SELECT MIN(id) FROM pocty WHERE id_produkty=$id) 
-									AND c.id_produkty = $id 
-									AND c.id_meny = $id_meny 
-									AND c.id_typy_cen<7  
-								$order
-							")->fetchAll();
-		*/
-		$data = $this->CONN->query("SELECT tc.zkratka2 [name], ROUND(c.hodnota,$round) [value] 
+		$data = $this->CONN->query("SELECT RTRIM(tc.zkratka2) [name], ROUND(c.hodnota, $round) [value] 
 								FROM ceny c
 								LEFT JOIN typy_cen tc ON c.id_typy_cen = tc.id
 								WHERE	c.id_produkty = $id 

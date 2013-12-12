@@ -19,15 +19,21 @@
 <table class="grid" style="min-width:80%;">
 <tr>
 	<th>#</th>
-	<th>Hodinová sazba služby</th>
-	<th>Hodnota [Kč/h]</th>
+	<th>Druh</th>
+	<th>Název sazby služby</th>
+	<th>Hodinová sazba [Kč/h]</th>
+	<th>Stroj</th>
+	<th>Sazba stroje [Kč/h]</th>
 	<th style="text-align:center;">Akce</th>
 </tr>
 {foreach $sazby as $saz}
 <tr>
 	<td>{$saz->poradi}</td>
+	<td>{$saz->druh}</td>
 	<td><i>{$saz->typ}</i></td>
 	<td class="tcislo">{$saz->hodnota|number:2:',':' '}</td>
+	<td title="{$saz->nstroj}">{$saz->stroj}</td>
+	<td class="tcislo"><span n:if="$saz->sazba_stroje>0">{$saz->sazba_stroje|number:2:',':' '}</span></td>
 	<td class="takce">
 		{if $saz->sid > 0}
 			<span class="setedit" title="Změnit">

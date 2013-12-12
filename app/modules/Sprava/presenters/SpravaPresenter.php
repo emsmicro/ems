@@ -42,10 +42,11 @@ class SpravaPresenter extends SecuredPresenter
 	            'Uživatelé'	=> 'Uzivatel',
 				'Práva'		=> 'Prava',
 				'Agendy'	=> 'Agenda',
+				'Tarify'	=> 'SetTarifu',
 	            'Místa'		=> 'Misto',
 				'Číselníky'	=> 'Ciselnik',
 				'Query'		=> 'Query',
-	            'Obchod'	=> 'Obchod',  //dalsší moduly zařadit až na konec menu
+	            'Obchod'	=> 'Obchod',  //další moduly zařadit až na konec menu
 	            'TPV'		=> 'Tpv',
 	            'Nákup'		=> 'Nakup'
 		        );

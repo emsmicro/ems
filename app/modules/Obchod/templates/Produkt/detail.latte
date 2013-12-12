@@ -6,6 +6,8 @@
 
 {var $unlocked = $item->id_stav<>21}
 
+<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
+
 <h1 n:block="title"><span class="iditem"># {$item->id}</span>{$titul}</h1>
 <h2></h2>
 
@@ -152,7 +154,7 @@
 		{if !$isnaklady}
 			<li n:if="$user->isAllowed('Produkt','costsUpd') && $unlocked"><a n:href="costsUpd,$item->id">Spočítat náklady...</a></li>
 		{else}
-			<li n:if="$user->isAllowed('Produkt','costsUpd') && $unlocked"><a n:href="costsUpd,$item->id">Aktualizovat...</a></li>
+			<li n:if="$user->isAllowed('Produkt','costsUpd') && $unlocked"><a n:href="costsUpd,$item->id" title="Přepočítat náklady">Aktualizovat</a></li>
 		{/if}
 
 		<li n:if="$user->isAllowed('Material','default')" title="Materiálový kusovník"><a n:href="Material:">BOM</a></li>
@@ -245,39 +247,22 @@
 	
 
 {* graf *}
-{if $data_bar<>""}
+{if isset($data_bar)}
 	<div class="kol-g">
-		<h3>Graf aktivní ceny</h3>
+		<h3>Graf skladby aktivní ceny</h3>
 		<div>
-			<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
-			<script type="text/javascript">
-				{include 'graph.latte', data_bar => $data_bar}
-			</script>
+			
+			{include 'graph.latte', data_bar => $data_bar}
 
-			<div id="container_graph"
-				 style="
-					//position:	relative;
-					//float:	right; 
-					//top:		92px;
-					//right:	20px;
-					margin: 0 auto;
-					width:		600px; 
-					height:		400px;
-					background: transparent;
-					border:		2px solid #CCC;
-					border-radius: 			8px;
-					-webkit-border-radius: 	8px;
-					-moz-border-radius: 	8px;
-					box-shadow:				3px 3px 5px #AAA;
-					-moz-box-shadow:		3px 3px 5px #AAA;
-					-webkit-box-shadow:		3px 3px 5px #AAA;
-
-				">
-					<p style="color:darkred; font-size: large;text-align:center;"><b>VYSKYTLA SE CHYBA - graf nelze vykreslit</b></p>
+			<div id="container_graph" style="margin: 0 auto; width: 90%; height: 180px; background: transparent;	">
+				
+					<p style="color:darkred; font-size: large;text-align:center;">
+						<b>VYSKYTLA SE CHYBA - graf nelze vykreslit</b>
+					</p>
 					<div style="display:block;width:100%;text-align:left;"> 
 						data = {$data_bar}
 					</div>
-				
+
 			</div>
 			
 		</div>
@@ -313,6 +298,5 @@
              });
 
 </script>
-{* Highcharts *}
-<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
+{* Highcharts theme *}
 <script type='text/javascript' src='{$basePath}/js/themes/mypie.js'></script>

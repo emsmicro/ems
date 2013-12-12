@@ -46,6 +46,31 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 	}
 	
 	/**
+	 * Vypíše všechny operace s oceněním nákladů
+	 * @param type $id_produktu
+	 * @param type $id_nabidky
+	 * @return type
+	 */
+	public function showNaklady($id_produktu, $id_nabidky) {
+		return $this->CONN->query("SELECT o.*, COALESCE(o.poradi, tp.poradi) [oporadi], COALESCE(o.id_tpostup, 0) [id_tpostup],
+								tp.nazev, tp.poradi [tporadi], a.pocet, dr.zkratka [druh],
+								o.ta_cas*sz.hodnota/60 [ta_naklad], o.tp_cas*sz.hodnota/60 [tp_naklad]
+							FROM operace o 
+							LEFT JOIN typy_operaci tp ON o.id_typy_operaci=tp.id
+							LEFT JOIN druhy_operaci dr ON tp.id_druhy_operaci=dr.id
+							LEFT JOIN sazby_o sz ON tp.id = sz.id_typy_operaci
+							LEFT JOIN nabidky na ON sz.id = na.id_set_sazeb_o AND na.id = $id_nabidky
+							LEFT JOIN vazby v ON o.id=v.id_operace 
+							LEFT JOIN 
+								(SELECT id_typy_operaci, COUNT(id) [pocet] FROM atr_typy_oper
+									GROUP BY id_typy_operaci
+								) a
+									 ON a.id_typy_operaci = tp.id
+							WHERE v.id_vyssi = $id_produktu 
+							ORDER BY oporadi");		
+	}
+	
+	/**
 	 * Sumarizace kapacit dle druhu a typu operace
 	 * @param type $id_produktu
 	 * @param type $id_nabidky
@@ -81,10 +106,9 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
 						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
 						LEFT JOIN vazby v ON o.id=v.id_operace 
-						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
-									FROM pocty
-									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
-								) a ON v.id_vyssi = a.id_produkty
+						LEFT JOIN (SELECT id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet], ROW_NUMBER () OVER (PARTITION BY [id_produkty] 
+									ORDER BY id_nabidky, id_produkty, mnozstvi DESC) rn FROM pocty
+									) AS a ON v.id_vyssi = a.id_produkty AND rn=1
 						WHERE	v.id_vyssi = $id_produktu AND a.id_nabidky = $id_nabidky
 								AND (o.ta_cas+o.tp_cas)*100>0
 						GROUP BY 
@@ -121,10 +145,9 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
 						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
 						LEFT JOIN vazby v ON o.id=v.id_operace 
-						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
-									FROM pocty
-									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
-								) a ON v.id_vyssi = a.id_produkty
+						LEFT JOIN (SELECT id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet], ROW_NUMBER () OVER (PARTITION BY [id_produkty] 
+									ORDER BY id_nabidky, id_produkty, mnozstvi DESC) rn FROM pocty
+									) AS a ON v.id_vyssi = a.id_produkty AND rn=1
 						WHERE	a.id_nabidky = $id_nabidky
 								AND (o.ta_cas+o.tp_cas)*100>0
 						GROUP BY 
@@ -154,13 +177,12 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 						LEFT JOIN typy_operaci p ON o.id_typy_operaci=p.id
 						LEFT JOIN druhy_operaci d ON p.id_druhy_operaci=d.id
 						LEFT JOIN vazby v ON o.id=v.id_operace 
-						LEFT JOIN (SELECT MIN(id) [id], id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet]
-									FROM pocty
-									GROUP BY id_produkty, id_nabidky, vyrobni_davka, mnozstvi
-								) a ON v.id_vyssi = a.id_produkty
-						LEFT JOIN ceny c ON v.id_vyssi = c.id_produkty AND c.aktivni = 1 AND c.id_typy_cen=7
+						LEFT JOIN (SELECT id_produkty, id_nabidky, vyrobni_davka [davka], mnozstvi [pocet], ROW_NUMBER () OVER (PARTITION BY [id_produkty] 
+									ORDER BY id_nabidky, id_produkty, mnozstvi DESC) rn FROM pocty
+									) AS a ON v.id_vyssi = a.id_produkty AND rn=1
+						LEFT JOIN ceny c ON v.id_vyssi = c.id_produkty AND c.aktivni = 1 AND c.id_typy_cen=7 AND a.id_nabidky = c.id_nabidky
 						LEFT JOIN pocty h ON c.id_pocty = h.id
-						WHERE	a.id_nabidky = $id_nabidky AND c.id_nabidky = $id_nabidky
+						WHERE	a.id_nabidky = $id_nabidky
 								AND (o.ta_cas+o.tp_cas)*100>0
 						GROUP BY 
 							d.poradi,
@@ -206,9 +228,9 @@ class Operace extends Model // DibiRow obstará korektní načtení dat
 									, do.zkratka [zkratka]
 									, COALESCE(op.id, 0) [ido]
 									, COALESCE(op.popis, tp.nazev) [popis]
-									, COALESCE(ROUND(op.ta_cas,2), $desmist) [ta_cas]
-									, COALESCE(ROUND(op.tp_cas,2), $desmist) [tp_cas]
-									, COALESCE(ROUND(op.naklad,2), $desmist) [naklad]
+									, COALESCE(ROUND(op.ta_cas,$desmist), 0) [ta_cas]
+									, COALESCE(ROUND(op.tp_cas,$desmist), 0) [tp_cas]
+									, COALESCE(ROUND(op.naklad,$desmist), 0) [naklad]
 									, ao.atr_ks
 									, op.id_sablony
 									, op.id_tpostup

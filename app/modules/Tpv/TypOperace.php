@@ -25,9 +25,13 @@ class TypOperace extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show()
 	{
-		return $this->CONN->dataSource('SELECT tp.*, d.nazev [druh] FROM typy_operaci tp
-                                     LEFT JOIN druhy_operaci d ON tp.id_druhy_operaci=d.id
-								');
+		return $this->CONN->dataSource("SELECT tp.*, d.nazev [druh], COALESCE(st.zkratka,'-') [stroj], COALESCE(st.nazev,'žádný stroj') [nstroj],
+											COALESCE(tt.zkratka,'-') [operator]
+										FROM typy_operaci tp
+											LEFT JOIN druhy_operaci d ON tp.id_druhy_operaci=d.id
+											LEFT JOIN stroje st ON tp.id_stroje = st.id
+											LEFT JOIN typy_tarifu tt ON tp.id_typy_tarifu = tt.id
+								");
 	}
 	
 	/**

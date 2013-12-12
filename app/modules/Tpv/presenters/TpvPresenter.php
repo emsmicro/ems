@@ -41,6 +41,7 @@ class TpvPresenter extends SecuredPresenter
 	            'Typy operací'	=> 'TypOperace',
 	            'Sazby operací'	=> 'SetSazebO',
 	            'Atributy času'	=> 'AtrCasu',
+				'Stroje'		=> 'Stroj',
 	            'Obchod'		=> 'Obchod',  
 	            'Nákup'			=> 'Nakup',
 		        );

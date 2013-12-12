@@ -25,10 +25,13 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show($id=0)
 	{
-		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], s.id_set_sazeb_o [idss], ts.poradi
+		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], 
+										s.id_set_sazeb_o [idss], ts.poradi, ds.zkratka [druh], ds.nazev [druh_nazev],
+										COALESCE(st.zkratka,'-') [stroj], COALESCE(st.nazev,'žádný stroj') [nstroj], COALESCE(st.hodinova_cena,0) [sazba_stroje]
 								FROM typy_operaci ts
 								LEFT JOIN (SELECT * FROM sazby_o WHERE id_set_sazeb_o=$id) s ON ts.id=s.id_typy_operaci
 								LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
+								LEFT JOIN stroje st ON ts.id_stroje=st.id
 								WHERE ds.zkratka NOT IN ('Ostatní','Jednorázové')
 								ORDER BY poradi"
 								);

@@ -7,9 +7,9 @@
  * @param string   $basePath web base path
  * @param array    $flashes  flash messages
  * @param Nette\Web\User $user  current user
- *}
+ 
 
-<!DOCTYPE html>
+<!DOCTYPE html>*}
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -31,7 +31,7 @@
 	<script type="text/javascript" src="{$basePath}/js/netteForms.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/autoNumeric.js"></script>
 	<script type="text/javascript" src="{$basePath}/js/jquery.cookie.js"></script>
-
+	
 	<script type="text/javascript">
 		$(document).ready(init);
 
@@ -76,6 +76,7 @@
 			} 
 		  }
 		};	
+				
 	</script>
 	
 		
@@ -84,7 +85,7 @@
 </head>
 
 <body>	
-	<div style="position:relative;width:100%;margin: 0 auto;">
+	<div id="main" style="position:relative;width:100%;margin: 0 auto;">
 	<div id="topcont">
 
 		<div id="logo"></div>
@@ -96,9 +97,10 @@
 				<a n:if="$user->isAllowed('Produkt','default')" n:href="Produkt:default" title="Seznam produktů">služeb a produktů</a>
 						v oblasti EMS ...
 		</div>
-
+		<div id="fixMe">
 		{include 'mysetting.latte'}
 		{control navigation}
+		</div>
 
 		<div id="breadcrumbs">
 			{block #drobecky} {/block}&nbsp;
@@ -145,6 +147,41 @@
 		<div style="clear:both;"></div>	
 	</div>
 	
+	<script type="text/javascript">
+		// Zatím to pořád nefunguje, mělo by po rolování zůstávat mysetting viditelné nahoře
+		var divID = '#mysetting';
+		$(window).scroll(function() {					// Assign scroll event listener
+			var currentScroll = $(window).scrollTop();	// Get current position
+			if (currentScroll >= 120) {			// Make it fixed if you've scrolled to it
+				$(divID).css({
+					position: 'fixed',
+					left: '50px',
+					top: '2px',
+					width: '100%'
+				});	
+				$('#menu').css({
+					position: 'fixed',
+					left: '48px',
+					top: '32px',
+					width: '100%'
+				});	
+
+			} else {									// Make it static if you scroll above
+				$(divID).css({
+					position: 'relative',
+					left: '20px',
+					top: '-85px'
+				});
+				$('#menu').css({
+					position: 'relative',
+					left: '16px',
+					top: '-80px'
+				});	
+			}
+		});		
+	
+	</script>
+		
 		
 	<div id="footer">
            Copyright © 2011 - 2013, Bc. Štěpán Mračko, Powered by Apache, PHP, MSSQL, Nette.&nbsp;&nbsp;&nbsp;&nbsp;

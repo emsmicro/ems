@@ -1,7 +1,8 @@
 {if $isPDF}
 	<table class="detail" style="width:98%;">
 {else}
-	<table class="grid" style="width:98%;">
+	{*<ul id="navi"><li id="c2c">Kopie</li></ul>*}
+	<table id="tab" class="grid" style="width:98%;">
 {/if}
 	<tr class="tsepbot">
 		<th>Název produktu</th>
@@ -67,7 +68,7 @@
 				{/if}
 		{else}
 			{if $cena->idtc == 8}
-				{var $obj = $obj + $cena->objem*$cena->mnozstvi/$cena->vyrobni_davka}
+				{var $obj += $cena->objem}
 				{if $cena->aktivni == 1}
 					{var $MAT = $aval[$cena->id_produkty][$cena->id]['maternak']}
 					{var $VN = $aval[$cena->id_produkty][$cena->id]['vyrobnak']}
@@ -114,7 +115,6 @@
 		{/if}
 	{/foreach}
 	{if !$isPDF}
-		{var $cs = 5}
 		<tr class="tseptop">
 			<th colspan="3"><b>CELKEM očekávaný objem tržeb</b></th>
 			<th colspan="2" style="text-align:right;"><b n:if="$mena<>''">{$sumCM|number:2:',':' '} {$mena}</b></th>
@@ -140,3 +140,5 @@
 		</tr>
 	{/if}
 	</table>
+
+	{include '../../../Base/templates/js_copy.latte', sourceID => "tab"}

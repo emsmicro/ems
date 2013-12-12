@@ -119,14 +119,15 @@ class ProduktPresenter extends ObchodPresenter
 		$oper = new Operace;
 		$capac = $oper->sumKapacitaDruh($id, $this->getIdFromMySet(3));
         $this->template->capac = $capac;
+		$this->template->mypar = $this->mpars;
 		//dd($capac,'CAPACITY');
-		$prices = $instance->prices($id, $this->idn);
+		$prices = $instance->prices($id, $this->idn, false);
 		$isceny = count($prices)>0;
         $this->template->isceny = $isceny;
         $this->template->prices = $prices;
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddedValue($id, $this->idn);
-		//dd($aval, 'AVAL');
+		dd($aval, 'AVAL');
 		$this->template->aval = $aval;
 		$hist = $instance->getProductHistory($id);
 		$this->template->history = $hist;

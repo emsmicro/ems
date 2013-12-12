@@ -14,6 +14,8 @@
 	<th>Zkratka</th>
 	<th>Typ</th>
 	<th>Druh</th>
+	<th>Stroj</th>
+	<th title="Tarif operátora">TT</th>
 	<th title="Minimální doba trvání operace [min]">Min. čas</th>
 	<th title="Časová rezerva [%]">Rezerva</th>
 	<th title="Defaultní čas přípravy">Tp def.</th>
@@ -30,6 +32,8 @@
 	<td title="{$it->zkratka}">{$it->zkratka|truncate:25}</td>
 	<td title="{$it->nazev}"><a n:href="detail, $it->id">{$it->nazev|truncate:40}</a></td>
 	<td>{$it->druh}</td>
+	<td title="{$it->nstroj}">{$it->stroj}</td>
+	<td>{$it->operator}</td>
 	<td class="cislo"><span n:if="$it->ta_min>0">{$it->ta_min|number:2:',':' '}</span></td>
 	<td class="cislo"><span n:if="$it->ta_rezerva>0">{$it->ta_rezerva * 100|number:0:',':' '} %</span></td>
 	<td class="cislo"><span n:if="$it->tp_default>0">{$it->tp_default|number:2:',':' '}</span></td>

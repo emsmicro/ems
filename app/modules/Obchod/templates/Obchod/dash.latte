@@ -90,9 +90,5 @@
 
 {* grafy *}
 {if $data_bar<>"" || $data<>""}
-	<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
-	<script type='text/javascript' src='{$basePath}/js/themes/gray.js'></script>
-	<script type="text/javascript">
-		{include 'graph.latte', data_bar => $data_bar, catg_bar => $catg_bar, data => $data }
-	</script>
+	{include 'graph.latte', data_bar => $data_bar, catg_bar => $catg_bar, data => $data }
 {/if}

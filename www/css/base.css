@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Open Sans'), local('OpenSans'), url('http://themes.googleusercontent.com/static/fonts/opensans/v5/cJZKeOuBrn4kERxqtaUH3T8E0i7KZn-EPnyo3HZu7kw.woff') format('woff');
+}
+
 HTML
 {
 	font: 16px / 1.5 sans-serif;
@@ -172,7 +179,7 @@ H3
 	list-style: none;
 	list-style-type: none;
 	color: #1A4571;
-	z-index: 1;
+	z-index: 2;
 }
 #menu UL
 {
@@ -280,7 +287,7 @@ H3
 	border-radius: 4px;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
-	z-index: 10;
+	z-index: 2;
 }
 #mysetting SPAN
 {
@@ -567,6 +574,7 @@ TABLE.grid TD.cislo
 {
 	text-align: right;
 }
+
 TABLE.grid TD.cenanab
 {
 	background-color: #927C34;
@@ -1024,7 +1032,8 @@ TABLE.small TD
 /*------------------------------------------------------------------*/
 FORM
 {
-	max-width: 500px;
+      min-width: 50%;
+	max-width: 75%;
 	/*max-width: 840px;*/
 	padding: 0.8em 1.6em;
 	background: #E4F1FC;
@@ -1053,6 +1062,11 @@ FORM INPUT.cislo
 {
 	width: 60px;
 	text-align: right;
+}
+FORM INPUT.cisloLong
+{
+	text-align: right;
+	width: 90px;
 }
 FORM SELECT
 {
@@ -2336,3 +2350,4 @@ DIV.detcol SPAN.colakce
 	-webkit-border-top-right-radius: 3px;
 	-moz-border-radius-topright: 3px;
 }
+

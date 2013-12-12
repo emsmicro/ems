@@ -14,6 +14,8 @@ abstract class BasePresenter extends Presenter
 	public	$company;
 	/** Moje parametry - fond, smennost, delka smeny*/
 	public	$mypar;		
+	public	$stroje;
+	public	$mpars;
 	/** @var Nette\DI\Container */ 
 	public  $context;
 	public  $is_filter = false;
@@ -43,6 +45,9 @@ abstract class BasePresenter extends Presenter
 		if(isset($context->params['mypar'])){
 			$this->mypar = $context->params['mypar'];
 		}		
+		if(isset($context->params['stroje'])){
+			$this->stroje = $context->params['stroje'];
+		}		
 		$session = $context->session;
 		if(!$session->isStarted()){$session->start();}
 		
@@ -52,8 +57,14 @@ abstract class BasePresenter extends Presenter
 			$section->setExpiration('+ 18 hours');
 			$this->eraseMySet();
 		}
+		$mdl = new Model;
+		$this->mpars = $mdl->getActualTarifParam();
 		
 		$this->refreshMySetting();
+//		dd($this->mypar, "MYPAR");
+//		dd($this->stroje, "STROJE");
+//		dd($this->mpars, "MPARS");
+		//dd($this->mpars['rucni_fond'], "Mtest");
 		
 		//main menu
 		$menu = array(

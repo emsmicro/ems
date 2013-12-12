@@ -1,9 +1,9 @@
-
+<script type='text/javascript'>
 	var chart;
 			$(document).ready(function() {
 				chart = new Highcharts.Chart({
 					chart: {
-						renderTo: 'dgraph_{$idg}',
+						renderTo: 'dgraph_{!$idg}',
 						animation: false,
 						backgroundColor: 'transparent',
 						plotBorderWidth: null,
@@ -31,7 +31,7 @@
 						pie: {
 							allowPointSelect: true,
 							cursor: 'pointer',
-							size: {$size},
+							size: {!$size},
 							animation: false,
 							dataLabels: {
 								enabled: true,
@@ -52,8 +52,9 @@
 				    series: [{
 						type: 'pie',
 						name: 'ceny',
-						data: {$gr_data}
+						data: {!$gr_data}
 					}]
 				});
 			});
 			
+</script>

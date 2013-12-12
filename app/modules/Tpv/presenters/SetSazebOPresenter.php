@@ -11,11 +11,11 @@ use Nette\Application\UI\Form,
 class SetSazebOPresenter extends TpvPresenter
 {
     /** Title constants */
-    const TITUL_DEFAULT = 'Sety sazeb';
-    const TITUL_ADD 	= 'Nový set sazeb';
-    const TITUL_EDIT 	= 'Změna setu sazeb';
-    const TITUL_DELETE 	= 'Smazání setu sazeb';
-    const TITUL_GROUP 	= 'Hromadné zadání sazeb operací';
+    const TITUL_DEFAULT = 'Sety sazeb typových operací';
+    const TITUL_ADD 	= 'Nový set sazeb typových operací';
+    const TITUL_EDIT 	= 'Změna setu sazeb typových operací';
+    const TITUL_DELETE 	= 'Smazání setu sazeb typových operací';
+    const TITUL_GROUP 	= 'Hromadné zadání sazeb typových operací';
     /**
 	 * @var string
 	 * @titul

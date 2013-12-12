@@ -1,21 +1,32 @@
-
-		<!-- Funkce pro nastavení výšky divu pro graf -->
-
-		
-//		$.fn.equalizeHeights = function(){
-//			return this.height( Math.max.apply(this, $(this).map(function(i,e){ return $(e).height() }).get() ) )
-//		}
-//		$('#tceny, #container_graph').equalizeHeights();
+<script type="text/javascript">
 			
-
+$(function () {
+		Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+		    return {
+		        radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+		        stops: [
+		            [0, color],
+		            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+		        ]
+		    };
+		});
+		
+		Highcharts.setOptions({
+			lang: {
+				decimalPoint: ',',
+				thousandsSep: ' ',
+			},
+		});
 			<!-- Bar Graph -->
 			
-			var chart;
-			$(document).ready(function() {
-				chart = new Highcharts.Chart({
-					chart: {
-						renderTo: 'container_graph',
-						defaultSeriesType: 'column'
+		$('#container_graph').highcharts({
+				chart: {
+						type: 'bar',
+						borderColor: 'none',
+						borderRadius: 0,
+						defaultSeriesType: 'column',
+						backgroundColor: 'transparent',
+						spacing: [15, 40, 15, 15],
 					},
 					title: {
 						text: ''
@@ -25,36 +36,45 @@
                     },
 					legend: {
 						shadow: true,
-						layout: 'vertical',
-						align: 'right',
-						verticalAlign: 'middle'
+						itemWidth: 100,
+						itemStyle: { color: '#000' },
+						itemHoverStyle: { color: '#2870B7' },
 					},
 					xAxis: {
-						categories: ['Kategorie ceny']
+						categories: ['']
 					},
 					yAxis: {
 						min: 0,
 						opposite: true,
 						tickInterval: 25,
 						title: {
-							text: '%'
+							text: ''
 						}
 					},
 					tooltip: {
 						formatter: function() {
 							return ''+
-								 this.series.name +': '+ this.y +' Kč ('+ Math.round(this.percentage*10)/10 +'%)';
+								 this.series.name +': '+ this.y +' Kč/ks ('+ Math.round(this.percentage*10)/10 +'%)';
 						}
 					},
 					plotOptions: {
-						column: {
-							stacking: 'percent'
-						},
 						series: {
-						   pointWidth: 120
-						}
+							stacking: 'percent',
+							pointWidth: 120
+						},
+						bar: {
+							dataLabels: {
+								enabled: true,
+								color: 'white',
+								//rotation: 270,
+								formatter: function() {
+									return (this.y>0 ? this.series.name.substring(0,1) + ' = '+Highcharts.numberFormat(this.y) +' Kč' : '');
+								}
+							},
+						},						
 					},
-					series: {$data_bar} 
-				});
-
+					series: {!$data_bar} 
 			});
+
+	});
+</script>

@@ -7,6 +7,9 @@
 
 {var $unlocked = $it->id_stav<>21}
 
+<script type='text/javascript' src='{$basePath}/js/highcharts.js'></script>
+
+
 <h1 n:block="title"><span class="iditem" style="font-size: x-large;"># {$item->id}/{$item->prij_datum|date:'%Y'}</span></h1>
 <h2>{$titul}</h2>
 
@@ -60,6 +63,8 @@
 	{/if}
 </tr>
 </table>
+	
+{include 'piechart.latte', pdata => $nakl_pie}
 
 <div class="kolaps">
 
@@ -208,7 +213,7 @@
 
 {if $iscen}
 
-	<div n:if="$user->isAllowed('Produkt','viewPrices')" class="clear">
+	<div n:if="$user->isAllowed('Produkt','viewPrices')" id="ceny" class="clear">
 		<div class="kol-2">
 			{if $isPDF}
 				<h3>Ceny produktů a služeb</h3>
@@ -218,9 +223,9 @@
 			<div>
 				<span class="midi" style="float: right; margin:0 20px 10px 0;">
 					{if $isAct}
-						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail, $item->id, 0" >Zobrazit také neaktivní ceny</a>
+						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail#ceny, $item->id, 0" >Zobrazit také neaktivní ceny</a>
 					{else}
-						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail, $item->id, 1" >Zobrazit jen aktivní ceny</a>
+						<a n:if="$user->isAllowed('Nabidka','detail')" n:href="detail#ceny, $item->id, 1" >Zobrazit jen aktivní ceny</a>
 					{/if}
 				</span>
 				{include 'prices.latte',  unlocked => $unlocked}
@@ -230,10 +235,52 @@
 
 {/if}
 
-{if !$isPDF && $iscap}
+{if !$isPDF} 
+	
+{if $iscap}
 	<div class="clear">
 		{include 'capacity.latte'}
 	</div>
+{/if}
+
+
+{* graf *}
+{if isset($cena_bar) and isset($nakl_bar)}
+	<div class="kol-g">
+		<h3>Grafy skladby tržby, nákladů a přidané hodnoty</h3>
+		<div>
+			
+			{include 'graph.latte', cena_bar => $cena_bar, nakl_bar => $nakl_bar}
+
+			<div id="container_graph" style="margin: 0 auto; width: 95%; height: 200px; background: transparent;">
+				<p style="color:darkred; font-size: large;text-align:center;">
+					<b>VYSKYTLA SE CHYBA - graf 1 nelze vykreslit</b>
+				</p>
+				<div style="display:block;width:100%;text-align:left;"> 
+					data = {$cena_bar}
+				</div>
+			</div>
+			<div id="container_graph2" style="margin: 20px auto; width: 95%; height: 200px; background: transparent;">
+				<p style="color:darkred; font-size: large;text-align:center;">
+					<b>VYSKYTLA SE CHYBA - graf 2 nelze vykreslit</b>
+				</p>
+				<div style="display:block;width:100%;text-align:left;"> 
+					data = {$nakl_bar}
+				</div>
+			</div>
+			
+			{include 'testgr.latte', data_bar => $data_bar, catg_bar => $catg_bar}
+			
+			<div id="container_graph3" style="margin: 20px auto; width: 95%; height: 400px; background: transparent;">
+				<p style="color:darkred; font-size: large;text-align:center;">
+					<b>VYSKYTLA SE CHYBA - graf 3 nelze vykreslit</b>
+				</p>
+			</div>
+					
+		</div>
+	</div>
+{/if}
+
 {/if}
 
 </div>
@@ -242,6 +289,7 @@
 <script type='text/javascript' src='{$basePath}/js/jquery.cookie.js'></script>
 <script type='text/javascript' src='{$basePath}/js/jquery.collapse.js'></script>
 
+{*
 <script type="text/javascript" src="{$basePath}/js/ZeroClipboard.js"></script>
 
  
@@ -251,11 +299,11 @@
 	clip.setHandCursor( true );
 	clip.glue( 'd_clip' );
 </script>
-
+*}
 
 <script type='text/javascript'>
 
-            $(".kol-1, .kol-2, .kol-h, .kol-c").collapse({ show: function(){ 
+            $(".kol-1, .kol-2, .kol-h, .kol-c, .kol-g").collapse({ show: function(){ 
                     this.animate({ 
                         opacity: 'toggle',
                         height: 'toggle'
@@ -266,3 +314,6 @@
                  }
              });
 </script>
+
+{* Highcharts theme *}
+<script type='text/javascript' src='{$basePath}/js/themes/mypie.js'></script>

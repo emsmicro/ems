@@ -26,8 +26,8 @@ class TypOperacePresenter extends TpvPresenter
 	public function startup()
 	{
 		parent::startup();
-                $instance = new TypOperace;
-		$this->items = $instance->show();
+//      $instance = new TypOperace;
+//		$this->items = $instance->show();
 
 	}
 
@@ -132,14 +132,22 @@ class TypOperacePresenter extends TpvPresenter
 		$druh = $comp->getOperationKind();
 		$form->addSelect('id_druhy_operaci', 'Druh:', $druh)
 			        ->setPrompt('Zvolte druh operace')
-			        ->addRule(Form::FILLED, 'Zvolte druh operace');
-
+			        ->addRule(Form::FILLED, 'Zvolte druh operace');		
         $form->addText('zkratka', 'Zkratka:', 35)
 			->setRequired('Uveďte zkratku.');
 
 		$form->addText('nazev', 'Název:', 60)
 			->setRequired('Uveďte název.');
 
+		$stroje = $comp->getStroje();
+		$form->addSelect('id_stroje', 'Stroj:', $stroje)
+			        ->setPrompt('[..zvolte stroj nebo nic..]');		
+		
+		$ttarify = $comp->getTypTarifu();
+		$form->addSelect('id_typy_tarifu', 'Operátor:', $ttarify)
+			        ->setPrompt('[..zvolte tarif operátora..]')
+			        ->addRule(Form::FILLED, 'Zvolte tarif operátora');
+				
 		$form->addText('poradi', 'Pořadí:',5)
 			->setOption('description', 'typické pořadí v technologickém postupu')
 			->setRequired('Uveďte pořadí v TP.');

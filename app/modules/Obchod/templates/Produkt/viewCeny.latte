@@ -1,3 +1,21 @@
+<link href='http://fonts.googleapis.com/css?family=Lato:100,300' rel='stylesheet' type='text/css'>
+<style type="text/css">
+	.bigId {
+		position: absolute; 
+		float:left; 
+		color: #CCC;
+		font-weight: 100;
+		top: -50px; 
+		left: 40%; 
+		font-size: 200px; 
+		font-family: 'Lato','Open Sans',sans-serif;
+	}
+	.midId {
+		font-size: 60px; 
+		color: #ADCDED;
+		font-weight: 300;
+	}
+</style>
 
 		{var $amena = 'CZK'}
 		{var $apocet = 0}
@@ -7,7 +25,7 @@
 		{var $acena = 0}
 		{var $actclass = ""}
 		{var $acttitle = ""}
-
+		{var $i = 0}
 			{foreach $prices as $cen}
 				{if $acena<>$cen->id_cena}
 					{if $acena == 0}
@@ -24,10 +42,14 @@
 					{/if}
 					{if $stab > 0}
 						</table>
+						{var $i++}
+						<div class="bigId">{$i}<span class='midId' title='ID ceny'>#{$acena}</div>
+						</div>
 						{include 'detaval.latte', item => $aval[$acena]}
 						</div>
 					{/if}
 				<div class="gridseparator">
+					<div style='position: relative;'>
 					<table id="tceny{$cen->id_cena}" class="grid">
 					<thead>
 						<tr title="{$acttitle}">
@@ -140,6 +162,9 @@
 			</tr>
 			{/foreach}
 		</table>
+		{var $i++}
+		<div class="bigId">{$i}<span class='midId' title='ID ceny'>#{$acena}</div>
+		</div>
 			{if $stab > 0}
 				{include 'detaval.latte', item => $aval[$acena]}
 			{/if}

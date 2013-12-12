@@ -8,15 +8,16 @@ Highcharts.theme = {
 	//	"#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
         colors: [
            '#2f7ed8',
-           '#0d233a',
+           '#1F558B',
            '#8bbc21',
            '#910000',
            '#1aadce',
-           '#492970',
+           '#7944B9',
            '#f28f43',
-           '#77a1e5',
+           '#FF4AA5',
            '#c42525',
-           '#a6c96a'
+           '#a6c96a',
+           '#AF510C',
         ],
 	chart: {
 		backgroundColor: {

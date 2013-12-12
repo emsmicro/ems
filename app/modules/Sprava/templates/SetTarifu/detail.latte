@@ -1,0 +1,52 @@
+{extends 'default.latte'}
+{block #drobecky4} » {$titul}{block #drobecky5}{/block}{/block}
+
+{block #content}
+
+<h1 n:block="title">{$titul}</h1>
+<ul id="navi">
+	<li n:if="$user->isAllowed('SetTarifu','add')" title="Nový set sazeb"><a n:href="add">Nová...</a></li>
+	<li n:if="$user->isAllowed('SetTarifu','edit')" title="Změnit set sazeb"><a n:href="edit, $item->id">Změnit</a></li>
+	<li n:if="$user->isAllowed('SetTarifu','addGroup')" title="Nový set sazeb..."><a n:href="addGroup, $idss">&#10010 tarify</a></li>
+</ul>
+
+<table class="grid">
+	<tr><th>Název</th><td>{$item->nazev}</td></tr>
+	<tr><th>Platnost od</th><td>{$item->platnost_od|date:'%d.%m.%Y'}</td></tr>
+	<tr><th>Platnost do</th><td>{$item->platnost_do|date:'%d.%m.%Y'}</td></tr>
+</table>
+<p></p>
+<table class="grid" style="min-width:60%;">
+<tr>
+	<th>#</th>
+	<th>Kód</th>
+	<th>Název tarifu</th>
+	<th title="Hodinova sazba tarifu = základ + osobní ohodnocení (bez odvodů)">Tarifní sazba [Kč/h]</th>
+	<th>Hodinová sazba [Kč/h]</th>
+	<th style="text-align:center;">Akce</th>
+</tr>
+{foreach $sazby as $saz}
+<tr>
+	<td>{$saz->poradi}</td>
+	<td>{$saz->zkratka}</td>
+	<td><i>{$saz->nazev}</i></td>
+	<td class="tcislo">{$saz->tarif|number:2:',':' '}</td>
+	<td class="tcislo">{$saz->hodnota|number:2:',':' '}</td>
+	<td class="takce">
+		{if $saz->tid > 0}
+			<span class="setedit" title="Změnit">
+				<a n:if="$user->isAllowed('SetTarifu','editRate')" n:href="editRate, $saz->tid, $saz->tid, $idss">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			</span>
+			<span class="setdel" title="Odstranit">
+				<a n:if="$user->isAllowed('SetTarifu','deleteRate')" n:href="deleteRate, $saz->tid, $idss">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			</span>
+		{else}
+			<span class="setadd" title="Přidat...">
+				<a n:if="$user->isAllowed('SetTarifu','addRate')" n:href="addRate, $saz->tid, $idss">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+			</span>
+		{/if}
+	</td>
+</tr>
+{/foreach}
+</table>
+

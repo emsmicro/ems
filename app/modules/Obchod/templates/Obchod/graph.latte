@@ -1,3 +1,7 @@
+<script type="text/javascript" src="{$basePath}/js/highcharts.js"></script>
+<script type="text/javascript" src="{$basePath}/js/themes/gray.js"></script>
+<script type="text/javascript">
+
 	{if $data_bar<>''}
 		var chart2;
 			$(document).ready(function() {
@@ -22,7 +26,7 @@
 								color: '#C48400'
 							},
 						},
-						categories: {$catg_bar}
+						categories: {!$catg_bar}
 					},
 					yAxis: {
 						min: 0,
@@ -59,7 +63,7 @@
 					},
 				     series: [{ 
 						name: 'Počet',
-						data: {$data_bar} 
+						data: {!$data_bar} 
 					}]
 				});
 			});			
@@ -78,7 +82,7 @@
 						plotShadow: false
 					},
 					title: {
-						text: 'Skladba ceny: <b>{$nproduct}</b>',
+						text: 'Skladba ceny: <b>{!$nproduct}</b>',
 						style: {
 							color: '#FFF'
 						},
@@ -115,9 +119,11 @@
 				    series: [{
 						type: 'pie',
 						name: 'ceny',
-						data: {$data}
+						data: {!$data}
 					}]
 				});
 			});
 			
 		{/if}
+	
+</script>
