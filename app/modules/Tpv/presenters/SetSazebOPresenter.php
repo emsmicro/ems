@@ -63,18 +63,33 @@ class SetSazebOPresenter extends TpvPresenter
 	
 	public function renderDetail($id = 0)
 	{
-        $instance = new SetSazebO;
-		$item = $instance->find($id)->fetch();
-
+        $sets = new SetSazebO;
+		$item = $sets->find($id)->fetch();
+		$sett = $sets->getActualTarifParam();
+		$this->template->settar = $sett['nazev'];
 		$this->template->item = $item;
 	   	$this->template->titul = $item->nazev;
 		$saz = new SazbaO;	
-        $sazby = $saz->show($id);
+        $sazby = $saz->show($id)->fetchAll();
+		//dd($sazby,'SAZBY');
         $this->template->sazby = $sazby;
 		$this->template->idss = $item->id;
 		$this->idss = $item->id;
 	}
 
+	
+	public function actionUpdSazby($id)
+	{
+		$sazby = new SazbaO;
+		$res = $sazby->updateSetSazeb($id);
+		if($res){
+			$this->flashMessage("Sazby typových operací byly aktualizovány dle aktuálních sazeb strojů a tarifních tříd.");
+		} else {
+			$this->flashMessage("Nepodařilo se aktualizovat všechny sazby typových operací.", "exclamation");
+		}
+		//dd($res);
+		$this->redirect('detail', $id);
+	}
 
 	/********************* views add & edit *********************/
 

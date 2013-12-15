@@ -235,7 +235,7 @@ class Model extends DibiRow
 		return $items;
 	}
 
-	public function getTypTarifu() {
+	public function getTariffType() {
 		$items = $this->CONN->fetchPairs("SELECT id, zkratka + ': ' + nazev [nazev] FROM typy_tarifu");
 		return $items;
 	}

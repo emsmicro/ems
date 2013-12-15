@@ -143,7 +143,7 @@ class TypOperacePresenter extends TpvPresenter
 		$form->addSelect('id_stroje', 'Stroj:', $stroje)
 			        ->setPrompt('[..zvolte stroj nebo nic..]');		
 		
-		$ttarify = $comp->getTypTarifu();
+		$ttarify = $comp->getTariffType();
 		$form->addSelect('id_typy_tarifu', 'Operátor:', $ttarify)
 			        ->setPrompt('[..zvolte tarif operátora..]')
 			        ->addRule(Form::FILLED, 'Zvolte tarif operátora');

@@ -26,7 +26,6 @@ class Query extends Model // DibiRow obstará korektní načtení dat
 				&& strpos(strtoupper($ssql),'INSERT') === false
 				&& strpos(strtoupper($ssql),'DELETE') === false) {
 			
-//		if($ssql<>''){
 			return $this->CONN->query($ssql)->fetchAll();
 			
 		} else {

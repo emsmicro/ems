@@ -2222,16 +2222,16 @@ TABLE.grid.aval TH
 }
 TABLE.grid.aval.best TD
 {
-	background: #FFF4DD;
+	background: #FFD7D7;
 }
 TABLE.grid.aval.best TH
 {
-	background: #FFD659;
+	background: #FF9393;
 	color: #111;
 }
 TABLE.grid.aval.best TD.light
 {
-	background: #FFD659;
+	background: #FF9393;
 	font-weight: bold;
 }
 TABLE.grid.aval TD.light

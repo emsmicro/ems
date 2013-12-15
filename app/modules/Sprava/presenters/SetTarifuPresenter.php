@@ -63,19 +63,38 @@ class SetTarifuPresenter extends SpravaPresenter
 	
 	public function renderDetail($id = 0)
 	{
-        $instance = new SetTarifu;
-		$item = $instance->find($id)->fetch();
+        $sett = new SetTarifu;
+		$item = $sett->find($id)->fetch();
 
 		$this->template->item = $item;
 	   	$this->template->titul = $item->nazev;
 		$tar = new Tarif;	
-        $tarify = $tar->show($id);
+        $tarify = $tar->show($id)->fetchAll();
+//		dd($item,'TAR');
+		$tarify = $sett->calcSazba($tarify, $this->mpars);
+		dd($tarify,'TARIFS');
+//		dd($this->mpars,'PARAMS');
         $this->template->sazby = $tarify;
 		$this->template->idss = $item->id;
 		$this->idss = $item->id;
 	}
 
 
+	public function actionUpdTarify($id)
+	{
+		$tar = new Tarif;	
+        $tarify = $tar->show($id)->fetchAll();
+		$sett = new SetTarifu;
+		$tarify = $sett->calcSazba($tarify, $this->mpars);
+		$res = $sett->updateTarify($id, $tarify);
+		if($res){
+			$this->flashMessage("Tarifní třídy byly aktualizovány dle aktuálních parametrů setu tarifních sazeb.");
+		} else {
+			$this->flashMessage("Nepodařilo se aktualizovat všechny sazby tarifních tříd.", "exclamation");
+		}
+		$this->redirect('detail', $id);
+	}
+	
 	/********************* views add & edit *********************/
 
 	/**
@@ -139,11 +158,12 @@ class SetTarifuPresenter extends SpravaPresenter
 	 */
 	public function renderAddRate($tid, $idss)
 	{
-			$sazba = new Tarif;
+			$tarif = new Tarif;
+			$ntarif = $tarif->getTypTarifu($tid)->nazev;
 			$this['rateForm']['save']->caption = 'Přidat';
-			$this['rateForm']['id_typy_operaci']->value = $tid;
-			$this['rateForm']['id_set_sazeb_o']->value = $idss;
-			$this->template->titul = "Nová sazba: ".$sazba->getTypTarifu($tid);
+			$this['rateForm']['id_typy_tarifu']->value = $tid;
+			$this['rateForm']['id_set_tarifu']->value = $idss;
+			$this->template->titul = "Nový tarif: $ntarif";
 	}
 
 	/********************* view edit rate *********************/
@@ -155,13 +175,14 @@ class SetTarifuPresenter extends SpravaPresenter
 	
 	public function renderEditRate($sid, $tid, $idss)
 	{
-		$sazba = new Tarif;
+		$tarif = new Tarif;
+		$ntarif = $tarif->getTypTarifu($tid)->nazev;
 		$this['rateForm']['id_typy_tarifu']->value = $tid;
 		$this['rateForm']['id_set_tarifu']->value = $idss;
-		$this->template->titul = "Změna tarifu: ".$sazba->getTypSazby($tid);
+		$this->template->titul = "Změna tarifu: $ntarif";
 		$form = $this['rateForm'];
 		if (!$form->isSubmitted()) {
-            $row = $sazba->find($sid)->fetch();
+            $row = $tarif->find($sid)->fetch();
 			if (!$row) {
 				throw new NA\BadRequestException('Záznam nenalezen.');
 			}
@@ -195,6 +216,7 @@ class SetTarifuPresenter extends SpravaPresenter
 		$renderer->wrappers['control']['container'] = NULL;
 		$this->template->items = $data;
 		$this->template->form = $form;
+		dd($data);
 	}
 	/********************* view delete rate *********************/
 	/**
@@ -204,12 +226,13 @@ class SetTarifuPresenter extends SpravaPresenter
 	 */
 	public function renderDeleteRate($sid, $idss)
 	{
-		$sazba = new Tarif;
-		$this->template->rate = $sazba->find($sid)->fetch();
+		$tarif = new Tarif;
+		$ntarif = $tarif->getTypTarifu($sid)->nazev;
+		$this->template->rate = $tarif->find($sid)->fetch();
 		if (!$this->template->rate) {
 			throw new Nette\Application\BadRequestException('Záznam nenalezen!');
 		}
-		$this->template->titul = "Výmaz tarifu";
+		$this->template->titul = "Výmaz tarifu: $ntarif";
 	}
 
 
@@ -266,6 +289,15 @@ class SetTarifuPresenter extends SpravaPresenter
 			->setOption('description', '[dnů/rok]')
 			->addCondition($form::FILLED)
 					->addRule($form::INTEGER, 'Počet dnů odstávky strojů: Hodnota musí být celé číslo.');
+
+		$form->addText('podil_prescasu', 'Podíl přesčasů:')
+			->setAttribute('class', 'cislo')
+			->setOption('description', '[% z ročního fondu]')
+			->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))
+				->controlPrototype
+					->autocomplete('off')
+			->addCondition($form::FILLED)
+					->addRule($form::FLOAT, 'Podíl přesčasů: Hodnota musí být celé nebo reálné číslo.');
 		
         $form->addText('doch_bonus', 'Docházkový bonus:', 3)
 			->setAttribute('class', 'tcislo')
@@ -455,7 +487,7 @@ class SetTarifuPresenter extends SpravaPresenter
 	protected function createComponentRateForm()
 	{
 		$form = new Form;
-		$form->addText('sazba', 'Tarifní sazba:')
+		$form->addText('tarif', 'Tarifní sazba:')
 				->setRequired('Uveďte tarifní hodinovou sazbu.')
 				->setAttribute('class', 'cislo')
 				->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))
@@ -490,7 +522,7 @@ class SetTarifuPresenter extends SpravaPresenter
 			$id = (int) $this->getParam('sid');
 			$rate = new Tarif;
 			$data = (array) $form->values;
-			$data['sazba'] = floatval($data['sazba']);
+			$data['tarif'] = floatval($data['tarif']);
 			$data['hodnota'] = floatval($data['hodnota']);
 			if ($id > 0) {
 				$rate->update($id, $data);

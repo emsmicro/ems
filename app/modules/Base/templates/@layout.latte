@@ -148,11 +148,10 @@
 	</div>
 	
 	<script type="text/javascript">
-		// Zatím to pořád nefunguje, mělo by po rolování zůstávat mysetting viditelné nahoře
 		var divID = '#mysetting';
-		$(window).scroll(function() {					// Assign scroll event listener
-			var currentScroll = $(window).scrollTop();	// Get current position
-			if (currentScroll >= 120) {			// Make it fixed if you've scrolled to it
+		$(window).scroll(function() {					
+			var currentScroll = $(window).scrollTop();	
+			if (currentScroll >= 120) {					
 				$(divID).css({
 					position: 'fixed',
 					left: '50px',
@@ -165,8 +164,7 @@
 					top: '32px',
 					width: '100%'
 				});	
-
-			} else {									// Make it static if you scroll above
+			} else {									
 				$(divID).css({
 					position: 'relative',
 					left: '20px',

@@ -27,6 +27,17 @@
 			</div>
 		</div>
 	{/if}
+		<div class="kol-1">
+			<h3>Další funkce</h3>
+			<div class="todod">
+				<ul>
+					<li id="todo"><span>Php Info</span>
+						<span class="ref"><a n:href="phpinfo" title="Přejít">&nbsp;&nbsp;&nbsp;&nbsp;</a></span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
 </div>
 
 {* collapse *}
@@ -34,7 +45,7 @@
 <script type='text/javascript' src='{$basePath}/js/jquery.collapse.js'></script>
 <script type='text/javascript'>
 
-            $(".kol-0").collapse({ show: function(){ 
+            $(".kol-0,.kol-1").collapse({ show: function(){ 
                     this.animate({ 
                         opacity: 'toggle',
                         height: 'toggle'

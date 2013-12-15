@@ -947,7 +947,39 @@ class Kalkul extends Model
 				$aval[$ic]['avalbest']	= false;
 				$aval[$ic]['id_cena']	= $ic;
 				$aval[$ic]['c_poradi']	= $i;
-				$aval[$ic]['datagraf']	=  "[['Material',".round($matnproc,2)."],['Vyr. sluzby',".round($sluzproc,2)."],['Spr. rezie',".round($sprvproc,2)."],['Zisk',".round($ziskproc,2)."]]";
+				$aval[$ic]['datagraf']	=  "[['Materiál',".round($matnproc,2)."],['Výr. služby',".round($sluzproc,2)."],['Spr. režie',".round($sprvproc,2)."],['Zisk',".round($ziskproc,2)."]]";
+
+				$Nmater = round($aval[$ic]['maternak'],2);
+				$Nstroj = round($aval[$ic]['strojnak'],2);
+				$Nruccn = round($aval[$ic]['rucninak']+$aval[$ic]['montanak']+$aval[$ic]['ostatnak'],2);
+				$Nvyrez = round($aval[$ic]['vyreznak'],2);
+				$Nzarez = round($aval[$ic]['trzbamat']-$aval[$ic]['maternak'],2);
+				$Nsprez = round($aval[$ic]['spravrez'],2);
+				$Nkzisk = round($aval[$ic]['kalkzisk'],2);
+				
+				$aval[$ic]['datapie']	=  "
+											[
+											 {name: 'Zisk', y: $Nkzisk, color: colors[8]},
+											 {name: 'Spr. režie', y: $Nsprez, color: colors[7]},
+											 {name: 'Výr. režie', y: $Nvyrez, color: colors[1]},
+											 {name: 'Strojní N.', y: $Nstroj, color: colors[0]},
+											 {name: 'Ruční N.', y: $Nruccn, color: colors[5]},
+											 {name: 'Zásob. režie', y: $Nzarez, color: colors[10]},
+											 {name: 'Materiál', y: $Nmater, color: colors[6]},
+											]
+											" ;
+				$aval[$ic]['databar']	=  "
+											[
+											 {name: 'Zisk', data: [$Nkzisk], legendIndex: 6, color: colors[8]},
+											 {name: 'Spr. režie', data: [$Nsprez], legendIndex: 5, color: colors[7]},
+											 {name: 'Výr. režie', data: [$Nvyrez], legendIndex: 4, color: colors[1]},
+											 {name: 'Strojní N.', data: [$Nstroj], legendIndex: 3, color: colors[0]},
+											 {name: 'Ruční N.', data: [$Nruccn], legendIndex: 2, color: colors[5]},
+											 {name: 'Zásob. režie', data: [$Nzarez], legendIndex: 1, color: colors[10]},
+											 {name: 'Materiál', data: [$Nmater], legendIndex: 0, color: colors[6]},
+											]
+											" ;
+				
 				
 				if($aval[$ic]['avalproc'] > $proc){
 					$best = $ic;
@@ -1084,8 +1116,39 @@ class Kalkul extends Model
 			$aval[$ic]['avalbest']	= false;
 			$aval[$ic]['id_cena']	= $ic;
 			$aval[$ic]['c_poradi']	= $i;
-			$aval[$ic]['datagraf']	=  "[['Material',".round($matnproc,2)."],['Vyr. sluzby',".round($sluzproc,2)."],['Spr. rezie',".round($sprvproc,2)."],['Zisk',".round($ziskproc,2)."]]";
-				
+			$aval[$ic]['datagraf']	=  "[['Material',".round($matnproc,2)."],['Výr. služby',".round($sluzproc,2)."],['Spr. režie',".round($sprvproc,2)."],['Zisk',".round($ziskproc,2)."]]";
+
+			$Nmater = round($aval[$ic]['maternak'],2);
+			$Nstroj = round($aval[$ic]['strojnak'],2);
+			$Nruccn = round($aval[$ic]['rucninak']+$aval[$ic]['montanak']+$aval[$ic]['ostatnak'],2);
+			$Nvyrez = round($aval[$ic]['vyreznak'],2);
+			$Nzarez = round($aval[$ic]['trzbamat']-$aval[$ic]['maternak'],2);
+			$Nsprez = round($aval[$ic]['spravrez'],2);
+			$Nkzisk = round($aval[$ic]['kalkzisk'],2);
+
+			$aval[$ic]['datapie']	=  "
+										[
+										 {name: 'Zisk', y: $Nkzisk, color: colors[8]},
+										 {name: 'Spr. režie', y: $Nsprez, color: colors[7]},
+										 {name: 'Výr. režie', y: $Nvyrez, color: colors[1]},
+										 {name: 'Strojní N.', y: $Nstroj, color: colors[0]},
+										 {name: 'Ruční N.', y: $Nruccn, color: colors[5]},
+										 {name: 'Zásob. režie', y: $Nzarez, color: colors[10]},
+										 {name: 'Materiál', y: $Nmater, color: colors[6]},
+										]
+										" ;
+			$aval[$ic]['databar']	=  "
+										[
+										 {name: 'Zisk', data: [$Nkzisk], legendIndex: 6, color: colors[8]},
+										 {name: 'Spr. režie', data: [$Nsprez], legendIndex: 5, color: colors[7]},
+										 {name: 'Výr. režie', data: [$Nvyrez], legendIndex: 4, color: colors[1]},
+										 {name: 'Strojní N.', data: [$Nstroj], legendIndex: 3, color: colors[0]},
+										 {name: 'Ruční N.', data: [$Nruccn], legendIndex: 2, color: colors[5]},
+										 {name: 'Zásob. režie', data: [$Nzarez], legendIndex: 1, color: colors[10]},
+										 {name: 'Materiál', data: [$Nmater], legendIndex: 0, color: colors[6]},
+										]
+										" ;
+			
 			if($aval[$ic]['avalproc'] > $proc){
 				$best = $ic;
 				$proc = $aval[$ic]['avalproc'];
@@ -1097,6 +1160,20 @@ class Kalkul extends Model
 		return $aval;
 	}
 	
+	/**
+	 * Vrací id aktivní ceny v poli AVAL
+	 * @param type $aval_data
+	 * @return type
+	 */
+	public function getActiveAvalId($aval_data){
+		$id = 0;
+		foreach($aval_data as $k => $adata){
+			if($adata['aktivni']==1){
+				$id = $k;
+			}
+		}
+		return $id;
+	}
 	
 	public function sumAddValActiveNab($addv) {
 		$data = array();

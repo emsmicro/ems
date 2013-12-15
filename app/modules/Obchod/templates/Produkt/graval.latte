@@ -1,9 +1,11 @@
 <script type='text/javascript'>
-	var chart;
-			$(document).ready(function() {
-				chart = new Highcharts.Chart({
-					chart: {
-						renderTo: 'dgraph_{!$idg}',
+$(function () {	
+
+		var colors = Highcharts.getOptions().colors;
+
+		$('#dgraph_{!$idg}').highcharts({
+				chart: {
+						//renderTo: 'dgraph_{!$idg}',
 						animation: false,
 						backgroundColor: 'transparent',
 						plotBorderWidth: null,
@@ -24,7 +26,7 @@
                     },
 					tooltip: {
 						formatter: function() {
-							return '<b>'+ this.point.name +'</b>: '+ Math.round(this.percentage*10)/10 +' %';
+							return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.y/1000,0) +' tis. Kč ('+ Highcharts.numberFormat(this.percentage,1) +' %)';
 						}
 					},
 					plotOptions: {
@@ -35,12 +37,12 @@
 							animation: false,
 							dataLabels: {
 								enabled: true,
-								//color: '#000',
+								color: '#000',
 								connectorWidth: 0,
-								//connectorColor: '#999',
+								connectorColor: '#999',
 								distance: 5,
 								formatter: function() {
-									return this.point.name +': '+ Math.round(this.percentage*10)/10 +' %';
+									return this.point.name +': '+ Highcharts.numberFormat(this.percentage,1) +' %';
 								},
 								style: {
 									padding: 3,

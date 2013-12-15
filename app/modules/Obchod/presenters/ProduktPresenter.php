@@ -127,16 +127,20 @@ class ProduktPresenter extends ObchodPresenter
         $this->template->prices = $prices;
 		$kalk = new Kalkul;
 		$aval = $kalk->calcAddedValue($id, $this->idn);
-		dd($aval, 'AVAL');
+		//dd($aval, 'AVAL');
 		$this->template->aval = $aval;
 		$hist = $instance->getProductHistory($id);
 		$this->template->history = $hist;
 		$poc = new Pocet;
         $pocet = $poc->show($id)->fetchAll();
         $this->template->pocet = $pocet;
-
+		$ida = $kalk->getActiveAvalId($aval);
 		$data_bar = $instance->getProdPrice4BarGraph($id);
-		$this->template->data_bar = $data_bar;
+		if($ida>0){
+			$this->template->data_bar = $aval[$ida]['databar'];
+		} else {
+			$this->template->data_bar = $data_bar;
+		}
 
 	}
 

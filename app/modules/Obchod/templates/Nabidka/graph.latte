@@ -1,15 +1,15 @@
 <script type="text/javascript">
 		
 $(function () {
-		Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-		    return {
-		        radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 },
-		        stops: [
-		            [0, color],
-		            [1, Highcharts.Color(color).brighten(-0.2).get('rgb')] // darken
-		        ],
-		    };
-		});
+//		Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+//		    return {
+//		        radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 },
+//		        stops: [
+//		            [0, color],
+//		            [1, Highcharts.Color(color).brighten(-0.2).get('rgb')] // darken
+//		        ],
+//		    };
+//		});
 		
 		var colors = Highcharts.getOptions().colors;
 		

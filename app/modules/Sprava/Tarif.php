@@ -26,7 +26,7 @@ class Tarif extends Model // DibiRow obstará korektní načtení dat
 	public function show($id)
 	{
 		return $this->CONN->query("SELECT tt.*, ta.id [tid], ROUND(ta.tarif,4) [tarif], ROUND(ta.hodnota,4) [hodnota], 
-										ta.id_set_tarifu [idss]
+										ta.id_set_tarifu [idss], calc=0, perc=0, graf=''
 								FROM typy_tarifu tt
 								LEFT JOIN (SELECT * FROM tarify WHERE id_set_tarifu=$id) ta ON tt.id=ta.id_typy_tarifu
 								ORDER BY poradi"
@@ -79,8 +79,8 @@ class Tarif extends Model // DibiRow obstará korektní načtení dat
 	 * @return string
 	 */
 	public function getTypTarifu($id) {
-		$pom = $this->CONN->fetchPairs('SELECT nazev FROM typy_tarifu WHERE id='.$id);
-		return $pom[0];
+		$pom = $this->CONN->fetch('SELECT nazev FROM typy_tarifu WHERE id='.$id);
+		return $pom;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ class Tarif extends Model // DibiRow obstará korektní načtení dat
 	{
 		return $this->CONN->query("SELECT COALESCE(ta.id,0) [idso], tt.zkratka, tt.nazev, tt.id [idto], tt.poradi, ta.hodnota, ta.tarif
 									FROM typy_tarifu tt
-									LEFT JOIN tarify ta ON tt.id = ta.id_typy_tarifu
+									LEFT JOIN tarify ta ON tt.id = ta.id_typy_tarifu AND ta.id_set_tarifu = $id_set_tarifu
 									WHERE ta.id_set_tarifu = $id_set_tarifu OR ta.id_set_tarifu is null
 									ORDER BY tt.poradi
 								");

@@ -25,18 +25,48 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 	 */
 	public function show($id=0)
 	{
-		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], 
-										s.id_set_sazeb_o [idss], ts.poradi, ds.zkratka [druh], ds.nazev [druh_nazev],
-										COALESCE(st.zkratka,'-') [stroj], COALESCE(st.nazev,'žádný stroj') [nstroj], COALESCE(st.hodinova_cena,0) [sazba_stroje]
-								FROM typy_operaci ts
-								LEFT JOIN (SELECT * FROM sazby_o WHERE id_set_sazeb_o=$id) s ON ts.id=s.id_typy_operaci
-								LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
-								LEFT JOIN stroje st ON ts.id_stroje=st.id
-								WHERE ds.zkratka NOT IN ('Ostatní','Jednorázové')
-								ORDER BY poradi"
-								);
+//		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota], 
+//										s.id_set_sazeb_o [idss], ts.poradi, ds.zkratka [druh], ds.nazev [druh_nazev],
+//										COALESCE(st.zkratka,'-') [stroj], COALESCE(st.nazev,'žádný stroj') [nstroj], COALESCE(st.hodinova_cena,0) [sazba_stroje]
+//								FROM typy_operaci ts
+//								LEFT JOIN (SELECT * FROM sazby_o WHERE id_set_sazeb_o=$id) s ON ts.id=s.id_typy_operaci
+//								LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
+//								LEFT JOIN stroje st ON ts.id_stroje=st.id
+//								WHERE ds.zkratka NOT IN ('Ostatní','Jednorázové')
+//								ORDER BY poradi"
+//								);
+		return $this->CONN->query("SELECT ts.id [tid], ts.nazev [typ], s.id [sid], ROUND(s.hodnota,4) [hodnota]
+										, s.id_set_sazeb_o [idss], ts.poradi, ds.zkratka [druh], ds.nazev [druh_nazev]
+										, COALESCE(st.zkratka,'-') [stroj], COALESCE(st.nazev,'žádný stroj') [nstroj], COALESCE(st.hodinova_cena,0) [sazba_stroje]
+										, tu.zkratka [obsluha], ta.hodnota [sazba_obsluhy], COALESCE(st.hodinova_cena,0)+ta.hodnota [sazba_celkem], se.nazev [settarifu]
+									FROM typy_operaci ts
+									LEFT JOIN (SELECT * FROM sazby_o WHERE id_set_sazeb_o=$id) s ON ts.id=s.id_typy_operaci
+									LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
+									LEFT JOIN stroje st ON ts.id_stroje=st.id
+									LEFT JOIN tarify ta ON ts.id_typy_tarifu=ta.id_typy_tarifu
+									LEFT JOIN (SELECT TOP 1 * FROM set_tarifu
+											WHERE platnost_od <= GETDATE()
+											ORDER BY platnost_od DESC) se ON ta.id_set_tarifu = se.id
+									LEFT JOIN typy_tarifu tu ON ta.id_typy_tarifu=tu.id
+									WHERE ds.zkratka NOT IN ('Ostatní','Jednorázové')
+											--AND se.id is not null
+									ORDER BY ts.poradi");
 	}
 
+	
+	public function updateSetSazeb($id=0)
+	{
+		return $this->CONN->query("UPDATE sazby_o 
+ 									SET hodnota = COALESCE(st.hodinova_cena,0)+COALESCE(ta.hodnota,0)
+									FROM sazby_o so
+									LEFT JOIN typy_operaci ts ON so.id_typy_operaci = ts.id AND so.id_set_sazeb_o=$id
+									LEFT JOIN druhy_operaci ds ON ts.id_druhy_operaci=ds.id
+									LEFT JOIN stroje st ON ts.id_stroje=st.id
+									LEFT JOIN tarify ta ON ts.id_typy_tarifu=ta.id_typy_tarifu
+									WHERE ds.zkratka NOT IN ('Ostatní','Jednorázové')"
+								)->fetch();
+	}	
+	
 	/**
 	 * Vrací data pro konkrétní záznam
 	 * @param int
@@ -97,7 +127,7 @@ class SazbaO extends Model // DibiRow obstará korektní načtení dat
 		return $this->CONN->query("SELECT COALESCE(so.id,0) [idso], ts.nazev [typ], ts.id [idto], d.zkratka, ts.poradi, so.hodnota
 									FROM typy_operaci ts
 									LEFT JOIN druhy_operaci d ON ts.id_druhy_operaci=d.id
-									LEFT JOIN sazby_o so ON ts.id = so.id_typy_operaci
+									LEFT JOIN sazby_o so ON ts.id = so.id_typy_operaci AND so.id_set_sazeb_o = $id_set_sazeb_o
 									WHERE d.zkratka NOT IN ('Ostatní','Jednorázové')
 											AND (so.id_set_sazeb_o = $id_set_sazeb_o OR so.id_set_sazeb_o is null)
 									ORDER BY poradi

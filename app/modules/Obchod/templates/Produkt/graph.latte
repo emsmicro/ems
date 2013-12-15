@@ -1,24 +1,9 @@
 <script type="text/javascript">
 			
 $(function () {
-		Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-		    return {
-		        radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
-		        stops: [
-		            [0, color],
-		            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-		        ]
-		    };
-		});
-		
-		Highcharts.setOptions({
-			lang: {
-				decimalPoint: ',',
-				thousandsSep: ' ',
-			},
-		});
-			<!-- Bar Graph -->
-			
+				
+		var colors = Highcharts.getOptions().colors;
+				
 		$('#container_graph').highcharts({
 				chart: {
 						type: 'bar',
@@ -54,7 +39,7 @@ $(function () {
 					tooltip: {
 						formatter: function() {
 							return ''+
-								 this.series.name +': '+ this.y +' Kč/ks ('+ Math.round(this.percentage*10)/10 +'%)';
+								 this.series.name +': '+ Highcharts.numberFormat(this.y/1000000,2) +' mil. Kč ('+ Highcharts.numberFormat(this.percentage,2) +'%)';
 						}
 					},
 					plotOptions: {
@@ -68,7 +53,7 @@ $(function () {
 								color: 'white',
 								//rotation: 270,
 								formatter: function() {
-									return (this.y>0 ? this.series.name.substring(0,1) + ' = '+Highcharts.numberFormat(this.y) +' Kč' : '');
+									return (this.y>0 ? this.series.name.substring(0,1) + ' = '+Highcharts.numberFormat(this.y/1000000,2) +' mil. Kč' : '');
 								}
 							},
 						},						

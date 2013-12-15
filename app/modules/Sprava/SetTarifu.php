@@ -82,37 +82,108 @@ class SetTarifu extends Model
 		}
 		$data['fond_rucni'] = ($data['dny_pracovni']-$data['dny_dovolena']-$data['dny_svatky']-$data['dny_nemoc']);
 		$data['fond_strojni'] = ($data['dny_pracovni']-$data['dny_svatky']-$data['dny_odstavky']);
-		dd($data);
-//		exit();
-//			$data['sazba_instalace']	= $data['sazba_instalace']/100;
-//			$data['vytizeni']			= $data['vytizeni']/100;
-//			$data['vyuziti_prikonu']	= $data['vyuziti_prikonu']/100;
-//			$data['naklady_udrzba']		= $data['naklady_udrzba']/100;
-//			$data['naklady_ostatni']	= $data['naklady_ostatni']/100;
-//			if ($data['stari']==""){$data['stari']=0;}
-//			if ($data['spotreba_dusiku']==""){$data['spotreba_dusiku']=0;}
-//			$data['kapacita']		= $param['stroj_kapcita_sm'] * $data['smennost'] * $data['vytizeni'];
-//			
-//			$investice = $data['poriz_cena'] * (1 + $data['sazba_instalace']);
-//			$cenapenez = $investice * $param['urokova_mira']/100;
-//			$naklploch = $data['plocha'] * $param['naklady_plochy'];
-//					
-//			$data['odpisy_hod']		= $investice / $data['doba_odpisu'] / $data['kapacita'];
-//			$data['naklady_fixni']	= $data['odpisy_hod'] + ($cenapenez + $naklploch) / $data['kapacita'];
-//			
-//			$elektrina	= $data['prikon'] * $data['vyuziti_prikonu'] * $param['cena_elekriny'];
-//			$dusik		= $data['spotreba_dusiku'] * $param['cena_dusiku'];
-//			$varnakost	= ($data['naklady_udrzba'] + $data['naklady_ostatni']) * $investice / $data['kapacita'];
-//		
-//			$data['naklady_variabilni'] = $elektrina + $dusik + $varnakost;
-//			
-//			$data['hodinova_cena'] = $data['naklady_fixni'] + $data['naklady_variabilni'];
-//			
-			return $data;
+		return $data;
+	}
+	
+	/**
+	 * Počítá hodinovou nákladovou sazbu v dané tarifní třídě
+	 * @param type $tarify
+	 * @param type $param
+	 * @return type
+	 */
+	public function calcSazba($tarify = array(), $param = array())
+	{
+		if($tarify){
+			foreach($tarify as $t){
+				//roční náklady										//ruční fond = prac dny bez dovolené, svátků, nemocí
+				$ntarif = $param['fond_rucni']*8*$t->tarif;			//tarifni mzda
+				$npripl = $ntarif*$param['priplatky']/100;			//připlatky za přečasy, směny apod.
+				$nbonus = 12 * $param['doch_bonus'];				//docházkový bonus
+				$ndovol = $param['dny_dovolena']
+							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus);	//náhrada za dovolenou
+				$nsvate = $param['dny_svatky']
+							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus);	//náhrada za svátky
+				$nodmen = $param['odmeny']*$ntarif/12;				//roční odměny
+				$ncelkm = $ntarif+$npripl+$nbonus+$ndovol+$nsvate;	//celkové roční příjmy (bez připoj. a stravného)
+				
+				$nobedy = $param['fond_rucni']*$param['stravne'];	//příspěvek na obědy
+				$npojis = $ncelkm*$param['penzijni_poj']/100;		//penz. připoj. z vyplacené mzdy bez náhrad obědů
+				$nodvod = ($ncelkm+ $nobedy)*$param['odvody']/100;	//odvody ze všeho i s obědy, ne penz.poj.
+				$sumrok	= $ncelkm + $npojis + $nodvod + $nobedy;	//celkové roční náklady na pracovníka
+				
+				//skutečný roční hodinový fond s přesčasy
+				$hodrok = $param['fond_rucni']*(1+$param['podil_prescasu']/100)*8;
+				//skutečná hodinová sazba kalkulovaná
+				$hsazba = $sumrok/$hodrok;
+				$t->calc = round($hsazba,2);
+				
+				$tarodv = $t->tarif*(1+$param['odvody']/100);
+				$procnt = $tarodv>0 ? (1-$tarodv/$t->calc)*100 : 0;
+				$procta = $t->calc>0 ? ($t->tarif/$t->calc)*100 : 0;
+				$t->perc = $procnt;
+				$procik = (float) $procnt;
+				$procib = 100-$procik-$procta;
+				$proodv = $t->calc>0 ? ($tarodv-$t->tarif)/$t->calc*100 : 0;
+				$navyse = $t->calc*$procik/100;
+				$odvodh = $t->tarif*$param['odvody']/100;
+				//grafické znázornění
+				$k = 1.3;
+				$pta = $procta * $k;
+				$pik = $procik * $k;
+				$pib = $procib * $k;
+				$t->graf = "<span title='Tarif ".round($t->tarif,1)." Kč/h, tj. ".round($procta,1)." %' style='display:inline-block; background-color:#65AEF8; width:$pta"."px'>&nbsp;</span>"
+						  ."<span title='Odvody ".round($odvodh,2)." Kč/h, tj. ".round($proodv,1)." %' style='display:inline-block; background-color:#DDD; width:$pib"."px'>&nbsp;</span>"
+						  ."<span title='Navýšení ".round($navyse,2)." Kč/h'style='display:inline-block; background-color:#FFB111; width:$pik"."px'>&nbsp;</span>";
+			}
+		}
+		return $tarify;
+	}	
+	
+	/**
+	 * Připraví data pro update tarifů
+	 * @param type $tarify
+	 * @return type
+	 */
+	private function tarifyProUpdate($tarify) {
+		$data = array();
+		$j=0;
+		foreach($tarify as $tarif){
+			$data[$j]['id'] = $tarif->tid;
+			$data[$j]['hodnota'] = $tarif->calc;
+			$j++;
+		}
+		return $data;
+	}
+
+		
+	/**
+	 * Aktualizuje tarify pro kalkulaci předvypočtenými hodnotami
+	 * @param type $id = id_set_tarifu
+	 * @param type $data
+	 */
+	public function updateTarify($id, $tarify) {
+		$data = $this->tarifyProUpdate($tarify);
+		$tar = new Tarif;
+		$udato = array();
+		$this->CONN->begin();
+		$ret = TRUE;
+		try {
+			foreach($data as $dato){
+				$id_tarif = $dato['id'];
+				$upd['hodnota'] = $dato['hodnota'];
+				$res = $tar->update($id_tarif, $upd);
+				$ret = $ret and $res;
+			}
+			$this->CONN->commit();
+		} catch (DibiException $e) {
+			$this->CONN->rollback();
+			throw new Nette\Application\BadRequestException("Aktualizace sazeb tarifnů se nezdařila (Rollback transaction.)");
+			return FALSE;
+		}
+		return $ret;
 	}
 	
 	
-		
 	
 }
 
