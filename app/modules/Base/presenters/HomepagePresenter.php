@@ -95,13 +95,13 @@ final class HomepagePresenter extends BasePresenter
 	
 	public function actionSetOffer($id)
 	{
-		$this->setIntoMySet(3, $id);
+		$this->setIntoMySet(2, $id);
 		$this->redirect('Produkt:product',$id);
 	}
 
 	public function actionSetProduct($id)
 	{
-		$this->setIntoMySet(4, $id);
+		$this->setIntoMySet(3, $id);
 		if(in_array('Nakup', $this->user->getRoles())){
 			$this->redirect('Material:');
 		}

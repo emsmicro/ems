@@ -72,7 +72,7 @@ class SetTarifuPresenter extends SpravaPresenter
         $tarify = $tar->show($id)->fetchAll();
 //		dd($item,'TAR');
 		$tarify = $sett->calcSazba($tarify, $this->mpars);
-		dd($tarify,'TARIFS');
+		//dd($tarify,'TARIFS');
 //		dd($this->mpars,'PARAMS');
         $this->template->sazby = $tarify;
 		$this->template->idss = $item->id;
@@ -216,7 +216,7 @@ class SetTarifuPresenter extends SpravaPresenter
 		$renderer->wrappers['control']['container'] = NULL;
 		$this->template->items = $data;
 		$this->template->form = $form;
-		dd($data);
+		//dd($data);
 	}
 	/********************* view delete rate *********************/
 	/**
@@ -343,6 +343,16 @@ class SetTarifuPresenter extends SpravaPresenter
 					->autocomplete('off')
 			->addCondition($form::FILLED)
 					->addRule($form::FLOAT, 'Násobek platu na odměny: Hodnota musí být celé nebo reálné číslo.');
+
+		$form->addText('navyseni_prumeru', 'Navýšení průměru:')
+			->setRequired('Uveďte navýšení průměrné hodinové sazby pro náhrady za dovolenou a svátky z titulu ročních odměn.')
+			->setAttribute('class', 'cislo')
+			->setOption('description', '[Kč/h] (z titulu výplaty ročních odměn za minulý rok)')
+			->addFilter(array('Nette\Forms\Controls\TextBase', 'filterFloat'))
+				->controlPrototype
+					->autocomplete('off')
+			->addCondition($form::FILLED)
+					->addRule($form::FLOAT, 'Odvody SZP: Hodnota musí být celé nebo reálné číslo.');
 		
 		$form->addText('odvody', 'Odvody SZP:')
 			->setRequired('Uveďte sazbu sociálního a zdravotního pojištění.')
@@ -445,7 +455,7 @@ class SetTarifuPresenter extends SpravaPresenter
 				$this->flashMessage('Položka byla přidána.');
 			}
 		}
-		$this->redirect('default');
+		$this->redirect('detail', $id);
 	}
 
 

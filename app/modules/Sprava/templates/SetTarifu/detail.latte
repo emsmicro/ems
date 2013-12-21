@@ -27,6 +27,7 @@
       odmeny
       odvody
       penzijni_poj
+	  navyseni_prumeru
 
       podil_prescasu
       rucni_smena
@@ -46,7 +47,7 @@
 		font-style: italic;
 		padding: 2px 10px 2px 20px;
 		background: #ADD4FB;
-		color: #134471;
+		color: white;
 	}
 </style>
 
@@ -66,18 +67,18 @@
 		<th>svátků</th>		<td class="tcislo">{$item->dny_svatky}</td>
 		<th>nemoci</th>		<td class="tcislo">{$item->dny_nemoc}</td>
 		<th>odstávky</th>	<td class="tcislo">{$item->dny_odstavky}</td>
-		<th colspan='2'></th>
+		<th>odvody SZP</th>	<td class="tcislo">{$item->odvody|number:2:',':' '} %</td>
 	</tr>
 	<tr>
 		<th colspan='12' class='tittab'>Odvody, pojištění, příplatky, bonusy, odměny, stravné</th>
 	</tr>
 	<tr>
-		<th>odvody SZP</th>				<td class="tcislo">{$item->odvody|number:2:',':' '} %</td>
 		<th>penz. pojištění</th>		<td class="tcislo">{$item->penzijni_poj|number:2:',':' '} %</td>
 		<th>příplatky</th>				<td class="tcislo">{$item->priplatky|number:2:',':' '} %</td>
 		<th>doch. bonus</th>			<td class="tcislo">{$item->doch_bonus|number:0:',':' '} Kč/měs.</td>
 		<th>nás. platu na odměny</th>	<td class="tcislo">{$item->odmeny|number:2:',':' '}</td>
 		<th>stravné</th>				<td class="tcislo">{$item->stravne|number:2:',':' '} Kč/den</td>
+		<th>navýšení průměru</th>		<td class="tcislo">{$item->navyseni_prumeru|number:2:',':' '} Kč/h</td>
 	</tr>
 	<tr>
 		<th colspan='12' class='tittab'>Přesčasy, fond strojní/ruční, kapacita, směnnost</th>

@@ -100,22 +100,24 @@ class SetTarifu extends Model
 				$npripl = $ntarif*$param['priplatky']/100;			//připlatky za přečasy, směny apod.
 				$nbonus = 12 * $param['doch_bonus'];				//docházkový bonus
 				$ndovol = $param['dny_dovolena']
-							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus);	//náhrada za dovolenou
+							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus)
+							+ $param['dny_dovolena']*8*$param['navyseni_prumeru'];	//náhrada za dovolenou
 				$nsvate = $param['dny_svatky']
-							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus);	//náhrada za svátky
+							/ $param['fond_rucni']*($ntarif+$npripl+$nbonus)
+							+ $param['dny_svatky']*8*$param['navyseni_prumeru'];	//náhrada za svátky
 				$nodmen = $param['odmeny']*$ntarif/12;				//roční odměny
 				$ncelkm = $ntarif+$npripl+$nbonus+$ndovol+$nsvate;	//celkové roční příjmy (bez připoj. a stravného)
 				
 				$nobedy = $param['fond_rucni']*$param['stravne'];	//příspěvek na obědy
 				$npojis = $ncelkm*$param['penzijni_poj']/100;		//penz. připoj. z vyplacené mzdy bez náhrad obědů
-				$nodvod = ($ncelkm+ $nobedy)*$param['odvody']/100;	//odvody ze všeho i s obědy, ne penz.poj.
+				$nodvod = ($ncelkm)*$param['odvody']/100;	//odvody ze všeho i s obědy, ne penz.poj.
 				$sumrok	= $ncelkm + $npojis + $nodvod + $nobedy;	//celkové roční náklady na pracovníka
 				
 				//skutečný roční hodinový fond s přesčasy
 				$hodrok = $param['fond_rucni']*(1+$param['podil_prescasu']/100)*8;
 				//skutečná hodinová sazba kalkulovaná
 				$hsazba = $sumrok/$hodrok;
-				$t->calc = round($hsazba,2);
+				$t->calc = round($hsazba,1);
 				
 				$tarodv = $t->tarif*(1+$param['odvody']/100);
 				$procnt = $tarodv>0 ? (1-$tarodv/$t->calc)*100 : 0;
@@ -131,9 +133,10 @@ class SetTarifu extends Model
 				$pta = $procta * $k;
 				$pik = $procik * $k;
 				$pib = $procib * $k;
-				$t->graf = "<span title='Tarif ".round($t->tarif,1)." Kč/h, tj. ".round($procta,1)." %' style='display:inline-block; background-color:#65AEF8; width:$pta"."px'>&nbsp;</span>"
-						  ."<span title='Odvody ".round($odvodh,2)." Kč/h, tj. ".round($proodv,1)." %' style='display:inline-block; background-color:#DDD; width:$pib"."px'>&nbsp;</span>"
-						  ."<span title='Navýšení ".round($navyse,2)." Kč/h'style='display:inline-block; background-color:#FFB111; width:$pik"."px'>&nbsp;</span>";
+				$hig = 10;
+				$t->graf = "<span title='Tarif ".round($t->tarif,1)." Kč/h, tj. ".round($procta,1)." %' style='display:inline-block; background-color:#65AEF8; width:$pta"."px; height:$hig"."px; vertical-align: middle; box-shadow:2px 2px 2px #BBB;'>&nbsp;</span>"
+						  ."<span title='Odvody ".round($odvodh,2)." Kč/h, tj. ".round($proodv,1)." %' style='display:inline-block; background-color:#DDD; width:$pib"."px; height:$hig"."px; vertical-align: middle; box-shadow:2px 2px 2px #BBB;'>&nbsp;</span>"
+						  ."<span title='Navýšení ".round($navyse,2)." Kč/h'style='display:inline-block; background-color:#FFB111; width:$pik"."px; height:$hig"."px; vertical-align: middle; box-shadow:2px 2px 2px #BBB;'>&nbsp;</span>";
 			}
 		}
 		return $tarify;
